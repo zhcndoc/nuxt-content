@@ -1,6 +1,6 @@
 ---
 seo:
-  title: 基于 Git 的 Nuxt 项目内容管理系统。
+  title: 基于 Git 的 Nuxt 项目内容管理系统
   description: Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式来管理应用内容。它允许开发者以 Markdown、YAML 或 JSON 文件格式编写内容，然后在应用中查询并展示这些内容。
 ---
 
@@ -362,7 +362,7 @@ orientation: horizontal
  
 
 #title{unwrap="p"}
-让[任何人编辑]{.text-(--ui-primary)} 您的网站
+让 [任何人编辑]{.text-(--ui-primary)} 您的网站
 
 #description
 通过 **Studio** 编辑您的 Nuxt Content 网站——我们的 CMS 平台，提供类似 Notion 的 Markdown 编辑器和为 `YAML` 与 `JSON` 文件生成的表单。支持实时预览和在线协作。
@@ -415,12 +415,12 @@ orientation: horizontal
   :::
 
 #title
-为您的 Nuxt 项目添加基于 git 的 CMS。
+为您的 Nuxt 项目添加基于 Git 的 CMS。
 
 #links
   :::u-button
   ---
-  label: 开始阅读文档
+  label: 阅读文档
   to: /docs/getting-started/installation
   trailingIcon: i-lucide-arrow-right
   ---

@@ -28,7 +28,7 @@ export default defineNuxtConfig({
   ],
 
   site: {
-    url: 'https://content.nuxt.com',
+    url: 'https://nuxt-content.zhcndoc.com',
   },
 
   content: {
@@ -56,6 +56,10 @@ export default defineNuxtConfig({
     highlight: {
       noApiRoute: false,
     },
+  },
+
+  ui: {
+    fonts: false,
   },
 
   runtimeConfig: {
@@ -113,9 +117,9 @@ export default defineNuxtConfig({
   },
 
   llms: {
-    domain: 'https://content.nuxt.com',
-    title: 'Nuxt Content',
-    description: 'Nuxt Content is a Git-based headless CMS for Nuxt',
+    domain: 'https://nuxt-content.zhcndoc.com',
+    title: 'Nuxt Content 中文文档',
+    description: 'Nuxt Content 是一个基于 Git 的无头内容管理系统，专为 Nuxt 设计',
     notes: [
       'The documentation only includes Nuxt Content v3 docs.',
       'The content is automatically generated from the same source as the official documentation.',

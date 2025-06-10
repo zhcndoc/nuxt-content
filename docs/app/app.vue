@@ -20,15 +20,20 @@ useHead({
   ],
   link: [
     { rel: 'icon', type: 'image/svg+xml', href: '/icon.svg' },
-    { rel: 'canonical', href: `https://content.nuxt.com${withoutTrailingSlash(route.path)}` },
+    { rel: 'canonical', href: `https://nuxt-content.zhcndoc.com${withoutTrailingSlash(route.path)}` },
   ],
   htmlAttrs: {
-    lang: 'en',
+    lang: 'zh-CN',
   },
 })
 
+useHead({
+  titleTemplate: title => title ? `${title} - Nuxt Content 中文文档` : 'Nuxt Content 中文文档 - 基于 Git 的 Nuxt 项目内容管理系统',
+  script: [{ async: '', src: 'https://www.zhcndoc.com/js/common.js' }],
+})
+
 useServerSeoMeta({
-  ogSiteName: 'Nuxt Content',
+  ogSiteName: 'Nuxt Content 中文文档',
   twitterCard: 'summary_large_image',
 })
 

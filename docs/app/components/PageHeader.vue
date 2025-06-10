@@ -14,14 +14,14 @@ const copyStatus = ref<'idle' | 'copying' | 'copied'>('idle')
 const items = ref<DropdownMenuItem[]>([
 
   {
-    label: 'Copy Markdown Link',
+    label: '复制 Markdown 链接',
     icon: 'i-lucide-link',
     onSelect() {
       navigator.clipboard.writeText(`${window.location.origin}/raw${route.path}.md`)
     },
   },
   {
-    label: 'View as Markdown',
+    label: '查看 Markdown',
     icon: 'i-simple-icons:markdown',
     target: '_blank',
     onSelect() {
@@ -29,7 +29,7 @@ const items = ref<DropdownMenuItem[]>([
     },
   },
   {
-    label: 'Open in ChatGPT',
+    label: '在 ChatGPT 中打开',
     icon: 'i-simple-icons:openai',
     target: '_blank',
     onSelect() {
@@ -37,7 +37,7 @@ const items = ref<DropdownMenuItem[]>([
     },
   },
   {
-    label: 'Open in Claude',
+    label: '在 Claude 中打开',
     icon: 'i-simple-icons:anthropic',
     target: '_blank',
     onSelect() {
@@ -70,7 +70,7 @@ const copyPage = async () => {
         {{ headline }}
         <UButtonGroup>
           <UButton
-            :label="`${copyStatus === 'copied' ? 'Copied' : 'Copy Page'}`"
+            :label="`${copyStatus === 'copied' ? '已复制' : '复制页面'}`"
             :icon="`i-lucide-${copyStatus === 'copied' ? 'check' : 'copy'}`"
             color="neutral"
             variant="outline"

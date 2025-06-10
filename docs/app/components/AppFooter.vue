@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const route = useRoute()
+// const route = useRoute()
 
 // const items = [{
 //   label: 'Figma Kit',
@@ -26,22 +26,19 @@ const route = useRoute()
 
   <UFooter>
     <template #left>
-      <NuxtLink
-        v-if="route.path.startsWith('/pro')"
-        to="https://content.nuxt.com/pro/purchase"
-        target="_blank"
-        class="text-sm text-(--ui-text-muted)"
-      >
-        Purchase <span class="text-(--ui-text-highlighted)">Nuxt Content Pro</span>
-      </NuxtLink>
-      <NuxtLink
-        v-else
-        to="https://github.com/nuxt/content"
-        target="_blank"
-        class="text-sm text-(--ui-text-muted)"
-      >
-        Published under <span class="text-(--ui-text-highlighted)">MIT License</span>
-      </NuxtLink>
+      <!-- {{ footer.credits }} -->
+      <p class="text-gray-500 dark:text-gray-400 text-sm">
+        <a
+          target="_blank"
+          href="https://www.zhcndoc.com"
+        > 简中文档 </a>
+        ｜
+        <a
+          rel="nofollow"
+          target="_blank"
+          href="https://beian.miit.gov.cn"
+        > 沪ICP备2024070610号-3 </a>
+      </p>
     </template>
 
     <!-- <UNavigationMenu :items="items" variant="link" color="neutral" /> -->

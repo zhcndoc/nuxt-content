@@ -1,6 +1,6 @@
 ---
 seo:
-  title: 认识 Studio，为所有人打造的内容编辑。
+  title: 认识 Studio，为所有人打造的内容编辑
   description: Nuxt Studio 为您的 Nuxt Content 项目带来可视化编辑。
     任何人都可以借助我们多功能的编辑器贡献网站内容，该编辑器
     兼容 markdown、YAML 或 JSON——无需技术专长。为开发者打造，

@@ -26,7 +26,7 @@ const surround = computed(() => data.value?.surround)
 const title = computed(() => (page.value?.navigation as { title: string })?.title || page.value?.title)
 
 const headline = computed(() => findPageHeadline(navigation!.value, page.value))
-const titleName = computed(() => route.path.includes('studio') ? 'Nuxt Studio' : 'Nuxt Content')
+const titleName = computed(() => route.path.includes('studio') ? 'Nuxt Studio 中文文档' : 'Nuxt Content 中文文档')
 useSeoMeta({
   titleTemplate: `%s - ${titleName.value}`,
   title: title.value,
@@ -42,7 +42,7 @@ defineOgImageComponent('Docs', {
 
 const communityLinks = computed(() => [{
   icon: 'i-lucide-pencil',
-  label: 'Edit this page',
+  label: '编辑此页面',
   to: `https://github.com/nuxt/content/edit/main/docs/content/${page.value?.stem}.${page.value?.extension}`,
   target: '_blank',
 }, {
@@ -52,7 +52,7 @@ const communityLinks = computed(() => [{
   target: '_blank',
 }, {
   icon: 'i-simple-icons-discord',
-  label: 'Chat on Discord',
+  label: 'Discord 交流',
   to: 'https://discord.gg/sBXDm6e8SP',
   target: '_blank',
 }])
@@ -81,6 +81,7 @@ const communityLinks = computed(() => [{
       #right
     >
       <UContentToc
+        title="快速导航"
         :links="page.body.toc.links"
         class="z-[2]"
       >
@@ -91,7 +92,7 @@ const communityLinks = computed(() => [{
           />
 
           <UPageLinks
-            title="Community"
+            title="社区"
             :links="communityLinks"
           />
 
