@@ -1,121 +1,121 @@
-title: Get the right plan for your project
-description: Explore our options tailored to individual and team needs. Get started for free.
+title: 为您的项目选择合适的方案
+description: 探索适合个人和团队需求的选项。免费开始使用。
 onboarding:
-  title: Team Onboarding
+  title: 团队入职
   image:
     dark: /pricing/timeline-dark.webp
     light: /pricing/timeline-light.webp
 plans:
   solo:
-    title: Solo
-    description: For solo user signed up with their personal GitHub account.
-    price: Free
+    title: 个人版
+    description: 适用于使用个人 GitHub 账号注册的独立用户。
+    price: 免费
     features:
-      - Unlimited projects
-      - 1 member
-      - Notion-like editor
-      - Live editing & preview
-      - Media library
-      - GitHub synchronization
-      - ... and much more
+      - 无限项目
+      - 1位成员
+      - 类 Notion 编辑器
+      - 实时编辑和预览
+      - 媒体库
+      - GitHub 同步
+      - ...以及更多
     button:
-      label: Get started for free
+      label: 免费开始使用
       color: neutral
       to: 'https://nuxt.studio'
     cycle: ''
   team:
-    title: Team
-    description: For developers, editors and clients who want to collaborate.
+    title: 团队版
+    description: 适用于想要协作的开发者、编辑和客户。
     price: $29
-    cycle: /project/month
+    cycle: /项目/月
     highlight: true
-    badge: Most popular
+    badge: 最受欢迎
     features:
-      - 1 project
-      - 2 members included
-      - $9 per additional member
-      - Team & workflow management
-      - Real-time collaboration
-      - Priority support
-      - All solo features
+      - 1个项目
+      - 包含2位成员
+      - 每增加一位成员$9
+      - 团队和工作流管理
+      - 实时协作
+      - 优先支持
+      - 包含所有个人版功能
     button:
-      label: Start 14-day free trial
+      label: 开始14天免费试用
       to: 'https://nuxt.studio'
       target: _blank
   unlimited:
-    title: Unlimited
-    description: For large teams looking to collaborate on multiple projects with no limits.
-    cycle: /month
+    title: 无限版
+    description: 适用于需要在多个项目上协作的大型团队，无使用限制。
+    cycle: /月
     price: $199
     features:
-      - Unlimited projects
-      - Unlimited members
-      - All Solo features
-      - Team & workflow management
-      - Real-time collaboration
-      - Priority support
+      - 无限项目
+      - 无限成员
+      - 所有个人版功能
+      - 团队和工作流管理
+      - 实时协作
+      - 优先支持
     button:
-      label: Start 14-day free trial
+      label: 开始14天免费试用
       to: 'https://nuxt.studio'
       target: _blank
 features:
-  title: All Features
-  description: Studio has a per-project pricing model that can scale to meet your needs.
+  title: 所有功能
+  description: Studio 采用按项目定价模式，可根据您的需求扩展。
   includes:
     projects:
-      title: Projects
+      title: 项目数量
       value:
-        - Unlimited
+        - 无限
         - '1'
-        - Unlimited
+        - 无限
     members:
-      title: Members
+      title: 成员数量
       value:
         - '1'
-        - 2 included ($9 per extra)
-        - Unlimited
+        - 包含2位 (每增加一位$9)
+        - 无限
     media:
-      title: Media Library
+      title: 媒体库
       plans:
         - solo
         - team
         - unlimited
     support:
-      title: Discord support
+      title: Discord 支持
       plans:
         - solo
         - team
         - unlimited
     dedicated:
-      title: Dedicated Discord channel
+      title: 专属 Discord 频道
       plans:
         - team
         - unlimited
     roles:
-      title: Roles and permissions
+      title: 角色和权限
       plans:
         - team
         - unlimited
     collaboration:
-      title: Live Collaboration
+      title: 实时协作
       plans:
         - team
         - unlimited
     sync:
-      title: GitHub syncing
+      title: GitHub 同步
       includes:
         repositories:
-          title: Repositories
+          title: 仓库
           plans:
             - solo
             - team
             - unlimited
         workflow:
-          title: Branches and Pull Requests
+          title: 分支和拉取请求
           plans: []
           soon: true
         files:
-          title: Files
+          title: 文件
           plans:
             - solo
             - team
@@ -127,66 +127,66 @@ features:
             - team
             - unlimited
     project:
-      title: Project
+      title: 项目
       includes:
         clone:
-          title: Clone a template
+          title: 克隆模板
           plans:
             - solo
             - team
             - unlimited
         import:
-          title: Import a repository
+          title: 导入仓库
           plans:
             - solo
             - team
             - unlimited
     editors:
-      title: Editors
+      title: 编辑器
       includes:
         markdown:
-          title: Markdown editor
+          title: Markdown 编辑器
           plans:
             - solo
             - team
             - unlimited
         json:
-          title: JSON/YML form editor
+          title: JSON/YML 表单编辑器
           plans:
             - solo
             - team
             - unlimited
         appconfig:
-          title: App config editor
+          title: 应用配置编辑器
           plans:
             - solo
             - team
             - unlimited
         drag:
-          title: Drag'n drop
+          title: 拖放功能
           plans:
             - solo
             - team
             - unlimited
     preview:
-      title: Live Preview
+      title: 实时预览
       includes:
         draft:
-          title: Studio Draft
+          title: Studio 草稿
           plans:
             - solo
             - team
             - unlimited
         branches:
-          title: Branches
+          title: 分支
           plans: []
           soon: true
         prs:
-          title: Pull requests
+          title: 拉取请求
           plans: []
           soon: true
     deploy:
-      title: Deploy
+      title: 部署
       includes:
         gh:
           title: GitHub Pages
@@ -195,26 +195,26 @@ features:
             - team
             - unlimited
         self:
-          title: Self Hosted
+          title: 自托管
           plans:
             - solo
             - team
             - unlimited
     publish:
-      title: Save changes
+      title: 保存更改
       includes:
         preview:
-          title: Preview differences
+          title: 预览差异
           plans:
             - solo
             - team
             - unlimited
         branch:
-          title: Branch creation / merge
+          title: 分支创建/合并
           plans: []
           soon: true
         commit:
-          title: Commit
+          title: 提交
           plans:
             - solo
             - team

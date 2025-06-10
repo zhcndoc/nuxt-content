@@ -1,15 +1,15 @@
 ---
 slug: landing
 subtitle: ""
-title: Landing
+title: 登陆页
 baseDir: .
 branch: main
 category: minimal
 demo: https://landing-template.nuxt.dev/
-description: A simple template you can use as a starting point for your next idea.
+description: 一个简单的模板，可用作您下一个创意的起点。
 licenseType: nuxt-ui-pro
 mainScreen: /templates/landing.jpg
-name: Landing
+name: 登陆页
 owner: nuxt-ui-pro
 draft: false
 ---
@@ -19,28 +19,28 @@ draft: false
 ::
 
 ::template-core
-[Nuxt UI Pro](https://ui.nuxt.com/pro) is a collection of premium components, an extension of [Nuxt UI](https://ui.nuxt.com), designed to facilitate the creation of appealing and responsive Nuxt applications in a matter of minutes.
+[Nuxt UI Pro](https://ui.nuxt.com/pro) 是一套高级组件集合，是 [Nuxt UI](https://ui.nuxt.com) 的扩展，旨在帮助您在几分钟内创建吸引人且响应迅速的 Nuxt 应用程序。
 
-The Nuxt UI team is dedicated to deliver the best integration and customization experience, while the Studio team is providing full compatibility with Nuxt Studio.
+Nuxt UI 团队致力于提供最佳集成和定制体验，而 Studio 团队则提供与 Nuxt Studio 的完全兼容性。
 
-- **Fully customizable**: change the style of your UI from your App Config or edit your landing page content from the `index.yml` file.
-- **Beautiful Typography styles**: Tailwind CSS typography plugin is pre-configured and styled to match Nuxt UI components and colors.
-- **Responsive by design**: Nuxt UI Pro components aims to structure your content, they are responsive by design and will adapt to any screen size.
+- **完全可定制**：您可以通过应用配置更改 UI 样式，或通过 `index.yml` 文件编辑您的登陆页内容。
+- **美观的排版样式**：预配置了 Tailwind CSS 排版插件，并且样式与 Nuxt UI 组件和配色相匹配。
+- **响应式设计**：Nuxt UI Pro 组件旨在构建您的内容，它们具有响应式设计，能够适应任何屏幕尺寸。
 
 #right
   :::template-features
   ---
   features:
     - label: Nuxt 3
-      content: Powered by Nuxt 3 for optimal performances and SEO.
+      content: 由 Nuxt 3 驱动，提供最佳性能和 SEO。
     - label: Content v3
-      content: Write your content in yaml files or use Markdown with the MDC syntax.
+      content: 使用 yaml 文件编写内容，或使用支持 MDC 语法的 Markdown。
     - label: Nuxt UI v3
-      content: Offers a very large set of full customizable components.
+      content: 提供大量完全可定制的组件。
     - label: TypeScript
-      content: A fully typed development experience.
+      content: 完全类型化的开发体验。
     - label: Nuxt Studio
-      content: Supported by Nuxt Studio for fast updates and previews.
+      content: 由 Nuxt Studio 支持，实现快速更新和预览。
   ---
   :::
 ::

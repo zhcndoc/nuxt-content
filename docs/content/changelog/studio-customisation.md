@@ -1,12 +1,11 @@
 ---
-name: Studio Frontmatter Customization
-title: Studio Form Customisation
-description: Studio forms are dynamically generated based on the collection
-  schema defined in your content configuration file.
+name: Studio 表单自定义
+title: Studio 表单自定义
+description: Studio 表单是基于您内容配置文件中定义的集合模式动态生成的。
 date: 2025-02-20T01:00:00.000Z
 image:
   src: /blog/studio-form-generation.png
-  alt: Frontmatter form generation based on collection schema
+  alt: 基于集合模式生成的 Frontmatter 表单
 authors:
   - name: Baptiste Leproux
     to: https://x.com/_larbish
@@ -16,19 +15,19 @@ category: content
 draft: false
 ---
 
-The [Studio](https://nuxt.studio) forms are dynamically generated based on the collection schema defined in your content configuration file. This behaviour applies whether you’re editing the [frontmatter](/docs/files/markdown#frontmatter) of a `Markdown` file or a `JSON` / `YAML` file.
+[Studio](https://nuxt.studio) 表单是基于您内容配置文件中定义的集合模式动态生成的。无论您是在编辑 `Markdown` 文件的 [frontmatter](/docs/files/markdown#frontmatter)，还是 `JSON` / `YAML` 文件，这种行为都是适用的。
 
 :video{autoplay controls poster="https://res.cloudinary.com/nuxt/video/upload/v1739982761/frontmatterform_yjafgt.png" src="https://res.cloudinary.com/nuxt/video/upload/v1739982761/frontmatterform_yjafgt.mp4"}
 
-## **Defining your form with** `zod` Schema
+## **使用** `zod` **模式定义您的表单**
 
-Nuxt Content leverages [zod](https://github.com/colinhacks/zod) to let you define a type-safe schema for your content. This schema not only validates your data but also powers the form generation in **Studio**.
+Nuxt Content 利用 [zod](https://github.com/colinhacks/zod) 让您定义一种类型安全的内容模式。此模式不仅用于验证您的数据，还为 **Studio** 中的表单生成提供支持。
 
-### **Built-in zod Helpers**
+### **内置的 zod 辅助工具**
 
-You can define your Content schema by adding the `schema` property to your collection and by using a [zod](https://github.com/colinhacks/zod) schema.
+您可以通过向集合添加 `schema` 属性并使用 [zod](https://github.com/colinhacks/zod) 模式来定义您的内容模式。
 
-`@nuxt/content` exposes a `z` object that contains a set of [Zod](/) utilities for common data types.
+`@nuxt/content` 暴露了一个 `z` 对象，包含一组用于常见数据类型的 [Zod](/) 工具。
 
 ::prose-code-group
 ```ts [content.config.ts]
@@ -63,47 +62,46 @@ export default defineContentConfig({
 })    
 ```
 
-  :::preview-card{icon="i-lucide-eye" label="Generated Form"}
-  ![Form preview](/docs/studio/preview-schema.png)
+  :::preview-card{icon="i-lucide-eye" label="生成的表单"}
+  ![表单预览](/docs/studio/preview-schema.png)
   :::
-::
 
-### **Native Inputs Mapping**
+### **原生输入映射**
 
-Primitive Zod types are automatically mapped to appropriate form inputs in **Studio**:
+原始 Zod 类型会自动映射为 **Studio** 中相应的表单输入：
 
-- **String** → Text input
-- **Date** → Date picker
-- **Number** → Number input (counter)
-- **Boolean** → Toggle switch
-- **Enum** → Select dropdown
-- **Arrays of strings** → List of badge inputs
-- **Arrays of objects** → Accordion of items with embedded form
+- **字符串** → 文本输入框
+- **日期** → 日期选择器
+- **数字** → 数字输入（计数器）
+- **布尔值** → 开关切换
+- **枚举** → 下拉选择框
+- **字符串数组** → 徽章输入列表
+- **对象数组** → 可折叠项嵌套表单
 
 :video{autoplay controls loop poster="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.jpg" src="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.mp4"}
 
-### Custom Inputs Mapping
+### 自定义输入映射
 
-Content goes beyond primitive types. You can customise form fields using the `editor` method, which extends Zod types with metadata to empower editor interface.
+内容不仅限于原始类型。您可以使用 `editor` 方法自定义表单字段，该方法通过元数据扩展 Zod 类型，以增强编辑器界面功能。
 
-This allows you to define custom inputs or hide fields.
+这使您能够定义自定义输入或者隐藏字段。
 
-#### Usage
+#### 用法
 
 ```ts [content.config.ts]
 mainScreen: z.string().editor({ input: 'media' })
 ```
 
-#### Options
+#### 选项
 
 ##### `input: 'media' | 'icon'`
 
-You can set the editor input type. Currently both icon and media are available since there are handled in Studio editor.
+您可以设置编辑器输入类型。目前支持 icon 和 media，因为它们已在 Studio 编辑器中被处理。
 
 ##### `hidden: Boolean`
 
-This option can be set to avoid the display of a field in the Studio editor.
+此选项可用于避免字段在 Studio 编辑器中显示。
 
 ::prose-tip
-Studio inputs are fully extensible. We can create as many input as we want based on our users needs.
+Studio 输入完全可扩展。我们可以根据用户需求创建任意数量的输入控件。
 ::

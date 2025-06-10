@@ -1,10 +1,7 @@
 ---
 seo:
-  title: The git-based CMS for Nuxt projects.
-  description: Nuxt Content is a module for Nuxt that provides a simple way to
-    manage content for your application. It allows developers to write their
-    content in Markdown, YAML, or JSON files and then query and display it in
-    their application.
+  title: 基于 Git 的 Nuxt 项目内容管理系统。
+  description: Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式来管理应用内容。它允许开发者以 Markdown、YAML 或 JSON 文件格式编写内容，然后在应用中查询并展示这些内容。
 ---
 
 ::u-page-hero
@@ -19,15 +16,15 @@ seo:
   :::
 
 #title{unwrap="p"}
-The git-based CMS for :br Nuxt projects.
+基于 Git 的 :br Nuxt 项目内容管理系统。
 
 #description
-Nuxt Content is a module for Nuxt that provides a simple way to manage content for your application. It allows developers to write their content in Markdown, YAML, CSV or JSON files and then query and display it in their application.
+Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您的应用内容。它允许开发者以 Markdown、YAML、CSV 或 JSON 文件格式编写内容，然后在应用中查询并展示它们。
 
 #links{unwrap="p"}
   :::u-button
   ---
-  label: Get Started
+  label: 开始使用
   size: xl
   to: /docs/getting-started/installation
   trailingIcon: i-lucide-arrow-right
@@ -37,7 +34,7 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   :::u-button
   ---
   color: neutral
-  label: Open Visual Editor
+  label: 打开可视化编辑器
   size: xl
   target: _blank
   to: https://nuxt.studio
@@ -53,10 +50,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-files
   ---
   #title{unwrap="p"}
-  File-based CMS
+  基于文件的 CMS
   
   #description{unwrap="p"}
-  Write your content in Markdown, YAML, CSV or JSON and query it in your components.
+  以 Markdown、YAML、CSV 或 JSON 格式编写内容，并在组件中查询。
   :::
 
   :::u-page-feature
@@ -64,10 +61,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-filter
   ---
   #title{unwrap="p"}
-  Query Builder
+  查询构建器
   
   #description{unwrap="p"}
-  Query your content with a MongoDB-like API to fetch the right data at the right time.
+  使用类 MongoDB 的 API 查询内容，按需获取正确的数据。
   :::
 
   :::u-page-feature
@@ -75,10 +72,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-database
   ---
   #title{unwrap="p"}
-  SQLite powered
+  SQLite 驱动
   
   #description{unwrap="p"}
-  Add custom fields to your content, making it suitable for various types of projects.
+  向内容中添加自定义字段，适用于各种类型的项目。
   :::
 
   :::u-page-feature
@@ -86,10 +83,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-simple-icons-markdown
   ---
   #title{unwrap="p"}
-  Markdown with Vue
+  Markdown 与 Vue
   
   #description{unwrap="p"}
-  Use Vue components in Markdown files, with props, slots and nested components.
+  在 Markdown 文件中使用 Vue 组件，支持 props、插槽和嵌套组件。
   :::
 
   :::u-page-feature
@@ -97,10 +94,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-list-minus
   ---
   #title{unwrap="p"}
-  Code highlighting
+  代码高亮
   
   #description{unwrap="p"}
-  Display beautiful code blocks on your website with the Shiki integration supporting VS Code themes.
+  结合 Shiki 集成支持 VS Code 主题，在网站上显示漂亮的代码块。
   :::
 
   :::u-page-feature
@@ -108,10 +105,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-mouse-pointer-click
   ---
   #title{unwrap="p"}
-  Visual Editor
+  可视化编辑器
   
   #description{unwrap="p"}
-  Let your team edit your Nuxt Content project with Nuxt Studio, our visual editor.
+  通过我们的可视化编辑器 Nuxt Studio，让团队成员轻松编辑 Nuxt Content 项目。
   :::
 
   :::u-page-feature
@@ -119,10 +116,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-panel-left
   ---
   #title{unwrap="p"}
-  Navigation Generation
+  导航生成
   
   #description{unwrap="p"}
-  Generate a structured object from your content files and display a navigation menu in minutes.
+  从内容文件生成结构化对象，几分钟内展示导航菜单。
   :::
 
   :::u-page-feature
@@ -130,10 +127,10 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-heading-1
   ---
   #title{unwrap="p"}
-  Prose Components
+  文章组件
   
   #description{unwrap="p"}
-  Customize HTML typography tags with Vue components to give your content a consistent style.
+  使用 Vue 组件自定义 HTML 排版标签，让内容风格统一。
   :::
 
   :::u-page-feature
@@ -141,19 +138,19 @@ Nuxt Content is a module for Nuxt that provides a simple way to manage content f
   icon: i-lucide-globe
   ---
   #title{unwrap="p"}
-  Deploy everywhere
+  部署无处不在
   
   #description{unwrap="p"}
-  Nuxt Content works on all hosting providers, static, server, serverless & edge.
+  Nuxt Content 兼容所有托管服务，支持静态、服务端、无服务器和边缘部署。
   :::
 ::
 
 ::u-page-section
 #title
-Everything you need for content management
+内容管理所需的一切
 
 #description
-Combine file-based simplicity with Vue component power. Build content-rich websites, from documentation pages to complex applications.
+结合基于文件的简单性与 Vue 组件的强大功能。构建内容丰富的网站，从文档页到复杂应用。
 
   :::div{.hidden.sm:block}
     ::::u-color-mode-image
@@ -172,24 +169,24 @@ reverse: true
 orientation: horizontal
 ---
   :::code-group
-    ::::preview-card{.!h-[458px] icon="i-lucide-eye" label="Preview"}
+    ::::preview-card{.!h-[458px] icon="i-lucide-eye" label="预览"}
       :::::example-landing-hero
       ---
       class: "!h-[458px]"
       image: /mountains/everest.jpg
       ---
       #title
-      The Everest.
+      珠穆朗玛峰。
       
       #description
-      The Everest is the highest mountain in the world, standing at 8,848 meters above sea level.
+      珠穆朗玛峰是世界上海拔最高的山峰，海拔8848米。
       :::::
     ::::
   
   ```mdc [content/index.md]
   ---
-  title: The Mountains Website
-  description: A website about the most iconic mountains in the world.
+  title: 山峰网站
+  description: 一个关于世界最具标志性山峰的网站。
   ---
   
   ::landing-hero
@@ -197,10 +194,10 @@ orientation: horizontal
   image: /mountains/everest.png
   ---
   #title
-  The Everest.
+  珠穆朗玛峰。
   
   #description
-  The Everest is the highest mountain in the world, standing at 8,848 meters above sea level.
+  珠穆朗玛峰是世界上海拔最高的山峰，海拔8848米。
   ::
   ```
   
@@ -226,10 +223,10 @@ orientation: horizontal
   :::
 
 #title
-Markdown meets [Vue]{.text-(--ui-primary)} components
+Markdown 遇见 [Vue]{.text-(--ui-primary)} 组件
 
 #description
-We created the MDC syntax to let you use Vue components with props and slots inside your Markdown files.
+我们创造了 MDC 语法，让你可以在 Markdown 文件中使用带有 props 和插槽的 Vue 组件。
 
 #features
   :::u-page-feature
@@ -237,7 +234,7 @@ We created the MDC syntax to let you use Vue components with props and slots ins
   icon: i-lucide-list
   ---
   #title{unwrap="p"}
-  Specify props with frontmatter syntax
+  用 frontmatter 语法指定 props
   :::
 
   :::u-page-feature
@@ -245,7 +242,7 @@ We created the MDC syntax to let you use Vue components with props and slots ins
   icon: i-lucide-hash
   ---
   #title{unwrap="p"}
-  Use components slots with `#`
+  使用 `#` 来定义组件插槽
   :::
 
   :::u-page-feature
@@ -253,14 +250,14 @@ We created the MDC syntax to let you use Vue components with props and slots ins
   icon: i-lucide-code-xml
   ---
   #title{unwrap="p"}
-  Add any other html attributes
+  添加任意其他 HTML 属性
   :::
 
 #links
   :::u-button
   ---
   color: neutral
-  label: Learn more about MDC
+  label: 了解更多关于 MDC
   to: /docs/files/markdown#mdc-syntax
   trailingIcon: i-lucide-arrow-right
   variant: subtle
@@ -282,7 +279,7 @@ orientation: horizontal
   
   <template>
     <div>
-      <h1>Blog</h1>
+      <h1>博客</h1>
       <ul>
         <li v-for="post in posts" :key="post.id">
           <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
@@ -300,7 +297,7 @@ orientation: horizontal
       blog: defineCollection({
         source: 'blog/*.md',
         type: 'page',
-        // Define custom schema for docs collection
+        // 为文档集定义自定义 schema
         schema: z.object({
           tags: z.array(z.string()),
           image: z.string(),
@@ -313,10 +310,10 @@ orientation: horizontal
   :::
 
 #title
-Query with [Type-Safety]{.text-(--ui-secondary)}
+[类型安全]{.text-(--ui-secondary)} 查询
 
 #description
-Define your content structure with collections and query them with schema validation and full type-safety.
+使用集合定义内容结构，并通过 schema 验证实现完全的类型安全查询。
 
 #features
   :::u-page-feature
@@ -324,7 +321,7 @@ Define your content structure with collections and query them with schema valida
   icon: i-lucide-layout-grid
   ---
   #title{unwrap="p"}
-  Create collections for similar content files
+  为相似内容文件创建集合
   :::
 
   :::u-page-feature
@@ -332,7 +329,7 @@ Define your content structure with collections and query them with schema valida
   icon: i-lucide-circle-check
   ---
   #title{unwrap="p"}
-  Define schema for the collection frontmatter
+  为集合 frontmatter 定义 schema
   :::
 
   :::u-page-feature
@@ -340,14 +337,14 @@ Define your content structure with collections and query them with schema valida
   icon: i-lucide-text-cursor
   ---
   #title{unwrap="p"}
-  Get auto-completion in your Vue files
+  在 Vue 文件中获得自动补全
   :::
 
 #links
   :::u-button
   ---
   color: neutral
-  label: Learn more about content collections
+  label: 了解更多关于内容集合
   to: /docs/collections/define
   trailingIcon: i-lucide-arrow-right
   variant: subtle
@@ -365,10 +362,10 @@ orientation: horizontal
  
 
 #title{unwrap="p"}
-Let [anyone edit]{.text-(--ui-primary)} your website
+让[任何人编辑]{.text-(--ui-primary)} 您的网站
 
 #description
-Edit your Nuxt Content website with **Studio**, our CMS platform with Notion-like Markdown editor and generated forms for `YAML` and `JSON` files. Live preview and online collaboration included.
+通过 **Studio** 编辑您的 Nuxt Content 网站——我们的 CMS 平台，提供类似 Notion 的 Markdown 编辑器和为 `YAML` 与 `JSON` 文件生成的表单。支持实时预览和在线协作。
 
 #features
   :::u-page-feature
@@ -376,7 +373,7 @@ Edit your Nuxt Content website with **Studio**, our CMS platform with Notion-lik
   icon: i-lucide-mouse-pointer-click
   ---
   #title{unwrap="p"}
-  Visual editor with drag and drop for Markdown
+  拖拽式 Markdown 可视化编辑器
   :::
 
   :::u-page-feature
@@ -384,7 +381,7 @@ Edit your Nuxt Content website with **Studio**, our CMS platform with Notion-lik
   icon: i-lucide-file-text
   ---
   #title{unwrap="p"}
-  Form generation for YML and JSON files
+  为 YML 和 JSON 文件生成表单
   :::
 
   :::u-page-feature
@@ -392,14 +389,14 @@ Edit your Nuxt Content website with **Studio**, our CMS platform with Notion-lik
   icon: i-simple-icons-google
   ---
   #title{unwrap="p"}
-  Invite editors to login with Google and publish changes
+  邀请编辑者通过 Google 登录并发布更改
   :::
 
 #links
   :::u-button
   ---
   color: neutral
-  label: Discover Studio
+  label: 探索 Studio
   to: /studio
   trailingIcon: i-lucide-arrow-right
   ---
@@ -418,12 +415,12 @@ Edit your Nuxt Content website with **Studio**, our CMS platform with Notion-lik
   :::
 
 #title
-Add a git-based CMS to your Nuxt project.
+为您的 Nuxt 项目添加基于 git 的 CMS。
 
 #links
   :::u-button
   ---
-  label: Start reading docs
+  label: 开始阅读文档
   to: /docs/getting-started/installation
   trailingIcon: i-lucide-arrow-right
   ---
@@ -432,7 +429,7 @@ Add a git-based CMS to your Nuxt project.
   :::u-button
   ---
   color: neutral
-  label: Open Studio
+  label: 打开 Studio
   target: _blank
   to: https://nuxt.studio
   variant: outline

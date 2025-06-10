@@ -1,84 +1,84 @@
 ---
-name: Visual front-matter edition
-title: Visual Front-matter Edition
-description: Your page metadata is now editable through a visual interface instead of YAML.
-date: 2024-10-17T00:00:00.000Z
-image:
-  src: /blog/frontmatters.png
-authors:
-  - name: Baptiste Leproux
-    avatar:
-      src: https://avatars.githubusercontent.com/u/7290030?v=4
-    to: https://x.com/_larbish
-category: studio
+name: 可视化 Front-matter 编辑  
+title: 可视化 Front-matter 编辑  
+description: 现在可以通过可视化界面编辑页面元数据，而不必使用 YAML。  
+date: 2024-10-17T00:00:00.000Z  
+image:  
+  src: /blog/frontmatters.png  
+authors:  
+  - name: Baptiste Leproux  
+    avatar:  
+      src: https://avatars.githubusercontent.com/u/7290030?v=4  
+    to: https://x.com/_larbish  
+category: studio  
 ---
 
-::warning
-This article was published before the merge of the [Content](https://github.com/nuxt/content) and [Studio](https://github.com/nuxtlabs/studio-module) modules on January 6, 2025. As a result, it may contain some inconsistencies. The Studio module is now deprecated and available as an opt-in feature of the Content module. Learn how to enable it in [this guide](/docs/getting-started).
+::warning  
+本文发布于 2025 年 1 月 6 日 [Content](https://github.com/nuxt/content) 和 [Studio](https://github.com/nuxtlabs/studio-module) 模块合并之前。因此，本文可能存在一些不一致之处。Studio 模块现已弃用，作为 Content 模块的可选功能提供。请参阅[这份指南](/docs/getting-started)了解如何启用。  
 ::
 
-## Visual Front-Matter editing
+## 可视化 Front-Matter 编辑
 
-You can now edit your markdown front-matter without writing in the `YAML` syntax. Instead, Nuxt Studio automatically generates a user-friendly form that simplifies metadata editing.
+现在您无需编写 `YAML` 语法即可编辑 markdown front-matter。Nuxt Studio 会自动生成用户友好的表单，简化元数据编辑。
 
 :video{autoplay controls loop poster="https://res.cloudinary.com/nuxt/video/upload/v1729157955/frontmatterform2_rmh58v.jpg" src="https://res.cloudinary.com/nuxt/video/upload/v1729157955/frontmatterform2_rmh58v.mp4"}
 
-## What is the front-matter?
+## 什么是 Front-matter？
 
-Front-matter is a convention used in Markdown-based CMSs to provide metadata for pages, such as descriptions, titles, and more. In [Nuxt Content](/docs/files/markdown#front-matter), the front-matter uses the YAML syntax.
+Front-matter 是基于 Markdown 的 CMS 中用于为页面提供元数据（如描述、标题等）的约定。在 [Nuxt Content](/docs/files/markdown#front-matter) 中，front-matter 使用的是 YAML 语法。
 
-::callout{icon="i-ph-info" to="/docs/files/markdown#front-matter"}
-For more detailed information about front-matter syntax, visit the Nuxt Content documentation.
+::callout{icon="i-ph-info" to="/docs/files/markdown#front-matter"}  
+关于 front-matter 语法的详细信息，请参阅 Nuxt Content 文档。  
 ::
 
-## The last piece of our non-technical editor
+## 我们非技术编辑器的最后一环
 
-Nuxt Studio has been designed with non-technical users in mind, mainly since our editor has been released. Our goal is to make markdown and content edition accessible to everyone.
+Nuxt Studio 从发布编辑器起就以非技术用户为设计核心。我们的目标是让每个人都能轻松编辑 markdown 和内容。
 
-The automatic form generation for front-matter is the next logical step. By moving away from the complexities of YAML syntax, we’re simplifying the process for non-developers, offering dynamic input options like image pickers, date pickers, boolean toggles and more. This enhancement brings us to a fully visual, user-friendly content management experience.
+自动生成 front-matter 表单是下一步的合理进展。通过摆脱 YAML 语法的复杂性，简化了非开发者的编辑流程，提供动态输入选项，如图片选择器、日期选择器、布尔切换等。此增强使我们实现了完全可视化且用户友好的内容管理体验。
 
-## Expanding to all YAML and JSON files
+## 扩展至所有 YAML 和 JSON 文件
 
-Soon, the form generation feature will extend to all `YAML` and `JSON` files you edit within Nuxt Studio, making it easier than ever to work with structured data.
+不久之后，表单生成功能将扩展至您在 Nuxt Studio 中编辑的所有 `YAML` 和 `JSON` 文件，让结构化数据的操作更为轻松便捷。
 
-## Looking ahead to Nuxt Content v3
+## 展望 Nuxt Content v3
 
-::callout{icon="i-ph-lightbulb"}
-This section is just a teaser of [Nuxt Content v3](https://github.com/nuxt/content/tree/v3). We will publish a more detailed blog post soon.
+::callout{icon="i-ph-lightbulb"}  
+本节内容仅为 [Nuxt Content v3](https://github.com/nuxt/content/tree/v3) 的预告，我们将很快发布更详尽的博文。  
 ::
 
-We're actively working on the next major update of Nuxt Content which will bring significant performance improvements and new features to further enhance your content management experience.
+我们正积极开发下一重大版本 Nuxt Content，这将带来显著的性能提升和新功能，进一步提升内容管理体验。
 
-### Improved Performance
+### 性能优化
 
-A key challenge with Nuxt Content v2 was the large bundle size required to store all content files. It was an issue when deploying to edge platforms like [NuxtHub](https://hub.nuxt.com/).
+Nuxt Content v2 的一大挑战是需要较大的包体积来存储所有内容文件，这在向边缘平台（如 [NuxtHub](https://hub.nuxt.com/)）部署时造成了问题。
 
-To address this, Nuxt Content v3 moves away from the file based storing in production and leverage SQL database system. This switch is transparent to users. We're providing a zero config support for development mode, static generation, server rendering and edge deployments with NuxtHub.
+为解决此问题，Nuxt Content v3 在生产环境中不再使用基于文件的存储方式，而是采用 SQL 数据库系统。此变更对用户透明。我们为开发模式、静态生成、服务器渲染及通过 NuxtHub 的边缘部署提供零配置支持。
 
-### Introducing Collections
+### 引入 Collections（集合）
 
-Collections are groups of related content items within your Nuxt Content project. They help organize and manage large datasets more efficiently.
+Collections 是 Nuxt Content 项目中相关内容项的分组，帮助更高效地组织和管理大型数据集。
 
-#### Define collections
+#### 定义 Collections
 
-You'll be able to define collections in the `content.config.ts` file which is used by Nuxt Content to configure database structures, utility types, and methods for finding, parsing, and querying content.
+您可以在 `content.config.ts` 文件中定义 collections，Nuxt Content 将用它配置数据库结构、类型工具及用于查找、解析和查询内容的方法。
 
-#### Collections schema
+#### Collections 方案（Schema）
 
-Schemas enforce consistency within collections and improve TypeScript typings for better integration with Nuxt Content utilities.
+方案可确保 collections 内部的一致性，并改善 TypeScript 类型定义，增强与 Nuxt Content 工具的集成。
 
 ```ts [content.config.ts]
 import { defineCollection, z } from '@nuxt/content'
 
-// Export collections
+// 导出 collections
 export const collections = {
-  // Define collection using `defineCollection` utility
+  // 使用 `defineCollection` 工具定义 collection
   posts: defineCollection({
-    // Specify the type of content in this collection
+    // 指定该 collection 中内容的类型
     type: 'page',
-    // Load every file matching this pattern
+    // 加载匹配此模式的所有文件
     source: 'blog/**/*.md',
-    // Define custom schema for this collection
+    // 为该 collection 定义自定义 schema
     schema: z.object({
       date: z.date(),
       image: z.object({
@@ -94,20 +94,20 @@ export const collections = {
 }
 ```
 
-### Built with Nuxt Studio in mind
+### 针对 Nuxt Studio 精心打造
 
-Nuxt Studio was originally developed alongside Nuxt Content v2, but with v3, we're building the module with Nuxt Studio experience in mind. Our goal is to create the best CMS platform for content editing, while still offering the best developers experience.
+Nuxt Studio 最初与 Nuxt Content v2 同步开发，但在 v3 中，我们以 Nuxt Studio 体验为目标重构模块。我们的宗旨是打造最佳内容编辑 CMS 平台，同时提供极佳的开发者体验。
 
-For example, collection schemas will help us further enhance form generation in Studio. Among other things, you'll be able to set the editor type for a field directly in your schema.
+例如，collection schema 将助力我们进一步增强 Studio 中的表单生成。您甚至可以直接在 schema 中设置字段的编辑器类型。
 
 ```ts [content.config.ts]
 image: z.object({
-    src: z.string().editor({ type: 'media' })
+    src: z.string().editor({ type: 'media' }),
     alt: z.string()
 }),
 icon: z.string().editor({ type: 'icon' })
 ```
 
-::callout{icon="i-ph-lightbulb" to="https://github.com/nuxt/content/tree/main"}
-Nuxt Content v3 has been officially released. Don't hesitate to try it out and give us feedback.
+::callout{icon="i-ph-lightbulb" to="https://github.com/nuxt/content/tree/main"}  
+Nuxt Content v3 已正式发布。欢迎尝试并向我们反馈意见。  
 ::

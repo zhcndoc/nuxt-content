@@ -1,13 +1,12 @@
 ---
 slug: portfolio
 subtitle: ""
-title: Portfolio
+title: 作品集
 baseDir: .
 branch: main
 category: minimal
 demo: https://portfolio-template.nuxt.dev/
-description: A sleek, modern portfolio template to showcase your work, skills,
-  blog posts, speaking engagements, and provide contact information.
+description: 一个时尚现代的作品集模板，用于展示你的作品、技能、博客文章、演讲活动，并提供联系信息。
 licenseType: nuxt-ui-pro
 mainScreen: /templates/portfolio.jpg
 name: portfolio
@@ -20,31 +19,31 @@ draft: false
 ::
 
 ::template-core
-[Nuxt UI Pro](https://ui.nuxt.com/pro) is a collection of premium components, an extension of [Nuxt UI](https://ui.nuxt.com), designed to facilitate the creation of appealing and responsive Nuxt applications in a matter of minutes.
+[Nuxt UI Pro](https://ui.nuxt.com/pro) 是一套高级组件集合，是 [Nuxt UI](https://ui.nuxt.com) 的扩展，旨在帮助你在几分钟内创建吸引人且响应式的 Nuxt 应用程序。
 
-The Nuxt UI team is dedicated to deliver the best integration and customization experience, while the Studio team is providing full compatibility with Nuxt Studio.
+Nuxt UI 团队致力于提供最佳的集成和定制体验，而 Studio 团队则提供与 Nuxt Studio 的完全兼容性。
 
-- **Fully customizable**: change the style of any component from your App Config or customize them specifically through the ui prop.
-- **Write Markdown with ease**: Nuxt UI Pro overrides Nuxt Content prose components to make them awesome but also adds new ones like Callout, CodeGroup, Field, etc.
-- **Beautiful Typography styles**: Tailwind CSS typography plugin is pre-configured and styled to match Nuxt UI components and colors.
-- **Full-Text Search out of the box**: Nuxt UI Pro ships with a ready to use command palette component. No need to setup Algolia DocSearch anymore.
-- **Slots for everything**: Each component leverages the power of Vue's slots to give you the flexibility to build anything.
-- **Responsive by design**: Nuxt UI Pro components aims to structure your content, they are responsive by design and will adapt to any screen size.
+- **完全可定制**：可以通过你的应用配置更改任何组件的样式，或通过 ui 属性专门定制它们。
+- **轻松编写 Markdown**：Nuxt UI Pro 覆盖了 Nuxt Content 的 prose 组件，使其更加出色，还新增了 Callout、CodeGroup、Field 等组件。
+- **优美的排版样式**：预配置了 Tailwind CSS 排版插件，并根据 Nuxt UI 组件和颜色进行了样式调整。
+- **开箱即用的全文搜索**：Nuxt UI Pro 配备了即用的命令面板组件，无需再配置 Algolia DocSearch。
+- **组件支持插槽**：每个组件都利用了 Vue 插槽的强大功能，给予你构建任何内容的灵活性。
+- **响应式设计**：Nuxt UI Pro 组件旨在结构化你的内容，默认响应式，能适配任何屏幕尺寸。
 
 #right
   :::template-features
   ---
   features:
     - label: Nuxt 3
-      content: Powered by Nuxt 3 for optimal performances and SEO.
+      content: 由 Nuxt 3 驱动，提供最佳性能和 SEO。
     - label: Markdown
-      content: Write your pages with MDC thanks to Nuxt Content.
+      content: 借助 Nuxt Content 使用 MDC 编写页面。
     - label: Nuxt UI
-      content: Offers a very large set of full customizable components.
+      content: 提供大量完全可定制的组件。
     - label: TypeScript
-      content: A fully typed development experience.
+      content: 完全类型化的开发体验。
     - label: Nuxt Studio
-      content: Supported by Nuxt Studio for fast updates and previews.
+      content: 由 Nuxt Studio 支持，快速更新和预览。
   ---
   :::
 ::

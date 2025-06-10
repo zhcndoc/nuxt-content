@@ -1,12 +1,12 @@
 ---
 slug: content-wind
-subtitle: A minimal portfolio template
+subtitle: 一个极简的作品集模板
 title: Content Wind
 baseDir: .
 branch: main
 category: blog
 demo: https://content-wind.nuxt.space
-description: A lightweight Nuxt theme to build your portfolio in minutes.
+description: 一个轻量级的 Nuxt 主题，帮助你在几分钟内搭建作品集。
 licenseType: free
 mainScreen: /templates/content-wind-main.webp
 name: content-wind
@@ -17,36 +17,32 @@ draft: true
 ---
 
 ::template-core
-A lightweight Nuxt theme to build a Markdown driven website, based on Nuxt Content, TailwindCSS and Iconify
+一个轻量级的 Nuxt 主题，用于构建基于 Nuxt Content、TailwindCSS 和 Iconify 的 Markdown 驱动网站
 
-- Use layouts in Markdown pages
-- Enjoy meta tag generation
-- Configurable prose components
-- Generated navigation from pages
-- Switch between light & dark mode
-- Access 100,000 icons from 100+ icon sets
-- Highlight code blocks with Shiki
+- 在 Markdown 页面中使用布局
+- 支持元标签自动生成
+- 可配置的排版组件
+- 从页面生成导航
+- 支持明暗模式切换
+- 访问来自 100+ 图标集的 100,000 个图标
+- 使用 Shiki 高亮代码块
 
 #right
   :::template-features
   ---
   features:
-    - label: Nuxt Architecture
-      content: Harness the full power of Nuxt 3 and its modules ecosystem.
-    - label: Nuxt Studio ready
-      content: Edit your theme content and appearance with live-preview within Nuxt
-        Studio.
-    - label: Vue Components
-      content: Insert built-in components (or your own) inside your content.
-    - label: Write Markdown
-      content: Enjoy the ease and simplicity of Markdown and discover MDC syntax.
-    - label: Deploy anywhere
-      content: In one click from Studio or with zero config on Vercel or Netlify.
-        Choose between static generation, on-demand rendering (Node) or edge-side
-        rendering on CloudFlare workers.
-    - label: Extensible
-      content: Customize the whole design, or add components using slots - you can
-        make Content-Wind your own.
+    - label: Nuxt 架构
+      content: 充分利用 Nuxt 3 及其模块生态系统的强大功能。
+    - label: Nuxt Studio 兼容
+      content: 在 Nuxt Studio 中实时预览并编辑主题内容与外观。
+    - label: Vue 组件
+      content: 在内容中插入内置组件（或你自己的组件）。
+    - label: 编写 Markdown
+      content: 享受 Markdown 的简洁易用，并探索 MDC 语法。
+    - label: 可部署在任意平台
+      content: 通过 Studio 一键部署，或零配置部署到 Vercel 或 Netlify。支持静态生成、按需渲染（Node）或基于 CloudFlare Workers 的边缘渲染。
+    - label: 可扩展
+      content: 自定义整体设计，或通过插槽添加组件 —— 你可以让 Content-Wind 独一无二。
   ---
   :::
 ::
