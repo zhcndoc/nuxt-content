@@ -1,0 +1,1 @@
+import{r as a}from"./DZqCAQgX.js";import{j as r,c as s,e as o,n as p}from"./DS0siHVJ.js";import"./BcoM21Dg.js";const l={__name:"ExampleAlert",props:{type:{type:String,default:()=>""}},setup(e){return(t,n)=>(o(),s("div",{class:p(["alert",[e.type]])},[a(t.$slots,"default",{mdcUnwrap:"p"},void 0,!0)],2))}},_=r(l,[["__scopeId","data-v-a3405150"]]);export{_ as default};

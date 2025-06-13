@@ -1,0 +1,2 @@
+import{d as t,h as o,q as s,c as e}from"../../nitro/nitro.mjs";import"node:buffer";import"node:process";import"node:timers";import"node:events";import"node:async_hooks";import"node:path";const r=t((async t=>{if(o(t,{origin:["https://nuxt.studio","https://dev.nuxt.studio"],preflight:{statusCode:204},methods:"*"}))return;const r=await s(t,"templates").all();if(!r)throw e({statusCode:404,statusMessage:"Templates not found"});return r}));export{r as default};
+//# sourceMappingURL=templates.json.get.mjs.map

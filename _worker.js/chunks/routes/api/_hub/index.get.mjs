@@ -1,0 +1,2 @@
+import{e as o,r as t,C as e}from"../../../nitro/nitro.mjs";import{r}from"../../../_/auth.mjs";import"node:buffer";import"node:process";import"node:timers";import"node:events";import"node:async_hooks";import"node:path";const s=o((async o=>{await r(o),t("cache");const s=await e("cache").getKeys(),n={};for(const o of s){if(!o.includes(":"))continue;const[t]=o.split(":");n[t]=(n[t]||0)+1}return n}));export{s as default};
+//# sourceMappingURL=index.get.mjs.map

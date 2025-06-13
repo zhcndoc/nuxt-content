@@ -1,0 +1,2 @@
+import{_ as o,v as e}from"./server.mjs";import{bq as t}from"../nitro/nitro.mjs";import"../_/performance.mjs";import"node:buffer";import"node:process";import"node:timers";import"node:events";import"node:async_hooks";import"node:path";const s={};const r=s.setup;s.setup=(o,t)=>{const s=e.useSSRContext();return(s.modules||(s.modules=new Set)).add("layouts/default.vue"),r?r(o,t):void 0};const n=o(s,[["ssrRender",function(o,e,s,r){t(o.$slots,"default",{},null,e,s)}]]);export{n as default};
+//# sourceMappingURL=default-BYUshl6i.mjs.map

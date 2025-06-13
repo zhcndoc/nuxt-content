@@ -1,0 +1,7420 @@
+# Nuxt Content v3
+
+欢迎使用 Nuxt Content v3，这是一次重大升级，为您的 Nuxt 项目带来更高性能和创新功能。我们基于 Git 的 CMS 的最新版本针对现代应用开发进行了优化。
+
+## 新功能
+
+### 内容集合
+
+集合用于组织项目中的相关项，帮助您更高效地管理大型数据集。主要优势包括：
+
+- **结构化数据**：在 [`content.config.ts`](https://nuxt-content.zhcndoc.com/docs/collections/define#defining-collections) 中配置数据库架构并定义集合
+- **类型安全查询**：所有工具均支持 TypeScript 直接集成
+- **自动验证**：确保 Frontmatter 字段和数据文件（json、yml 等）的一致性
+- **高级查询构建器**：轻松过滤、排序和分页集合数据
+- **Studio 集成**：通过 [Studio](https://nuxt-content.zhcndoc.com/studio) 实现更好的表单生成和优化的编辑体验
+
+了解更多关于[内容集合](https://nuxt-content.zhcndoc.com/docs/collections/define)的信息。
+
+### 性能提升
+
+v2 中的一个主要挑战是用于存储文件的大体积包，特别影响无服务器部署。
+
+v3 通过在生产环境中切换到基于 SQL 的存储解决了这一问题。此转换无需任何配置，支持开发模式、静态生成、服务器托管、无服务器和边缘部署。
+
+::prose-note
+新的数据库系统改进了数据文件的存储和结构方式，确保更佳的性能和可扩展性。此更新全部在后台完成，不影响您在 Content 中使用的文件类型（`yml`、`json` 和 `markdown`）。
+::
+
+优势包括：
+
+- **优化的查询**：SQL 存储实现超高速数据检索
+- **通用兼容性**：我们的基于适配器的系统可整合 SQL 数据库，支持所有部署模式（[服务器](https://nuxt-content.zhcndoc.com/docs/deploy/server)、[无服务器](https://nuxt-content.zhcndoc.com/docs/deploy/serverless) 和 [静态](https://nuxt-content.zhcndoc.com/docs/deploy/static)）。我们欢迎社区贡献更多适配器。
+
+### TypeScript 集成
+
+新的集合系统为您的所有数据自动生成 TypeScript 类型。所有工具和 API 都基于您的集合定义强类型，确保开发过程中的类型安全。
+
+### Nuxt Studio 集成 :badge[即将推出]{color="neutral"}
+
+[Nuxt Studio](https://nuxt-content.zhcndoc.com/docs/studio/setup) 与 v3 设计上完美互补。[studio 模块](https://github.com/nuxtlabs/studio-module){rel="nofollow"}现已直接集成到 Nuxt Content 中，打造理想环境，开发者专注编码，团队成员则通过直观界面管理内容。
+
+---
+
+我们很高兴您能探索这些新功能。深入阅读文档，了解如何集成该模块并在您的下一个项目中实践最佳方案。
+
+## Content V2 迁移
+
+了解如何从 Content v2 迁移到 v3，请参见[迁移指南](https://nuxt-content.zhcndoc.com/docs/getting-started/migration)。
+
+
+# 安装
+
+### 安装包
+
+选择你喜欢的包管理器来安装 Nuxt Content v3：
+
+::code-group
+```bash [pnpm]
+pnpm add @nuxt/content
+```
+
+```bash [yarn]
+yarn add @nuxt/content
+```
+
+```bash [npm]
+npm install @nuxt/content
+```
+
+```bash [bun]
+bun add @nuxt/content
+```
+::
+
+### 注册模块
+
+在你的 `nuxt.config.ts` 文件中添加 Nuxt Content 模块：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  modules: ['@nuxt/content']
+})
+```
+
+### 自动安装
+
+使用 `create-nuxt` CLI 创建新 Nuxt 项目时，可以直接从交互式模块选择器中选择 `@nuxt/content`。这将自动为你安装并注册该模块。
+
+::code-group
+```bash [npm]
+npm create nuxt <project-name>
+```
+
+```bash [yarn]
+yarn create nuxt <project-name>
+```
+
+```bash [pnpm]
+pnpm create nuxt <project-name>
+```
+
+```bash [bun]
+bun create nuxt <project-name>
+```
+
+```bash [deno]
+deno -A npm:create-nuxt@latest <project-name>
+```
+::
+
+::note{color="warning"}
+当你在 Node.js 中运行项目时，Nuxt Content 会询问你使用哪个数据库连接器。
+你可以选择安装 `better-sqlite3` 或 `sqlite3` 包。
+
+:br
+
+如果你不想安装任何包，可以使用从 Node.js\@v22.5.0 或更新版本自带的原生 SQLite。
+请查看 [`experimental.nativeSqlite` 配置](https://nuxt-content.zhcndoc.com/docs/getting-started/configuration#experimentalnativesqlite)。
+::
+
+### 创建你的第一个集合
+
+在项目根目录创建一个 `content.config.ts` 文件：
+
+```ts [content.config.ts]
+import { defineContentConfig, defineCollection } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    content: defineCollection({
+      type: 'page',
+      source: '**/*.md'
+    })
+  }
+})
+```
+
+该配置创建了一个默认的 `content` 集合，用于处理项目 `content` 文件夹内的所有 Markdown 文件。你可以根据需要自定义集合配置。
+
+::tip
+`type: page` 表示内容文件和网站页面之间是一对一的关系。
+::
+
+::note{to="https://nuxt-content.zhcndoc.com/docs/collections/define"}
+了解更多，请查看我们的 **集合指南**。
+::
+
+### 创建你的第一个 Markdown 页面
+
+在项目根目录创建 `content/index.md` 文件：
+
+```md [content/index.md]
+# 我的第一个页面
+
+这里是一段内容。
+```
+
+查看更多关于编写 [Markdown 页面](https://nuxt-content.zhcndoc.com/docs/files/markdown) 的信息。
+
+### 显示你的页面
+
+创建 `pages/index.vue` 文件并展示页面内容：
+
+```vue [pages/index.vue]
+<script setup lang="ts">
+const { data: home } = await useAsyncData(() => queryCollection('content').path('/').first())
+
+useSeoMeta({
+  title: home.value?.title,
+  description: home.value?.description
+})
+</script>
+
+<template>
+  <ContentRenderer v-if="home" :value="home" />
+  <div v-else>首页未找到</div>
+</template>
+```
+
+::note{icon="i-lucide-info"}
+如果你在一个新的 Nuxt 项目中安装 Nuxt Content，并且项目中没有 `pages` 目录，你还需要更新 `app.vue` 文件，通过添加 `NuxtPage` 组件来允许渲染页面。（如果你的项目已有页面，则无需此操作。）
+
+```vue [app.vue]
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
+```
+::
+
+::tip{icon="i-lucide-rocket"}
+就是这样！你已经创建了你的第一个 Nuxt Content 页面。
+::
+
+
+# 配置
+
+要配置内容模块并自定义其行为，您可以在 `nuxt.config` 中使用 `content` 属性：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    // 选项
+  }
+})
+```
+
+::note{to="https://github.com/nuxt-modules/mdc#configurations"}
+除了通过 `content.markdown` 配置外，您还可以使用 Markdown 组件 (MDC) 通过 `mdc` 属性自定义 Markdown 元素的渲染。
+::
+
+## `build`
+
+Nuxt Content 会在构建时读取并解析所有可用内容。此选项允许您控制内容解析。
+
+### `markdown`
+
+配置 markdown 解析器。
+
+#### `toc`
+
+::code-group
+```ts [默认]
+toc: {
+  depth: 2,
+  searchDepth: 2
+}
+```
+
+```ts [类型定义]
+type Toc = {
+  depth: number
+  searchDepth: number
+}
+```
+::
+
+控制目录（Table of Contents）的生成行为。
+
+取值：
+
+- `depth`：目录中包含的最大标题深度。
+- `searchDepth`：搜索标题时嵌套标签的最大深度。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      markdown: {
+        toc: {
+          depth: 3, // 包含 h3 标题
+        }
+      }
+    }
+  }
+})
+```
+
+#### `remarkPlugins`
+
+::code-group
+```ts [默认]
+remarkPlugins: {}
+```
+
+```ts [类型定义]
+type RemarkPlugins = Record<string, false | MarkdownPlugin>
+```
+::
+
+使用的 [remark](https://github.com/remarkjs/remark){rel="nofollow"} 插件列表。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      markdown: {
+        // 对象语法可用于覆盖默认选项
+        remarkPlugins: {
+          // 覆盖 remark-emoji 选项
+          'remark-emoji': {
+            options: {
+              emoticon: true
+            }
+          },
+          // 禁用 remark-gfm
+          'remark-gfm': false,
+          // 添加 remark-oembed
+          'remark-oembed': {
+            // 选项
+          }
+        },
+      }
+    }
+  }
+})
+```
+
+#### `rehypePlugins`
+
+::code-group
+```ts [默认]
+rehypePlugins: {}
+```
+
+```ts [类型定义]
+type RehypePlugins = object
+```
+::
+
+使用的 [rehype](https://github.com/remarkjs/remark-rehype){rel="nofollow"} 插件列表。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      markdown: {
+        // 对象语法可用于覆盖默认选项
+        rehypePlugins: {
+          'rehype-figure': {
+
+          }
+        },
+      }
+    }
+  }
+})
+```
+
+#### `highlight`
+
+::code-group
+```ts [默认]
+highlight: false
+```
+
+```ts [类型定义]
+type Highlight = false | object
+```
+::
+
+Nuxt Content 使用 [Shiki](https://github.com/shikijs/shiki){rel="nofollow"} 为 [`ProsePre`](https://nuxt-content.zhcndoc.com/docs/components/prose#prosepre) 和 [`ProseCode`](https://nuxt-content.zhcndoc.com/docs/components/prose#prosecode) 提供语法高亮。
+
+| 选项      | 类型                                          | 说明                                                                                           |
+| ------- | ------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `theme` | `ShikiTheme` 或 `Record<string, ShikiTheme>` | 要使用的[颜色主题](https://github.com/shikijs/shiki/blob/main/docs/themes.md){rel="nofollow"}。       |
+| `langs` | `ShikiLang[]`                               | 可用于高亮的[加载的语言](https://github.com/shikijs/shiki/blob/main/docs/languages.md){rel="nofollow"}。 |
+
+- `highlight.theme`
+
+主题可以是单个字符串，也支持带多个主题的对象。
+
+此选项兼容 [Color Mode 模块](https://color-mode.nuxtjs.org/){rel="nofollow"}。
+
+如果您使用多个主题，建议始终指定 `default` 主题。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          // 所有配色方案中使用的主题
+          theme: 'github-light',
+          // 或者
+          theme: {
+            // 默认主题（同单一字符串）
+            default: 'github-light',
+            // `html.dark` 时使用的主题
+            dark: 'github-dark',
+            // `html.sepia` 时使用的主题
+            sepia: 'monokai'
+          }
+        }
+      }
+    }
+  }
+})
+```
+
+- `highlight.langs`
+
+默认情况下，模块加载了若干语言用于语法高亮：
+
+```ts [默认]
+['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml']
+```
+
+如果您计划使用其他语言的代码示例，需要在该选项中定义该语言。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          langs: [
+            'c',
+            'cpp',
+            'java'
+          ]
+        }
+      }
+    }
+  }
+})
+```
+
+如果您想为不支持的语言添加高亮，可以通过加载该语言的语法文件实现。
+
+```ts [nuxt.config.ts]
+import { readFileSync } from 'node:fs'
+
+export default defineNuxtConfig({
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          langs: [
+            // 更多关于 Shiki 语言请参阅：https://shiki.style/guide/load-lang
+            JSON.parse(
+              readFileSync('./shiki/languages/gdscript.tmLanguage.json', 'utf-8'),
+            ),
+          ]
+        }
+      }
+    }
+  }
+})
+```
+
+更多关于添加语言信息，请参阅 [Shiki 文档](https://github.com/shikijs/shiki/blob/main/docs/languages.md#adding-grammar){rel="nofollow"}。
+
+### `pathMeta`
+
+内容模块使用文件路径生成 slug、默认标题和内容排序，您可以通过 `pathMeta` 选项自定义此行为。
+
+#### `pathMeta.forceLeadingSlash`
+
+如果设置为 `true`，路径将强制添加前置斜杠。默认值为 `true`。
+
+#### `pathMeta.slugifyOptions`
+
+内容模块使用 [slugify](https://github.com/simov/slugify){rel="nofollow"} 生成 slug，您可以通过此选项自定义 slugify 行为。
+
+更多信息请查看 [slugify options](https://github.com/simov/slugify#options){rel="nofollow"}。
+
+### `transformers`
+
+Nuxt Content 为每种内容类型提供特定的转换器，用于解析原始内容并准备查询和渲染。通过此选项，您可以定义自定义转换器以支持新内容类型或增强支持的内容类型功能。
+
+::code-group
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      transformers: [
+        '~/transformers/title-suffix',
+      ],
+    },
+  },
+})
+```
+
+```ts [~/transformers/title-suffix.ts]
+import { defineTransformer } from '@nuxt/content'
+
+export default defineTransformer({
+  name: 'title-suffix',
+  extensions: ['.md'],
+  transform(file) {
+    return {
+      ...file,
+      title: file.title + ' (suffix)',
+    }
+  },
+})
+```
+::
+
+更多关于转换器内容，请参阅 [Transformers](https://nuxt-content.zhcndoc.com/docs/advanced/transformers) 文档。
+
+## `database`
+
+默认情况下，Nuxt Content 使用本地 SQLite 数据库存储和查询内容。如果您想使用其他数据库，或计划部署到 Cloudflare Workers，可修改此选项。
+
+以下是支持的数据库适配器列表：
+
+### `SQLite`
+
+如果想更改默认数据库位置并移动到其他地方，可使用 `sqlite` 适配器。这是 `database` 选项的默认值。根据运行环境，使用不同的 sqlite 适配器（Node：better-sqlite-3，Bun：bun\:sqlite）。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    database: {
+      type: 'sqlite',
+      filename: 'SQLITE_DB_LOCATION'
+    }
+  }
+})
+```
+
+### `D1`
+
+如果计划将应用部署到 Cloudflare Workers，需要使用 `d1` 数据库适配器。在 Cloudflare 控制面板创建 `d1` 绑定，并填写 `bindingName` 字段。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    database: {
+      type: 'd1',
+      bindingName: 'CF_BINDING_NAME'
+    }
+  }
+})
+```
+
+### `Postgres`
+
+如果计划使用 PostgreSQL 数据库部署应用，需要使用 `postgres` 数据库适配器。
+
+首先，确保安装 `pg` 包：
+
+```bash [终端]
+npx npm i pg
+```
+
+然后，在 `nuxt.config.ts` 配置 `postgres` 适配器：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    database: {
+      type: 'postgres',
+      url: process.env.POSTGRES_URL,
+      /* 其他 `pg` 选项 */
+    }
+  }
+})
+```
+
+### `LibSQL`
+
+如果计划使用 LibSQL 数据库部署应用，需要使用 `libsql` 数据库适配器。
+
+首先，确保安装 `@libsql/client` 包：
+
+```bash [终端]
+npx npm i @libsql/client
+```
+
+然后，在 `nuxt.config.ts` 配置 `libsql` 适配器：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    database: {
+      type: 'libsql',
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    }
+  }
+})
+```
+
+::note
+最流行的 LibSQL 托管服务是 [Turso](https://turso.tech/){rel="nofollow"}。
+::
+
+## `renderer`
+
+配置内容渲染器。
+
+### `anchorLinks`
+
+::code-group
+```ts [默认]
+{ h2: true, h3: true, h4: true }
+```
+
+```ts [类型定义]
+type AnchorLinks = boolean | Record<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6', boolean>
+```
+::
+
+控制锚点链接的生成，默认为 `h2`、`h3` 和 `h4` 标题生成锚点链接。
+
+取值：
+
+- `false`：禁用链接生成。
+- `true`：为所有标题启用链接生成。
+
+### `alias`
+
+::code-group
+```ts [默认]
+alias: {}
+```
+
+```ts [类型定义]
+type Alias = Record<string, string>
+```
+::
+
+别名用于替换 markdown 组件，渲染自定义组件替代默认组件。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    renderer: {
+      alias: {
+        p: 'MyCustomParagraph'
+      }
+    }
+  }
+})
+```
+
+## `watch`
+
+```ts [默认]
+watch: {
+  enabled: true,
+  port: 4000,
+  showURL: false
+}
+```
+
+配置开发环境中的内容热重载。
+
+取值：
+
+- `enabled`：启用/禁用热重载。
+- `port`：WebSocket 服务器使用的端口。
+- `showURL`：切换开发服务器启动消息中是否显示 URL。
+
+Nuxt Content 使用 [listhen](https://github.com/unjs/listhen){rel="nofollow"} 提供本地开发服务器。更多信息请查阅 [listhen 文档](https://github.com/unjs/listhen#options){rel="nofollow"}。
+
+::callout
+观察器为开发特性，生产环境不会包含。
+::
+
+::code-group
+```ts [启用]
+export default defineNuxtConfig({
+  content: {
+    watch: {
+      port: 4000,
+      showURL: true
+    }
+  }
+})
+```
+
+```ts [禁用]
+export default defineNuxtConfig({
+  content: {
+    watch: {
+      enabled: false
+    }
+  }
+})
+```
+::
+
+## `preview`
+
+启用 `预览 API`
+
+::prose-note
+启用此项可在 [Nuxt Studio](https://nuxt-content.zhcndoc.com/studio) 上实现实时预览。
+::
+
+取值：
+
+- `dev`：在开发模式启用
+- `api`：激活预览模式并设置链接的 `API`
+
+```ts [启用 Studio]
+preview: {
+  api: 'https://api.nuxt.studio',
+}
+```
+
+## `experimental`
+
+尚未稳定的实验性功能。
+
+### `experimental.nativeSqlite`
+
+从 Node.js v22.5.0 开始，Node.js 原生支持 `node:sqlite` 模块。
+这允许 Nuxt Content 在不依赖外部包的情况下使用 SQLite 作为数据库。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    experimental: { nativeSqlite: true },
+  },
+});
+```
+
+::prose-note
+此功能仅在 Node.js v22.5.0 及以上版本可用。在较旧版本启用此选项不会生效。
+::
+
+
+# 迁移
+
+Nuxt Content v3 已经从头重建，带来了一个具有增强功能的新库。虽然我们设计了与 Content v2 类似的概念和组件，但破坏性变更是不可避免的。
+
+别担心，你不需要修改你的内容文件。我们确保 Content v3 以与 Content v2 相同的方式处理内容。
+
+## 变更
+
+### Vue 工具
+
+- `queryContent()` API 被新的 `queryCollection()` 替代
+
+::prose-tip
+新 API 基于 SQL，内容查询发生在特定的集合中。
+::
+
+- `fetchContentNavigation()` API 被新的 `queryCollectionNavigation()` 替代
+- Surroundings （周边）现在有自己的独立 API：`queryCollectionItemSurroundings()`
+- 放弃了文档驱动模式：`Markdown` 文件将不再自动转换为 Nuxt 页面，你需要自己创建页面，[查看此部分了解如何创建](https://nuxt-content.zhcndoc.com/docs/components/content-renderer#example-usage)。
+- 移除 `useContent()` 组合函数
+- `searchContent()` 被新的 `queryCollectionSearchSections` API 取代
+- 可以方便地使用 `queryCollectionSearchSections` API 实现全文搜索，[查看此部分了解如何使用](https://nuxt-content.zhcndoc.com/docs/advanced/fulltext-search)
+
+### 组件
+
+- 所有内容应使用 `<ContentRenderer>` 组件渲染。`<ContentDoc>`、`<ContentList>`、`<ContentNavigation>` 和 `<ContentQuery>` 组件在 v3 中被移除。
+- `<ContentSlot>` 和 `<MDCSlot>` 组件在 v3 中不再支持。组件可以直接使用 Vue 原生的 `<slot>` 组件。
+
+::prose-note
+`<ContentSlot>` 和 `<MDCSlot>` 最初用于在渲染前操作内容并移除 slot 内容的包裹段落。此取消包裹行为现在通过 `<slot>` 组件上的 `mdc-unwrap` 属性支持。例如：`<slot mdc-unwrap="p" />`
+::
+
+- 放置在 `components/content` 目录下的组件不再自动注册为全局组件。如果你使用[动态渲染](https://vuejs.org/guide/essentials/component-basics.html#dynamic-components){rel="nofollow"}来渲染这些组件（即在 markdown 文件外部渲染），你必须在 Nuxt 应用中手动注册它们。详细操作请查看 [Nuxt - 自定义组件目录](https://nuxt.com/docs/guide/directory-structure/components#custom-directories){rel="nofollow"}文档。
+
+### 类型
+
+- `import type { NavItem } from '@nuxt/content/dist/runtime/types'` 替换为 `import type { ContentNavigationItem } from '@nuxt/content'`
+
+### 通用
+
+- `_dir.yml` 文件重命名为 `.navigation.yml`
+- 模块选项中不再有 source 选项，你需要在 `content.config.ts` 中为你的集合定义[多个源](https://nuxt-content.zhcndoc.com/docs/collections/sources)。
+- 文档中的 `._path` 现在重命名为 `.path`，同样所有带 `_` 前缀的内部字段被移除或重命名。
+- 移除 `useContentHelpers()`
+- 模块默认不忽略点文件，若需忽略可在集合源的 `exclude` 选项中添加 `ignore: ['**/.*']`。
+- 由于 SQL 限制，排序现在使用字母顺序而非数字顺序。更多信息请查看[文件排序](https://nuxt-content.zhcndoc.com/docs/collections/types#ordering-files)部分。
+- 模块选项相较 v2 有所更改，详情请查看[配置页面](https://nuxt-content.zhcndoc.com/docs/getting-started/configuration)。
+
+### Nuxt Studio 集成
+
+- [studio 模块](https://nuxt.studio){rel="nofollow"} 已被弃用，新的通用 `Preview API` 已直接集成到 Nuxt Content 中，可从依赖和 `nuxt.config.ts` 的模块中移除 `@nuxthq/studio` 包。只需在 Nuxt 配置文件中启用预览模式并绑定 Studio API。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio'
+    }
+  },
+})
+```
+
+- 为了让 [app 配置文件](https://nuxt-content.zhcndoc.com/docs/studio/config)能够在 Studio 中保持可更新，只需将 `nuxt.schema.ts` 文件中的辅助函数导入从 `@nuxthq/studio/theme` 更新为 `@nuxt/content/preview`。
+
+## 在 v3 实现文档驱动模式
+
+在 Content v3 中实现文档驱动模式非常简单。你只需在 Nuxt 中创建一个通配页面，并基于路由路径获取内容。
+
+```vue [pages/[...slug\\].vue]
+<script lang="ts" setup>
+const route = useRoute()
+const { data: page } = await useAsyncData(route.path, () => {
+  return queryCollection('content').path(route.path).first()
+})
+</script>
+
+<template>
+  <div>
+    <header><!-- ... --></header>
+
+    <ContentRenderer v-if="page" :value="page" />
+
+    <footer><!-- ... --></footer>
+  </div>
+</template>
+```
+
+## 将 `queryContent` 转换为 `queryCollections`
+
+如上所述，`queryContent` 被基于新的集合的 `queryCollection` 取代。两者主要有两个区别：
+
+1. `queryCollection` 构建的是 SQL 数据库的查询。
+2. `queryCollection` 只在指定的集合内搜索。你需要知道集合的名称（配置中的键名）。
+
+```ts [根据路径查找内容]
+// Content v2
+const v2Query = await queryContent(route.path).findOne()
+// Content v3 - 不要忘记在 `content.config.ts` 中创建 `content` 集合
+const v3Query = await queryCollection('content').path(route.path).first()
+```
+
+```ts [使用自定义过滤器查找内容]
+// Content v2
+const v2Query = await queryContent()
+  .where({ path: /^\/hello\/.*/ })
+  .find()
+// Content v3 - 不要忘记在 `content.config.ts` 中创建 `content` 集合
+const v3Query = await queryCollection('content')
+  .where('path', 'LIKE', '/hello%')
+  .first()
+```
+
+::prose-note{to="https://nuxt-content.zhcndoc.com/docs/collections/define"}
+查看专门关于集合的章节以获取更多信息
+::
+
+## 转换 `queryContent().findSurround()`
+
+Surround 现在有了自己独立的 API。
+
+```ts
+const targetPath = '/docs'
+
+// Content v2
+const v2Surround = await queryContent(targetPath)
+  .only(['title', 'description', 'navigation'])
+  .findSurround(withoutTrailingSlash(route.path))
+
+// Content v3 - 不要忘记在 `content.config.ts` 中创建 `content` 集合
+const v3Surround = await queryCollectionItemSurroundings(
+  'content',
+  targetPath,
+  {
+    fields: ['title', 'description', 'navigation']
+  }
+)
+```
+
+::prose-note
+查看专门章节以获取更多关于 Surround 的信息
+::
+
+## 合并 `ProsePre`、`ProseCode` 和 `ProseCodeInline` 组件
+
+许多 `ProsePre` 组件是 `ProseCode` 组件的轻量包装。我们将这三个组件整合成两个组件。现在 `ProsePre` 与多行代码块没有区别。
+
+1. MDC 现在会将单个反引号 `` ` `` 映射并解析为 `ProseCode`，而非 `ProseCodeInline`。
+2. MDC 现在会将以三个反引号 ` ``` ` 开始的代码块映射并解析为 `ProsePre` 组件。
+
+**建议更改：**
+
+1. 将现有的 `ProseCode` 逻辑迁移到 `ProsePre`
+2. 将你的 `ProseCodeInline` 组件重命名为 `ProseCode`
+
+## `_dir.yml` 文件重命名为 `.navigation.yml`
+
+在 Content v3 中，我们将 `_dir.yml` 重命名为 `.navigation.yml`，该新名称更好地反映了这些文件的作用。 :br
+模块使用这些文件收集目录信息以生成导航。
+
+请注意，为了让模块能访问这些文件，你应该以包含这些文件的方式定义你的集合源，例如使用 `source: '**'` 或 `source: '**/*.{md|yml}'` 会包含这些文件，而 `source: '**/*.md'` 则不会。
+
+## 忽略点文件
+
+默认情况下，Content v3 不忽略点文件。如果你想忽略它们，可以在集合源的 `exclude` 选项中添加 `ignore: ['**/.*']`。
+
+```ts
+defineCollection({
+  source: {
+    include: '**',
+    exclude: ['**/.*']
+  }
+})
+```
+
+注意，上述模式也会从集合中排除 `.navigation.yml` 文件。如果你使用 `.navigation.yml` 并希望保留它们，可以使用 `**/.(!(navigation.yml))` 模式来排除所有点文件但保留 `.navigation.yml`。
+
+```ts
+defineCollection({
+  source: {
+    include: '**',
+    exclude: ['**/.!(navigation.yml)']
+  }
+})
+```
+
+
+# 定义内容集合
+
+Nuxt Content 模块会自动解析位于 Nuxt 应用根目录下 `content/` 文件夹中的所有内容文件。此设置允许你自由地组织文件夹结构，以满足项目需求。
+
+为了更好地组织内容，你可以使用内容集合 (Content Collections)，它们帮助你更有效地分类和管理内容。这些集合在 `content.config.ts` 文件中定义。
+
+::warning
+如果没有 `content.config.ts` 文件，内容文件夹中的所有文件都会被默认解析和导入。但一旦添加了配置文件，只有符合集合中指定路径模式的文件才会被导入。
+::
+
+## 什么是内容集合？
+
+内容集合是 Nuxt Content 项目中组织相关内容的方式。它们提供了一种结构化方法来管理内容，使查询、展示和维护网站数据更加便捷。
+
+关键特性包括：
+
+- **逻辑分组**：将相似内容归为一类，如博客文章、产品页面或文档
+- **共享配置**：对集合内所有条目应用通用设置和验证
+- **优化查询**：高效获取和筛选相关内容项
+- **自动类型推断**：在开发环境中获得类型安全和自动补全
+- **灵活结构**：按内容类型、类别或任何适合你的逻辑分组组织集合
+
+## 定义集合
+
+在项目根目录创建一个 `content.config.ts` 文件。这个特殊文件用于配置你的集合数据库、工具类型和内容处理。
+
+以下是一个基础示例：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      // 加载 `content` 目录下的所有文件
+      source: '**',
+      // 指定此集合内容类型
+      type: 'page'
+    })
+  }
+})
+```
+
+::warning
+目前，一个文档设计为仅归属一个集合。如果同一文件被多个集合引用，实时重新加载功能将无法正常工作。为避免此问题，建议使用 `exclude` 属性，通过合适的正则表达式显式排除文档在其他集合中出现。
+
+该话题仍在此 issue 中讨论中：[nuxt/content#2966](https://github.com/nuxt/content/issues/2966){rel="nofollow"}。
+::
+
+### 集合模式 (Schema)
+
+模式用于强制集合内数据的一致性，并作为 TypeScript 类型的唯一来源。
+
+除内置字段外，你还可以通过为集合添加 `schema` 属性，利用 [`zod`](https://zod.dev){rel="nofollow"} 模式定义自定义模式：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    blog: defineCollection({
+      source: 'blog/*.md',
+      type: 'page',
+      // 为 docs 集合定义自定义模式
+      schema: z.object({
+        tags: z.array(z.string()),
+        image: z.string(),
+        date: z.date()
+      })
+    })
+  }
+})
+```
+
+::note
+`@nuxt/content` 暴露了一个 `z` 对象，包含一组用于常见数据类型的 Zod 模式。完整文档请查看 [Zod 的 README](https://github.com/colinhacks/zod){rel="nofollow"}，了解它的工作原理及可用特性。
+::
+
+::tip
+你可以定义任意数量的集合，以组织不同类型的内容。
+::
+
+## 查询集合
+
+使用 [`queryCollection`](https://nuxt-content.zhcndoc.com/docs/utils/query-collection) 工具从集合中获取一个或所有内容项：
+
+```vue [pages/blog.vue]
+<script setup lang="ts">
+const { data: posts } = await useAsyncData('blog', () => queryCollection('blog').all())
+</script>
+
+<template>
+  <div>
+    <h1>博客</h1>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
+      </li>
+    </ul>
+  </div>
+</template>
+```
+
+::note{to="https://nuxt-content.zhcndoc.com/docs/utils/query-collection"}
+了解更多关于可用查询选项的信息，请查阅我们的 `queryCollections` API 文档。
+::
+
+## defineCollection()
+
+`defineCollection` 函数用于在内容配置中定义一个集合。它的 TypeScript 签名如下：
+
+```ts
+function defineCollection(collection: Collection): DefinedCollection
+
+type Collection = {
+  // 决定内容如何处理
+  type: 'page' | 'data'
+  // 指定内容位置
+  source?: string | CollectionSource
+  // 用于内容验证和类型定义的 Zod 模式
+  schema?: ZodObject<T>
+}
+```
+
+::note{to="https://nuxt-content.zhcndoc.com/docs/collections/types"}
+了解更多关于集合类型的内容。
+::
+
+```ts
+type CollectionSource = {
+  // 用于匹配内容的 glob 模式
+  include: string
+  // 路径前缀（仅适用于 'page' 类型）
+  prefix?: string
+  // 排除内容的 glob 模式数组
+  exclude?: string[]
+  // 匹配内容的根目录
+  cwd?: string
+  // 远程 git 仓库地址（例如：https://github.com/nuxt/content）
+  repository?: string
+  // 私有仓库的认证令牌（例如 GitHub 个人访问令牌）
+  authToken?: string
+}
+```
+
+::note{to="https://nuxt-content.zhcndoc.com/docs/collections/sources"}
+了解更多关于集合资源的信息。
+::
+
+该函数返回已定义的集合对象。
+
+
+# 集合类型
+
+在 Nuxt Content 中，你可以根据集合文件的预期用途为每个集合指定一个类型。集合可以定义为 &#x2A;*page（页面）** 或 &#x2A;*data（数据）** 类型。
+
+对于这两种类型，都会生成内置字段。每个集合都包含以下默认字段：
+
+- `id`: 唯一内容标识符
+- `stem`: 不带扩展名的文件路径（用于排序和定位）
+- `extension`: 文件扩展名
+- `meta`: 不在集合模式中定义的自定义字段
+
+## 页面类型
+
+```ts
+defineCollection({
+  source: '**/*.md',
+  type: 'page'
+})
+```
+
+::tip
+如果内容文件与网站页面之间是一对一关系，请使用 **page** 类型。
+::
+
+### 路径生成
+
+Nuxt Content 会自动为集合中的每个文件生成路径，方便创建 URL 映射。
+
+以下是基于文件结构生成的路径示例：
+
+| 文件                               | 路径                    |
+| -------------------------------- | --------------------- |
+| `content/index.md`               | `/`                   |
+| `content/about.md`               | `/about`              |
+| `content/blog/index.md`          | `/blog`               |
+| `content/blog/hello.md`          | `/blog/hello`         |
+| `content/1.guide/2.installation` | `/guide/installation` |
+
+::note
+你可以使用辅助函数 [`queryCollection('COLLECTION').path('PATH')`](https://nuxt-content.zhcndoc.com/docs/utils/query-collection) 按特定路径检索内容。
+::
+
+### 模式重写
+
+当你使用 **page** 类型时，Nuxt Content 会生成几个常用于网页的标准字段。这些字段提供结构性，并且 **会自动** 应用于集合的模式：
+
+- `path`: 生成的路由路径
+- `title`: 页面标题
+- `description`: 页面描述
+- `seo`: SEO 元数据（与 Nuxt 的 `useSeoMeta` 组合函数配合使用）
+- `body`: 解析为 AST 的页面内容
+- `navigation`: 页面导航配置（用于 [queryCollectionNavigation](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-navigation)）
+
+对应应用的模式如下：
+
+```ts
+  path: z.string(),
+  title: z.string(),
+  description: z.string(),
+  seo: z.intersection(
+    z.object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+      meta: z.array(z.record(z.string(), z.any())).optional(),
+      link: z.array(z.record(z.string(), z.any())).optional(),
+    }),
+    z.record(z.string(), z.any()),
+  ).optional().default({}),
+  body: z.object({
+    type: z.string(),
+    children: z.any(),
+    toc: z.any(),
+  }),
+  navigation: z.union([
+    z.boolean(),
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      icon: z.string(),
+    }),
+  ]).default(true),
+```
+
+::note
+你可以通过在集合模式中定义这些字段来覆盖它们。
+::
+
+## 数据类型
+
+```ts
+defineCollection({
+  source: 'authors/**.yml',
+  type: 'data'
+})
+```
+
+数据类型适用于那些不直接对应网页，而是表示你可能想在应用中查询和展示的结构化数据的内容。
+
+对于数据集合，你可以完全控制模式，自定义结构。
+
+::note
+集合类型和文件扩展名之间没有严格的对应关系。例如，**page** 集合可以使用 [Markdown](https://nuxt-content.zhcndoc.com/docs/files/markdown)、[YAML](https://nuxt-content.zhcndoc.com/docs/files/yaml) 或 [JSON](https://nuxt-content.zhcndoc.com/docs/files/json) 文件，**data** 集合也可以使用这些格式中的任何一种。
+::
+
+## 文件排序
+
+对于这两种类型，你可能希望控制列表中的显示顺序。通过在文件和目录名称中使用数字前缀来指定顺序。Nuxt Content 会使用这些数字对内容列表进行排序。
+
+::note
+Nuxt Content 使用字母顺序进行排序，因此如果需要使用数字顺序，单数字前请加 `0` 前缀。例如，不加 `0` 前缀时，`10.foo.md` 会排在 `2.bar.md` 前面。
+::
+
+```text [目录结构]
+content/
+  1.frameworks/
+    1.vue.md
+    2.nuxt.md
+    ...
+  2.examples/
+    01.nuxthub.md
+    02.vercel.md
+    03.netlify.md
+    04.heroku.md
+    ...
+    10.cloudflare.md
+    index.md
+```
+
+::warning
+数字和文件名之间请使用 `.` 字符分隔。使用其他分隔符将无效。
+::
+
+
+# 集合来源
+
+Nuxt Content 提供了多种方式将内容文件导入到您的集合中。您可以在 `defineCollection` 中通过 `source` 属性配置源：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      source: '**',
+      type: 'page'
+    })
+  }
+})
+```
+
+## `source`
+
+`source` 属性可以定义为字符串（遵循 glob 模式）或对象，便于更详细地配置目标目录以及内容文件夹内的文件。
+
+**示例：**
+
+- `source: '**'` 包括内容目录及其子目录中的所有文件。
+- `source: '**/*.md'` 包括内容目录及其子目录中的所有 `Markdown` 文件。
+- `source: 'docs/**/*.yml'` 包括 `content/docs` 目录及其子目录中的所有 `YML` 文件。
+- `source: '**/*.{json,yml}'` 包括内容目录及所有子目录中的 `JSON` 或 `YML` 文件。
+- `source: '*.json'` 仅包括内容目录中直接包含的 `JSON` 文件，不包括子目录。
+
+### `include`（必填）
+
+目标仓库及内容文件夹中文件的 glob 模式。
+
+### `exclude`
+
+用于排除导入内容的 glob 模式。
+
+### `prefix`
+
+此配置仅针对 **page** 类型，且内容文件与页面为一对一关系时生效。
+
+它表示网站中对应页面的路径前缀（基础 URL）。
+
+::prose-warning
+`prefix` 必须以 `/` 开头。
+::
+
+默认情况下，模块会提取 `source`（或 `source.include`）的静态前缀，并将其用作内容路径的前缀。例如，如果你定义了 `/en/**` 作为源，模块会自动将 `prefix` 填充为 `/en`。你也可以手动提供一个前缀来覆盖此行为。通过将集合源中的 `prefix` 设置为 `'/'` 可以移除前缀。
+
+```ts
+defineCollection({
+  type: "page",
+  source: {
+    include: "en/**",
+    exclude: ["en/index.md"],
+    prefix: '/'
+  }
+})
+```
+
+### `cwd`
+
+匹配内容的根目录。
+
+**示例：**
+
+如果想要包含内容目录以外文件夹中的文件，可将该文件夹的绝对路径赋值给 `cwd` 属性。
+
+```ts
+source: {
+  cwd: path.resolve('packages/my-pkg/docs'),
+  include: '**/*.md',
+}
+```
+
+### `repository`
+
+代表远程 git 仓库 URL 的外部源（例如，<https://github.com/nuxt/content>{rel="nofollow"}）。
+
+定义外部源时必须同时定义 `include` 选项。`include` 模式对于模块识别集合需要使用的文件至关重要。
+
+```js
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      type: 'page',
+      source: {
+        repository: 'https://github.com/nuxt/content',
+        include: 'docs/content/**',
+      },
+    })
+  }
+})
+```
+
+### `authToken`
+
+私有仓库的认证令牌（例如，GitHub 个人访问令牌）。
+
+::warning{icon="i-lucide-shield-alert"}
+切勿将认证令牌或凭据直接提交到代码库。请使用环境变量或其他安全方式在运行时提供这些值。
+::
+
+### `authBasic`
+
+私有仓库的基础认证（例如，Bitbucket 用户名和密码）。
+
+```ts
+defineCollection({
+  type: 'page',
+  source: {
+    repository: 'https://bitbucket.org/username/repo',
+    authBasic: {
+      username: 'username',
+      password: 'password',
+    },
+  },
+})
+```
+
+
+# Markdown
+
+## 用法
+
+### 定义集合
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    blog: defineCollection({
+      type: 'page',
+      source: 'blog/*.md',
+      schema: z.object({
+        date: z.string()
+      })
+    })
+  }
+})
+```
+
+::note{to="https://nuxt-content.zhcndoc.com/docs/collections/types#page-type"}
+了解更多关于 `page` 集合类型。
+::
+
+### 创建 `.md` 文件
+
+在 `content/blog/` 目录中创建博客文章。
+
+::code-group
+```md [foo.md]
+---
+date: 2020-11-11
+---
+
+# Foo
+
+这是 Foo 博客文章。
+```
+
+```md [bar.md]
+---
+date: 2024-12-12
+---
+Hello
+我是 bar。很高兴认识你。
+```
+::
+
+### 查询 Markdown 文件
+
+现在我们可以查询博客文章：
+
+```ts
+// 获取 foo 文章
+const fooPost = await queryCollection('blog').path('/blog/foo').first()
+
+// 查找所有文章
+const allPosts = await queryCollection('blog').order('date', 'DESC').all()
+```
+
+### 显示 Markdown
+
+要显示 Markdown 文件的内容，可以使用 [`<ContentRenderer>`](https://nuxt-content.zhcndoc.com/docs/components/content-renderer) 组件。
+
+```vue [blog/[slug\\].vue]
+<script setup>
+const slug = useRoute().params.slug
+const { data: post } = await useAsyncData(`blog-${slug}`, () => {
+  return queryCollection('blog').path(`/blog/${slug}`).first()
+})
+</script>
+
+<template>
+  <!-- 以 Prose 和 Vue 组件渲染博客文章 -->
+  <ContentRenderer :value="post" />
+</template>
+```
+
+::note
+阅读更多关于 [`<ContentRenderer>`](https://nuxt-content.zhcndoc.com/docs/components/content-renderer) 组件和 [`Prose 组件`](https://nuxt-content.zhcndoc.com/docs/components/prose)。
+::
+
+## Frontmatter
+
+Frontmatter 是基于 Markdown 的 CMS 约定，用于为页面提供元数据，如描述或标题。在 Nuxt Content 中，frontmatter 使用 YAML 语法，采用 `key: value` 键值对形式。
+
+这些数据在渲染内容时可用，可以存储你需要的任何信息。
+
+### 语法
+
+你可以在 `content/` 目录的 Markdown 文件顶部，用 `---` 标识符声明 frontmatter 块。
+
+```md [content/index.md]
+---
+title: '页面标题'
+description: '页面的元描述'
+---
+
+<!-- 页面内容 -->
+```
+
+```ts [example.ts]
+const home = await queryCollection('content').path('/').first()
+
+console.log(home.title)
+// => '页面标题'
+console.log(home.description)
+// => '页面的元描述'
+console.log(home.body)
+// => 页面内容的 AST 对象
+```
+
+### 原生参数
+
+|               |           |              |                                                                                                                         |
+| ------------- | --------- | ------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| 键             | 类型        | 默认值          | 描述                                                                                                                      |
+| `title`       | `string`  | 页面第一个 `<h1>` | 页面标题，也会被注入到元信息 (metas) 中                                                                                                |
+| `description` | `string`  | 页面第一个 `<p>`  | 页面描述，将显示在标题下方并注入到元信息 (metas)                                                                                            |
+| `navigation`  | `boolean` | `true`       | 定义页面是否包含在 [`queryCollectionNavigation`](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-navigation) 的返回值中。 |
+
+::warning
+frontmatter 块中定义的额外参数需要在你的 schema 中定义（参见本页顶部示例中的 date 参数），才能用于查询。
+::
+
+## MDC 语法
+
+我们创建了 MDC 语法来增强 Markdown，赋予你在 Markdown 中集成带有插槽和属性的 Vue 组件的能力。
+
+::callout
+---
+icon: i-simple-icons-visualstudiocode
+to: https://marketplace.visualstudio.com/items?itemName=Nuxt.mdc
+---
+安装 **MDC VS Code 扩展**，以获得 MDC 语法的正确语法高亮。
+::
+
+## Vue 组件
+
+你可以在 Markdown 文件中使用任意 Vue 组件。
+
+我们有一种特殊语法，使在 Markdown 文件中使用组件更方便。
+
+```mdc [content/index.md]
+::component-name
+默认插槽内容
+::
+```
+
+::warning
+若你不使用 `components/content/` 目录，Markdown 中使用的组件必须在你的 Nuxt 应用中标记为 `global`，详情请访问 [Nuxt 3 文档](https://nuxt.com/docs/guide/directory-structure/components){rel="nofollow"}。
+::
+
+### 块级组件
+
+块级组件是接受 Markdown 内容或其他组件作为插槽的组件。
+
+组件必须至少包含一个 `<slot />` 组件来接收格式化文本。
+
+在 markdown 文件中，使用 `::` 标识符调用组件。
+
+::code-group
+```mdc [index.md]
+::card
+卡片的内容
+::
+```
+
+```html [Card.vue]
+<!-- components/content/Card.vue -->
+<template>
+  <div class="p-2 border bg-white dark:bg-black dark:border-gray-700 rounded">
+    <slot />
+  </div>
+</template>
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+    ::::example-card
+    卡片的内容
+    ::::
+  :::
+::
+
+### 插槽
+
+组件的插槽可以接受内容或其他组件。
+
+- **默认插槽** 在块级组件内渲染顶级内容或通过 `#default`。
+- **具名插槽** 使用 `#` 标识符来渲染对应内容。
+
+::code-group
+```mdc [index.md]
+::hero
+我的页面标题
+
+#description
+这部分将在 `description` 插槽内渲染。
+::
+```
+
+```html [Hero.vue]
+<template>
+  <section>
+    <h1 class="text-4xl">
+      <slot mdc-unwrap="p" />
+    </h1>
+    <slot name="description" />
+  </section>
+</template>
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+    ::::example-hero
+    我的页面标题
+    
+    #description
+    这部分将在 `description` 插槽内渲染。
+    ::::
+  :::
+::
+
+::note
+阅读更多关于 [`<slot />`](https://nuxt-content.zhcndoc.com/docs/components/slot) 组件。
+::
+
+::tip
+你可以在组件插槽内使用 Markdown：
+
+  :::code-group
+  ```mdc [index.md]
+  ::the-title
+  一个由组件 **渲染** 的 [富文本](/)。
+  ::
+  ```
+  
+  ```html [MyTitle.vue]
+  <template>
+    <h1 class="text-4xl">
+      <slot mdc-unwrap="p" />
+    </h1>
+  </template>
+  ```
+  
+    ::::preview-card{icon="i-lucide-eye" label="预览"}
+      :::::example-title
+      一个由组件 **渲染** 的 [富文本](https://nuxt-content.zhcndoc.com)。
+      :::::
+    ::::
+  :::
+::
+
+### Props 属性
+
+使用 MDC 传递 props 给组件，有两种方式。
+
+#### 行内方式
+
+`{}` 标识符使用简洁的 `key=value` 语法向组件传递属性。
+
+::code-group
+```mdc [index.md]
+::alert{type="warning"}
+这是一个 **警告** 组件。
+::
+```
+
+```vue [Alert.vue]
+<script setup>
+defineProps(['type'])
+</script>
+
+<template>
+  <div :class="[type]">
+    <slot mdc-unwrap="p" />
+  </div>
+</template>
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+    ::::example-alert{type="warning"}
+    这是一个 **警告** 组件。
+    ::::
+  :::
+::
+
+多个属性用空格分隔：
+
+```mdc
+::alert{type="warning" icon="exclamation-circle"}
+出错了！
+::
+```
+
+`v-bind` 简写 `:` 也可用来绑定 frontmatter 中的属性值：
+
+```mdc
+---
+type: "warning"
+---
+
+::alert{:type="type"}
+你的警告
+::
+```
+
+如果要传递数组或对象作为属性给组件，可以将它们作为 JSON 字符串，属性键名前加冒号以自动解码 JSON 字符串。注意，这种情况下应使用单引号包裹字符串值，以便使用双引号传递有效的 JSON 字符串：
+
+::code-group
+```mdc [array.md]
+::dropdown{:items='["Nuxt", "Vue", "React"]'}
+::
+```
+
+```mdc [number-array.md]
+::dropdown{:items='[1,2,3.5]'}
+::
+```
+
+```mdc [object.md]
+::chart{:options='{"responsive": true, "scales": {"y": {"beginAtZero": true}}}'}
+::
+```
+::
+
+#### YAML 方式
+
+YAML 方式用 `---` 标识符声明逐行一个 prop，便于可读性。
+
+::code-group
+```mdc [index.md]
+::icon-card
+---
+icon: IconNuxt
+description: 发挥 Nuxt 及其生态系统的全部力量。
+title: Nuxt 架构。
+---
+::
+```
+
+```html [IconCard.vue]
+<script setup>
+defineProps({
+  title: {
+    type: String,
+    default: '默认标题'
+  },
+  description: {
+    type: String,
+    default: '默认描述'
+  },
+  icon: {
+    type: String,
+    default: 'IconMarkdown'
+  }
+})
+</script>
+
+<template>
+  <div class="p-6 border bg-white dark:bg-black dark:border-gray-700 rounded">
+    <component :is="icon" class="w-20 h-20" />
+    <h2 class="text-3xl font-semibold mb-2">
+      {{ title }}
+    </h2>
+    <p>{{ description }}</p>
+  </div>
+</template>
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+    ::::example-icon-card
+    ---
+    description: 发挥 Nuxt 及其生态系统的全部力量。
+    icon: IconNuxt
+    title: Nuxt 架构。
+    ---
+    ::::
+  :::
+::
+
+### 属性 (Attributes)
+
+属性对于高亮和修改段落部分内容很有用。语法与行内组件和 Markdown 链接语法非常相似。
+
+可能的值包括所有命名属性、以 `.class-name` 形式的类名，以及以 `#id-name` 形式的 ID。
+
+::code-group
+```mdc [index.md]
+Hello [World]{style="color: green;" .custom-class #custom-id}!
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  Hello [World]{#custom-id .custom-class style="color: green;"} !
+  :::
+::
+
+除了 mdc 组件和 `span`，属性语法还适用于图片、链接、行内 `code`、**加粗** 和 *斜体* 文本。
+
+::code-group
+```md [index.md]
+属性适用于：
+
+- [链接](#attributes){style="background-color: pink;"}, `代码`{style="color: cyan;"},
+- _斜体_{style="background-color: yellow; color:black;"} 和 **加粗**{style="background-color: lightgreen;"} 文本。
+```
+
+  :::preview-card{prose label="预览" prose=""}
+  属性适用于：
+  
+  - [链接](https://nuxt-content.zhcndoc.com/#attributes){style="background-color: pink;"}, `代码`,
+  - *斜体* 和 **加粗** 文本。
+  :::
+::
+
+## Markdown 中的数据绑定
+
+你可以使用 `{{ $doc.variable || 'defaultValue' }}` 语法在 Markdown 文档中绑定数据。这些值可以在文档顶部的 YAML frontmatter 中定义，在每个 MDC 组件内定义，或通过 `<ContentRenderer>` 组件的 `data` 属性注入。
+
+### 示例 1：在 YAML 中定义
+
+```mdc
+---
+title: '页面标题'
+description: '页面元描述'
+customVariable: '自定义值'
+---
+
+# 标题是 {{ $doc.title }} ，customVariable 是 {{ $doc.customVariable || 'defaultValue' }}
+
+```
+
+### 示例 2：通过 `<ContentRenderer>` 外部定义
+
+```html [test.vue]
+<template>
+  <div>
+    <ContentRenderer :value="data" :data="mdcVars"/>
+    <button type="button" v-on:click="mdcVars.name = 'Hugo'">更改名称</button>
+  </div>
+</template>
+
+<script setup lang="ts">
+const { data } = await useAsyncData(() => queryCollection('content').path('/test').first());
+const mdcVars = ref({ name: 'Maxime'});
+</script>
+```
+
+```mdc [test.md]
+# 你好 {{ $doc.name || '世界' }}
+
+```
+
+## Prose 组件
+
+在 Nuxt Content 中，prose 表示由 Markdown 语法生成的 HTML 标签，如标题和链接。
+
+每个 HTML 标签对应一个 Vue 组件，你可以根据需求覆盖它们，例如 `<p>` 对应 `<ProseP>`。
+
+如果想定制 Prose 组件，建议的步骤如下：
+
+- 查看原始的 [组件源码](https://github.com/nuxt-modules/mdc/blob/main/src/runtime/components/prose){rel="nofollow"}。
+- 使用完全相同的 props。
+- 在你的 `components/content/` 目录下，命名相同文件。
+- 根据需要定制 🚀。
+
+::note{to="https://nuxt-content.zhcndoc.com/docs/components/prose"}
+请阅读 Prose 组件章节，获取完整的 Prose 参考。
+::
+
+## 代码高亮
+
+Nuxt Content 使用 [Shiki](https://github.com/shikijs/shiki){rel="nofollow"} 实现代码高亮，主题与 VSCode 一致。
+
+代码高亮同时适用于 [`ProsePre`](https://nuxt-content.zhcndoc.com/docs/components/prose#prosepre) 和 [`ProseCode`](https://nuxt-content.zhcndoc.com/docs/components/prose#prosecodeinline)。
+
+代码块的每一行数字存储在 `line` 属性中，便于单行标注与样式定制。
+
+::callout
+[阅读 API 参考，了解如何配置或完全禁用语法高亮。](https://nuxt-content.zhcndoc.com/docs/getting-started/configuration)
+::
+
+## 图片
+
+你可以将图片添加到你的 `public` 目录：
+
+```bash [目录结构]
+content/
+  index.md
+public/
+  image.png
+nuxt.config.ts
+package.json
+```
+
+然后在 `content` 目录的 markdown 文件中这样使用：
+
+```md [content/index.md]
+![我的图片](/image.png)
+```
+
+## 摘要
+
+内容摘要或概要可以通过使用 `<!--more-->` 作为分隔符从内容中提取。
+
+```md [content/index.md]
+---
+title: 介绍
+---
+
+学习如何使用 `@nuxt/content`。
+
+<!--more-->
+
+更多分割线后的完整内容。
+```
+
+描述字段 (description) 会包含摘要内容，除非 frontmatter 中已定义。
+
+如果文本中没有 `<!--more-->` 分隔符，则摘要字段为未定义。
+
+::tip
+如果想使用摘要功能，应在集合 schema 中定义 `excerpt` 字段。
+
+```ts [content.config.ts]
+const content = defineCollection({
+  type: 'page',
+  source: '**',
+  schema: z.object({
+    excerpt: z.object({
+      type: z.string(),
+      children: z.any(),
+    }),
+  }),
+})
+```
+
+阅读关于 [集合 schema](https://nuxt-content.zhcndoc.com/docs/collections/define#collection-schema) 的更多内容。
+::
+
+示例变量会注入到文档中：
+
+```json
+{
+  "excerpt": Object,
+  "body": Object,
+  // ... 其他键
+}
+```
+
+
+# YAML
+
+## 定义集合
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    authors: defineCollection({
+      type: 'data',
+      source: 'authors/**.yml',
+      schema: z.object({
+        name: z.string(),
+        avatar: z.string(),
+        url: z.string()
+      })
+    })
+  }
+})
+
+```
+
+## 创建 `.yml` 文件
+
+在 `content/authors/` 目录下创建作者文件。
+
+::code-group
+```yaml [farnabaz.yml]
+name: Ahad Birang
+avatar: https://avatars.githubusercontent.com/u/2047945?v=4
+url: https://github.com/farnabaz
+```
+
+```yaml [larbish.yml]
+name: Baptiste Leproux
+avatar: https://avatars.githubusercontent.com/u/7290030?v=4
+url: https://github.com/larbish
+```
+::
+
+## 查询数据
+
+现在我们可以查询作者数据了：
+
+```vue
+<script lang="ts" setup>
+// 查找单个作者
+const { data: author } = await useAsyncData('larbish', () => {
+  return queryCollection('authors')
+    .where('stem', '=', 'larbish')
+    .first()
+})
+
+// 获取所有作者
+const { data: authors } = await useAsyncData('authors', () => {
+  return queryCollection('authors')
+    .order('name', 'DESC')
+    .all()
+})
+</script>
+```
+
+
+# JSON
+
+## 定义集合
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    authors: defineCollection({
+      type: 'data',
+      source: 'authors/**.json',
+      schema: z.object({
+        name: z.string(),
+        avatar: z.string(),
+        url: z.string()
+      })
+    })
+  }
+})
+
+```
+
+## 创建 `.json` 文件
+
+在 `content/authors/` 目录下创建作者文件。
+
+::code-group
+```json [farnabaz.json]
+{
+  "name": "Ahad Birang",
+  "avatar": "https://avatars.githubusercontent.com/u/2047945?v=4",
+  "url": "https://github.com/farnabaz"
+}
+```
+
+```json [larbish.json]
+{
+  "name": "Baptiste Leproux",
+  "avatar": "https://avatars.githubusercontent.com/u/7290030?v=4",
+  "url": "https://github.com/larbish"
+}
+```
+::
+
+::warning
+`data` 集合中的每个文件应仅包含一个对象，因此在 JSON 文件中使用顶层数组会导致查询时结果无效。
+::
+
+## 查询数据
+
+现在我们可以查询作者：
+
+```vue
+<script lang="ts" setup>
+// 查找单个作者
+const { data: author } = await useAsyncData('larbish', () => {
+  return queryCollection('authors')
+    .where('stem', '=', 'larbish')
+    .first()
+})
+
+// 获取所有作者
+const { data: authors } = await useAsyncData('authors', () => {
+  return queryCollection('authors')
+    .order('name', 'DESC')
+    .all()
+})
+</script>
+```
+
+
+# CSV
+
+## 定义集合
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    authors: defineCollection({
+      type: 'data',
+      source: 'authors/**.csv',
+      schema: z.object({
+        name: z.string(),
+        email: z.string(),
+        avatar: z.string()
+      })
+    })
+  }
+})
+
+```
+
+## 创建 `.csv` 文件
+
+在 `content/authors/` 目录下创建作者文件。
+
+::code-group
+```csv [users.csv]
+id,name,email
+1,John Doe,john@example.com
+2,Jane Smith,jane@example.com
+3,Alice Johnson,alice@example.com
+```
+
+```csv [team.csv]
+name,role,avatar
+John Doe,Developer,https://avatars.githubusercontent.com/u/1?v=4
+Jane Smith,Designer,https://avatars.githubusercontent.com/u/2?v=4
+```
+::
+
+::warning
+每个 CSV 文件应包含定义列名称的表头行，解析时会将其用作对象的键名。
+::
+
+## 查询数据
+
+现在我们可以查询作者数据了：
+
+```vue
+<script lang="ts" setup>
+// 查找单个作者
+const { data: author } = await useAsyncData('john-doe', () => {
+  return queryCollection('authors')
+    .where('name', '=', 'John Doe')
+    .first()
+})
+
+// 获取所有作者
+const { data: authors } = await useAsyncData('authors', () => {
+  return queryCollection('authors')
+    .order('name', 'ASC')
+    .all()
+})
+</script>
+
+<template>
+  <ul>
+    <li v-for="author in authors" :key="author.id">
+      {{ author.name }} ({{ author.email }})
+    </li>
+  </ul>
+</template>
+```
+
+## 配置
+
+你可以在 `nuxt.config.ts` 中配置 CSV 文件的解析方式：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      csv: {
+        // 将 CSV 数据转换为 JSON 对象
+        json: true,
+        // 指定自定义分隔符（默认是 ','）
+        delimiter: ','
+      }
+    }
+  }
+})
+```
+
+启用配置中的 `json: true` 后，每一行都会被转换成一个 JavaScript 对象，表头行用作键名：
+
+```json
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "email": "jane@example.com"
+  }
+]
+```
+
+## 自定义分隔符
+
+如果你的 CSV 文件使用不同的分隔符，可以在配置中指定：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      csv: {
+        delimiter: ';' // 使用分号作为分隔符
+      }
+    }
+  }
+})
+```
+
+这样会解析如下格式的 CSV 文件：
+
+```csv [semicolon-data.csv]
+id;name;email
+1;John Doe;john@example.com
+2;Jane Smith;jane@example.com
+```
+
+::note
+如果不需要 CSV 支持，可以通过设置 `csv: false` 来禁用 CSV 解析器。
+::
+
+
+# queryCollection
+
+## 用法
+
+使用自动导入的 `queryCollection` 来查找集合中的内容。这里假设你已在 `content.config.ts` 中定义了 `docs` 集合。
+
+如果你还未定义任何集合，请查看 [如何定义集合](https://nuxt-content.zhcndoc.com/docs/collections/define#defining-collections)。
+
+```vue [pages/[...slug.vue]
+<script>
+const route = useRoute()
+const { data: page } = await useAsyncData(route.path, () => {
+  return queryCollection('docs').path(route.path).first()
+})
+</script>
+```
+
+::tip
+`queryCollection` 工具可在 Vue 和 Nitro 中使用。更多关于如何在服务器端使用的信息，请查看 [服务器端用法](https://nuxt-content.zhcndoc.com/#server-usage)。
+::
+
+## API
+
+### 类型
+
+```ts
+function queryCollection<T extends keyof Collections>(collection: T): CollectionQueryBuilder<Collections[T]>
+
+interface CollectionQueryBuilder<T> {
+  where(field: keyof T | string, operator: SQLOperator, value?: unknown): CollectionQueryBuilder<T>
+  andWhere(groupFactory: QueryGroupFunction<T>): CollectionQueryBuilder<T>
+  orWhere(groupFactory: QueryGroupFunction<T>): CollectionQueryBuilder<T>
+  order(field: keyof T, direction: 'ASC' | 'DESC'): CollectionQueryBuilder<T>
+  // ... 其他方法
+}
+```
+
+### `queryCollection(collection: CollectionName)`
+
+创建用于查询指定集合的查询构建器。
+
+- 参数：
+
+  - `collection`：在 `content.config.ts` 中定义集合的键名。
+
+### `path(path: string)`
+
+搜索具有特定 `path` 的内容。（`path` 是 `page` 集合中的特殊字段，基于文件系统路径生成，可作为渲染内容的路由）
+
+- 参数：
+
+  - `path`：匹配的路径字符串。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs').path(route.path).first()
+})
+```
+
+### `select(...fields: keyof Collection)`
+
+从集合中选择特定字段返回查询结果。
+
+- 参数：
+
+  - `...fields`：要从集合中选择的字段名称列表。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs')
+    .select('path', 'title', 'description')
+    .first()
+})
+```
+
+### `where(field: keyof Collection | string, operator: SqlOperator, value?: unknown)`
+
+向查询添加条件，根据特定字段筛选结果。
+
+- 参数：
+
+  - `field`：要筛选的字段。
+  - `operator`：用于比较的 SQL 运算符。可能的值包括：
+
+    - `'='`：等于
+    - `'>'`：大于
+    - `'<'`：小于
+    - `'<>'`：不等于
+    - `'IN'`：在列表中
+    - `'BETWEEN'`：在两个值之间
+    - `'NOT BETWEEN'`：不在两个值之间
+    - `'IS NULL'`：为 NULL
+    - `'IS NOT NULL'`：不为 NULL
+    - `'LIKE'`：匹配模式
+    - `'NOT LIKE'`：不匹配模式
+  - `value`：用于比较的值。类型依所用运算符不同而不同。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs')
+    .where('date', '<', '2024-04-04')
+    .where('category', '=', 'news')
+    .all()
+})
+
+// Generated SQL
+// SELECT * FROM docs WHERE date < '2024-04-04' AND category = 'news'
+```
+
+### `andWhere(groupFactory: QueryGroupFunction<Collection>)`
+
+向查询添加一个 AND 条件组，允许构建更复杂的查询条件。
+
+- 参数：
+
+  - `groupFactory`：一个接收查询构建器的函数，可添加多个条件，这些条件将用 AND 连接组合在一起。
+
+```ts
+const { data } = await useAsyncData('recent-docs', () => {
+  return queryCollection('docs')
+    .where('published', '=', true)
+    .andWhere(query => query.where('date', '>', '2024-01-01').where('category', '=', 'news'))
+    .all()
+})
+
+// Generated SQL
+// SELECT * FROM docs WHERE published = true AND (date > '2024-01-01' AND category = 'news')
+```
+
+### `orWhere(groupFactory: QueryGroupFunction<Collection>)`
+
+向查询添加一个 OR 条件组，允许构建替代的条件。
+
+- 参数：
+
+  - `groupFactory`：一个接收查询构建器的函数，可添加多个条件，这些条件用 OR 连接组合在一起。
+
+```ts
+const { data } = await useAsyncData('featured-docs', () => {
+  return queryCollection('docs')
+    .where('published', '=', true)
+    .orWhere(query => query.where('featured', '=', true).where('priority', '>', 5))
+    .all()
+})
+
+// Generated SQL
+// SELECT * FROM docs WHERE published = true AND (featured = true OR priority > 5)
+```
+
+### `order(field: keyof Collection, direction: 'ASC' | 'DESC')`
+
+根据特定字段对查询结果进行排序。
+
+- 参数：
+
+  - `field`：排序字段。
+  - `direction`：排序方向，'ASC' 表示升序，'DESC' 表示降序。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs')
+    .order('date', 'DESC')
+    .all()
+})
+```
+
+### `limit(limit: number)`
+
+限制查询返回结果的数量。
+
+- 参数：
+
+  - `limit`：返回结果的最大数量。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs')
+    .limit(10)
+    .all()
+})
+```
+
+### `skip(skip: number)`
+
+查询时跳过指定数量的结果。
+
+- 参数：
+
+  - `skip`：跳过的结果数量。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs')
+    // 跳过前 5 条
+    .skip(5)
+    .all()
+})
+```
+
+### `all()`
+
+执行查询并返回所有匹配结果。
+
+- 返回值：返回一个 Promise，解析为所有匹配的文档数组。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs').all()
+})
+```
+
+### `first()`
+
+执行查询并返回第一个匹配结果。
+
+- 返回值：返回一个 Promise，解析为第一个匹配的文档，若无匹配则为 `null`。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs').first()
+})
+```
+
+### `count()`
+
+统计基于查询条件匹配的集合条目数量。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs')
+    // 计数匹配条目
+    .count()
+})
+
+// 返回
+5 // 匹配数量
+```
+
+你也可以将 `count()` 与上述其他方法（如 `where()`）结合使用，以对集合查询应用更多条件。
+
+```ts
+const route = useRoute()
+const { data } = await useAsyncData(route.path, () => {
+  return queryCollection('docs')
+    .where('date', '<', '2024-04-04')
+    // 计数匹配条目
+    .count()
+})
+
+// 返回
+3 // 满足条件的匹配数量
+```
+
+## 示例
+
+下面是一个完整示例，展示如何获取 `docs` 集合中的文档列表。
+
+```vue [index.vue]
+<script setup lang="ts">
+const { data: docs } = await useAsyncData('documents-list', () => {
+  return queryCollection('docs')
+    .order('date', 'DESC')
+    .select('title', 'path', 'description')
+    .all()
+})
+</script>
+
+<template>
+  <NuxtLink v-for="doc in docs" :key="doc.path" :to="doc.path">
+    <h2>{{ doc.title }}</h2>
+    <p>{{ doc.description }}</p>
+  </NuxtLink>
+</template>
+```
+
+## 服务器端用法
+
+Nuxt Content 提供了类似的工具用于在服务器端查询集合。唯一区别是你需要将 `event` 作为第一个参数传给 `queryCollection` 函数。
+
+```ts [server/api/[slug\\].ts]
+export default eventHandler(async (event) => {
+  const { slug } = getRouterParams(event)
+  const page = await queryCollection(event, 'docs').path(slug).first()
+  return page
+})
+```
+
+::note
+确保创建 `server/tsconfig.json` 文件，并包含以下内容以避免类型错误：
+
+```json
+{
+  "extends": "../.nuxt/tsconfig.server.json"
+}
+```
+::
+
+
+# queryCollectionNavigation
+
+## 类型
+
+```ts
+function queryCollectionNavigation<T extends keyof PageCollections>(
+  collection: T,
+  fields?: Array<keyof PageCollections[T]>
+): ChainablePromise<T, ContentNavigationItem[]>
+
+interface ChainablePromise<T extends keyof PageCollections, R> extends Promise<R> {
+  where(field: keyof PageCollections[T] | string, operator: SQLOperator, value?: unknown): ChainablePromise<T, R>
+  andWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  orWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  order(field: keyof PageCollections[T], direction: 'ASC' | 'DESC'): ChainablePromise<T, R>
+}
+```
+
+## 用法
+
+使用自动导入的 `queryCollectionNavigation` 为特定集合生成导航树。这对于基于你的内容结构创建动态导航菜单或侧边栏非常有用。
+
+该函数返回一个可链式调用的 Promise，允许你添加额外的查询条件：
+
+```vue [pages/[...slug\\].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('navigation', () => {
+  return queryCollectionNavigation('docs')
+    .where('published', '=', true)
+    .order('date', 'DESC')
+})
+</script>
+```
+
+::tip
+`queryCollectionNavigation` 工具同时适用于 Vue 和 Nitro。详细了解在服务器端如何使用，请参阅 [服务器端使用](https://nuxt-content.zhcndoc.com/#server-usage)。
+::
+
+### 使用 `.navigation.yml` 添加导航元数据
+
+你可以通过 `.navigation.yml` 文件为目录添加元数据。
+
+```yml [.navigation.yml]
+title: 入门指南
+icon: i-lucide-square-play
+```
+
+## API
+
+### `queryCollectionNavigation(collection: CollectionName, extraField: keyof Collection)`
+
+为指定集合生成导航树。
+
+- 参数：
+
+  - `collection`：在 `content.config.ts` 中定义集合的键名。
+  - `extraFields`：（可选）一个数组，包含要在导航项中额外包含的字段。（默认导航项中包含 `title` 和 `path`。）
+- 返回值：一个可链式调用的 Promise，解析为导航树结构。该 Promise 支持添加查询条件的方法：
+
+  - `where(field, operator, value)`：添加 WHERE 条件
+  - `andWhere(groupFactory)`：添加分组的 AND 条件
+  - `orWhere(groupFactory)`：添加分组的 OR 条件
+  - `order(field, direction)`：添加 ORDER BY 子句
+
+导航树基于目录结构生成，排序基于文件的[排序规则](https://nuxt-content.zhcndoc.com/docs/collections/types#ordering-files)
+
+## 示例
+
+基础用法，无需额外查询条件：
+
+```vue [pages/[...slug\\].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('navigation', () => {
+  return queryCollectionNavigation('docs')
+})
+</script>
+
+<template>
+  <nav>
+    <ul v-if="data">
+      <li v-for="item in data" :key="item.path">
+        <NuxtLink :to="item.path">{{ item.title }}</NuxtLink>
+      </li>
+    </ul>
+  </nav>
+</template>
+```
+
+带额外查询条件和额外字段的示例：
+
+```vue [pages/[...slug\\].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('navigation', () => {
+  return queryCollectionNavigation('docs', ['description', 'badge'])
+    .where('draft', '=', false)
+    .where('partial', '=', false)
+    .order('title', 'ASC')
+})
+</script>
+
+<template>
+  <nav>
+    <ul v-if="data">
+      <li v-for="item in data" :key="item.path">
+        <NuxtLink :to="item.path">
+          {{ item.title }}
+          <span v-if="item.badge" class="badge">{{ item.badge }}</span>
+        </NuxtLink>
+        <p v-if="item.description">{{ item.description }}</p>
+      </li>
+    </ul>
+  </nav>
+</template>
+```
+
+## 服务器端使用
+
+Nuxt Content 在服务器端提供了类似的查询集合工具。唯一不同的是你需要把 `event` 作为第一个参数传递给 `queryCollectionNavigation` 函数。
+
+```ts [server/api/navigation.ts]
+export default eventHandler(async (event) => {
+  const navigation = await queryCollectionNavigation(event, 'docs')
+  return navigation
+})
+```
+
+::note
+请确保创建 `server/tsconfig.json` 文件，内容如下，以避免类型错误。
+
+```json
+{
+  "extends": "../.nuxt/tsconfig.server.json"
+}
+```
+::
+
+---
+
+## 与导航相关的额外工具
+
+Content 模块提供了一些额外的工具，以简化构建面包屑导航等常见用例。
+
+### `findPageBreadcrumb(navigation, path, options?)`
+
+返回给定路径在导航树中的面包屑路径（导航项数组）。适合用于构建面包屑导航组件。
+
+- `navigation`：导航树（ContentNavigationItem 数组）。
+- `path`：当前页面路径。
+- `options`（可选）：
+
+  - `current`：是否包含当前页面。
+  - `indexAsChild`：是否把索引页视为子节点。
+
+**示例：**
+
+```ts
+import { findPageBreadcrumb } from '@nuxt/content/utils'
+
+const breadcrumb = findPageBreadcrumb(navigation, '/docs/guide/getting-started')
+// breadcrumb 是通向当前页面的导航项数组
+```
+
+### `findPageChildren(navigation, path, options?)`
+
+查找并返回导航树中给定路径的直接子项。
+
+- `navigation`：导航树（ContentNavigationItem 数组）。
+- `path`：要查找子项的父路径。
+- `options`（可选）：
+
+  - `indexAsChild`：是否把索引页视为子节点。
+
+**示例：**
+
+```ts
+import { findPageChildren } from '@nuxt/content/utils'
+
+const children = findPageChildren(navigation, '/docs/guide')
+// children 是 '/docs/guide' 下的导航项数组
+```
+
+### `findPageSiblings(navigation, path, options?)`
+
+返回给定路径的兄弟导航项（即具有相同父级的其他项）。
+
+- `navigation`：导航树（ContentNavigationItem 数组）。
+- `path`：当前页面路径。
+- `options`（可选）：
+
+  - `indexAsChild`：是否把索引页视为子节点。
+
+**示例：**
+
+```ts
+import { findPageSiblings } from '@nuxt/content/utils'
+
+const siblings = findPageSiblings(navigation, '/docs/guide/getting-started')
+// siblings 是与当前页面具有相同父级的导航项数组
+```
+
+
+# queryCollectionItemSurroundings
+
+## 类型
+
+```ts
+function queryCollectionItemSurroundings<T extends keyof PageCollections>(
+  collection: T,
+  path: string,
+  opts?: SurroundOptions<keyof PageCollections[T]>
+): ChainablePromise<T, ContentNavigationItem[]>
+
+interface ChainablePromise<T extends keyof PageCollections, R> extends Promise<R> {
+  where(field: keyof PageCollections[T] | string, operator: SQLOperator, value?: unknown): ChainablePromise<T, R>
+  andWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  orWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  order(field: keyof PageCollections[T], direction: 'ASC' | 'DESC'): ChainablePromise<T, R>
+}
+```
+
+## 用法
+
+使用自动导入的 `queryCollectionItemSurroundings` 可以查找集合中特定内容项的前后兄弟项目。这对于创建相关内容页面间的导航非常有用。
+
+该函数返回一个可链式调用的 Promise，允许你添加额外的查询条件：
+
+```vue [pages/[...slug\\].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('surround', () => {
+  return queryCollectionItemSurroundings('docs', '/foo')
+    .where('published', '=', true)
+    .order('date', 'DESC')
+})
+</script>
+```
+
+::tip
+`queryCollectionItemSurroundings` 工具可以在 Vue 和 Nitro 中使用。详情请查看 [服务器端使用](https://nuxt-content.zhcndoc.com/#server-usage) 章节，了解如何在服务器端使用。
+::
+
+## API
+
+### `queryCollectionItemSurroundings(collection: CollectionName, path: string, opts?: SurroundOptions)`
+
+查找集合中特定内容项的相邻项（前一项和后一项）。
+
+- 参数：
+
+  - `collection`：在 `content.config.ts` 中定义的集合的键名。
+  - `path`：当前内容项的路径。
+  - `opts`：（可选）包含以下属性的对象：
+
+    - `before`：（可选）当前项之前要获取的项目数，默认值为 1。
+    - `after`：（可选）当前项之后要获取的项目数，默认值为 1。
+    - `fields`：（可选）附加要包含在相邻项中的字段数组。
+- 返回值：一个可链式调用的 Promise，解析为包含相邻项目的数组。该 Promise 包含用于添加查询条件的方法：
+
+  - `where(field, operator, value)`：添加 WHERE 条件
+  - `andWhere(groupFactory)`：添加分组的 AND 条件
+  - `orWhere(groupFactory)`：添加分组的 OR 条件
+  - `order(field, direction)`：添加 ORDER BY 子句
+
+最终结果将是一个数组，结构如下：
+
+- 使用默认选项时为 `[previousItem, nextItem]`
+- 使用自定义 `before` 和 `after` 值时为 `[...previousItems, ...nextItems]`
+
+数组中的每个项均为 `ContentNavigationItem` 类型，若该位置无项目则为 `null`。
+
+## 示例
+
+基础用法，无额外查询条件：
+
+```vue [pages/[...slug\\].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('surround', () => {
+  return queryCollectionItemSurroundings('docs', '/foo')
+})
+</script>
+
+<template>
+  <div class="flex justify-between">
+    <NuxtLink v-if="data?.[0]" :to="data[0].path">
+      ← {{ data[0].title }}
+    </NuxtLink>
+    <NuxtLink v-if="data?.[1]" :to="data[1].path">
+      {{ data[1].title }} →
+    </NuxtLink>
+  </div>
+</template>
+```
+
+带有额外查询条件的示例：
+
+```vue [pages/[...slug\\].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('surround', () => {
+  return queryCollectionItemSurroundings('docs', '/foo', {
+    before: 1,
+    after: 1,
+    fields: ['badge', 'description']
+  })
+    .where('_draft', '=', false)
+    .where('_partial', '=', false)
+    .order('date', 'DESC')
+})
+</script>
+```
+
+## 服务器端使用
+
+Nuxt Content 提供了类似的工具用于服务器端查询集合。唯一不同的是你需要将 `event` 作为第一个参数传递给 `queryCollectionItemSurroundings` 函数。
+
+```ts [server/api/surroundings.ts]
+export default eventHandler(async (event) => {
+  const surroundings = await queryCollectionItemSurroundings(event, 'docs', '/foo')
+  return surroundings
+})
+```
+
+::note
+请确保创建 `server/tsconfig.json` 文件，内容如下，以避免类型错误。
+
+```json
+{
+  "extends": "../.nuxt/tsconfig.server.json"
+}
+```
+::
+
+
+# queryCollectionSearchSections
+
+## 类型
+
+```ts
+function queryCollectionSearchSections(collection: keyof Collections, opts?: { ignoredTags: string[] }): ChainablePromise<T, Section[]>
+
+interface ChainablePromise<T extends keyof PageCollections, R> extends Promise<R> {
+  where(field: keyof PageCollections[T] | string, operator: SQLOperator, value?: unknown): ChainablePromise<T, R>
+  andWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  orWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  order(field: keyof PageCollections[T], direction: 'ASC' | 'DESC'): ChainablePromise<T, R>
+}
+```
+
+## 使用方法
+
+使用自动导入的 `queryCollectionSearchSections` 函数从指定集合生成可搜索的区块。这对于在应用中创建高级搜索功能或内容发现功能非常有用。
+
+```vue [app.vue]
+<script>
+const { data: sections } = await useAsyncData('search-sections', () => {
+  return queryCollectionSearchSections('docs')
+})
+</script>
+```
+
+::tip
+`queryCollectionSearchSections` 工具同时支持 Vue 和 Nitro。更多关于如何在服务器端使用的详细信息，请查看 [Server Usage](https://nuxt-content.zhcndoc.com/#server-usage)。
+::
+
+## API
+
+### `queryCollectionSearchSections(collection: CollectionName, options?: SearchSectionsOptions)`
+
+从指定集合生成可搜索的区块。
+
+- 参数：
+
+  - `collection`：在 `content.config.ts` 中定义的集合键名。
+  - `options`：（可选）一个包含以下属性的对象：
+
+    - `ignoredTags`：一个要在生成区块时忽略的标签名称数组。默认是空数组。
+- 返回值：返回一个 Promise，解析为包含可搜索区块的数组。每个区块是一个对象，包含以下属性：
+
+  - `id`：区块的唯一标识符。
+  - `title`：区块标题（通常是标题文本）。
+  - `titles`：父级区块标题组成的数组，表示层级结构。
+  - `content`：区块的文本内容。
+  - `level`：区块的标题层级（1-6），1 表示最高层级。
+
+## 示例
+
+下面示例演示如何使用 `queryCollectionSearchSections` 从 'docs' 集合创建可搜索的区块：
+
+```vue [pages/[...slug\\].vue]
+<script>
+const { data: surround } = await useAsyncData('foo-surround', () => {
+  return queryCollectionSearchSections('docs', {
+    ignoredTags: ['code']
+  })
+})
+</script>
+```
+
+## 服务器端使用
+
+Nuxt Content 提供了类似的工具来在服务器端查询集合。唯一的区别是你需要将 `event` 作为 `queryCollectionSearchSections` 函数的第一个参数传入。
+
+```ts [server/api/search-sections.ts]
+export default eventHandler(async (event) => {
+  const sections = await queryCollectionSearchSections(event, 'docs')
+  return sections
+})
+```
+
+::note
+请确保创建 `server/tsconfig.json` 文件，并填写以下内容以避免类型错误。
+
+```json
+{
+  "extends": "../.nuxt/tsconfig.server.json"
+}
+```
+::
+
+
+# 内容渲染器
+
+`<ContentRenderer>` 组件用于渲染通过 [`queryCollection()`](https://nuxt-content.zhcndoc.com/docs/utils/query-collection) 查询获得的文档。
+
+::note
+此组件 **仅支持** `Markdown` 文件。
+::
+
+## 属性
+
+| 属性           | 默认值         | 类型                   | 描述                                           |
+| ------------ | ----------- | -------------------- | -------------------------------------------- |
+| `value`      | `{}`        | `ParsedContent`      | 要渲染的文档。                                      |
+| `tag`        | `'div'`     | `string`             | 渲染器元素使用的标签名（如果有使用）。                          |
+| `excerpt`    | `false`     | `boolean`            | 是否仅渲染摘要而不渲染其余内容。                             |
+| `components` | `{}`        | `object`             | 用于渲染的自定义组件映射。此属性将传递给 Markdown 渲染器，不影响其他文件类型。 |
+| `data`       | `{}`        | `object` （必需）        | 将注入到 Markdown 内容中的变量映射，用于后续绑定变量。             |
+| `prose`      | `undefined` | `boolean`            | 是否渲染 Prose 组件而非 HTML 标签。                     |
+| `class`      | `undefined` | `string` 或 `object`  | 用于渲染的根标签的类名。                                 |
+| `unwrap`     | `false`     | `boolean` 或 `string` | 需要去除包装的标签，多个标签用空格分隔。例如：`'ul li'`。            |
+
+## 例子
+
+```vue [pages/[...slug\\].vue]
+<script lang="ts" setup>
+const route = useRoute()
+const { data: page } = await useAsyncData(route.path, () => {
+  return queryCollection('docs').path(route.path).first()
+})
+</script>
+
+<template>
+  <ContentRenderer v-if="page" :value="page" />
+</template>
+```
+
+## 处理缺失页面
+
+如果查询的内容**缺失**，您可以显示**自定义的备用提示信息**。
+
+```vue [pages/[...slug\\].vue]
+<script lang="ts" setup>
+const route = useRoute()
+const { data: page } = await useAsyncData(route.path, () => {
+  return queryCollection('docs').path(route.path).findOne()
+})
+</script>
+
+<template>
+  <template v-if="page">
+    <ContentRenderer :value="page" />
+  </template>
+  <template v-else>
+    <div class="empty-page">
+      <h1>页面未找到</h1>
+      <p>抱歉！您查找的内容不存在。</p>
+      <NuxtLink to="/">返回首页</NuxtLink>
+    </div>
+  </template>
+</template>
+```
+
+## 处理空页面
+
+如果查询的内容**为空**，您可以显示**自定义的备用提示信息**。
+
+
+# 插槽
+
+当你在组件内使用 MDC 语法编写内容和段落时，可以使用 Vue 的 `<slot>` 组件来渲染内容。
+
+## 用法
+
+如果你不想修改渲染的内容，只需使用 Vue 的 `<slot>` 组件。
+
+```vue [components/content/Callout.vue]
+<template>
+  <div class="callout">
+    <slot />
+  </div>
+</template>
+```
+
+现在我们在 Markdown 中使用它：
+
+```mdc [content/index.md]
+::callout
+这是一个呼出框。
+::
+```
+
+渲染后的 HTML 将会是：
+
+```html
+<div class="callout">
+  <p>这是一个呼出框。</p>
+</div>
+```
+
+这种用法类似于使用原生的 `<slot>` 组件。
+
+### 解除包裹
+
+`mdc-unwrap` 属性允许你从渲染的内容中移除一个或多个包裹元素。当你想提取嵌套在原生 Markdown 语法中的内容时，这非常有用。指定的每个标签都会从 AST 中被移除。
+
+让我们从上面的示例中解除 `<p>` 元素的包裹：
+
+```vue [components/content/Callout.vue]
+<template>
+  <div class="callout">
+    <slot mdc-unwrap="p" />
+  </div>
+</template>
+```
+
+现在渲染的 HTML 将会是：
+
+```html
+<div class="callout">
+  这是一个呼出框。
+</div>
+```
+
+### 命名插槽
+
+`name` 属性允许你通过名称绑定一个插槽。当你想渲染非默认插槽时，这非常有用。
+
+让我们改进 `Callout` 组件，增加一个 `title` 插槽：
+
+```vue [components/content/Callout.vue]
+<template>
+  <div class="callout">
+    <h2 v-if="$slots.title">
+      <slot name="title" mdc-unwrap="p" />
+    </h2>
+    <slot />
+  </div>
+</template>
+```
+
+现在我们在 Markdown 中使用它：
+
+```mdc [content/index.md]
+::callout
+#title
+请小心！
+#default
+使用 MDC & Vue 组件会上瘾。
+::
+```
+
+这将生成：
+
+```html
+<div class="callout">
+  <h2>请小心！</h2>
+  <p>使用 MDC & Vue 组件会上瘾。</p>
+</div>
+```
+
+当不使用 `title` 插槽时，`h2` 元素将不会被渲染。
+
+## 属性
+
+- `mdc-unwrap`：是否解除内容的包裹。当你想提取嵌套在原生 Markdown 语法中的内容时，这非常有用。指定的每个标签都会从 AST 中被移除。
+
+  - **类型：** `boolean` 或 `string`
+  - **默认值：** `false`
+  - **示例：** `'p'` 或 `'ul li'`
+
+
+# 文章组件
+
+文章组件是 HTML 排版标签的替代品。文章组件提供了一种简便的方式来自定义内容界面。
+
+要覆盖文章组件，请在项目的 `components/content/` 目录下创建同名组件（例如：`components/content/ProseA.vue`）。
+
+::note
+文章组件最初是 [`@nuxtjs/mdc`](https://github.com/nuxt-modules/mdc){rel="nofollow"} 的一部分。
+::
+
+## `ProseA`
+
+::code-group
+```md [代码]
+[Link](/docs/components/prose)
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  [Link](https://nuxt-content.zhcndoc.com/docs/components/prose)
+  :::
+::
+
+## `ProseBlockquote`
+
+::code-group
+```md [代码]
+> 块引用
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  > 块引用
+  :::
+::
+
+## `ProsePre`
+
+::code-group
+````md [代码]
+  ```js [file.js]{2} meta-info=val
+  export default () => {
+    console.log('代码块')
+  }
+  ```
+````
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  ```js [file.js]
+  export default () => {
+    console.log('代码块')
+  }
+  ```
+  :::
+::
+
+组件属性示例如下：
+
+```json
+{
+  code: "export default () => {\n    console.log('代码块')\n}"
+  language: "js"
+  filename: "file.js"
+  highlights: [2]
+  meta: "meta-info=val"
+}
+```
+
+有关语法高亮的更多内容，请查看[高亮选项](https://nuxt-content.zhcndoc.com/docs/getting-started/configuration#highlight)。
+
+::callout{type="warning"}
+如果你想在文件名中使用 `]`，需要用两个反斜杠进行转义：`\\]`。这是必须的，因为 JS 会自动转义字符串中的反斜杠，导致 `\]` 变成 `]`，从而破坏正则表达式。
+::
+
+## `ProseCode`
+
+::code-group
+```md [代码]
+`code`
+
+`const code: string = 'highlighted code inline'`{lang="ts"}
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  `code`
+  
+  `const code: string = 'highlighted code inline'`
+  :::
+::
+
+## `ProseH1`
+
+::code-group
+```md [代码]
+# H1 标题
+```
+
+  :::preview-card{.pt-4 label="预览"}
+  # H1 标题
+  :::
+::
+
+## `ProseH2`
+
+::code-group
+```md [代码]
+## H2 标题
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  ## H2 标题
+  :::
+::
+
+## `ProseH3`
+
+::code-group
+```md [代码]
+### H3 标题
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  ### H3 标题
+  :::
+::
+
+## `ProseH4`
+
+::code-group
+```md [代码]
+#### H4 标题
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  #### H4 标题
+  :::
+::
+
+## `ProseH5`
+
+::code-group
+```md [代码]
+##### H5 标题
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  ##### H5 标题
+  :::
+::
+
+## `ProseH6`
+
+::code-group
+```md [代码]
+###### H6 标题
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  ###### H6 标题
+  :::
+::
+
+## `ProseHr`
+
+::code-group
+```md [代码]
+下方分隔线。
+
+---
+
+上方分隔线。
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  下方分隔线。
+  
+  ---
+  
+  上方分隔线。
+  :::
+::
+
+## `ProseImg`
+
+::code-group
+```md [代码]
+![酷炫图片](https://nuxt.com/assets/design-kit/icon-green.png)
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  ![酷炫图片](https://nuxt.com/assets/design-kit/icon-green.png)
+  :::
+::
+
+## `ProseUl`
+
+::code-group
+```md [代码]
+- 只是
+- 一个
+- 无序
+- 列表
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  - 只是
+  - 一个
+  - 无序
+  - 列表
+  :::
+::
+
+## `ProseLi`
+
+::code-group
+```md [代码]
+- 列表项
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  - 列表项
+  :::
+::
+
+## `ProseOl`
+
+::code-group
+```md [代码]
+1. Foo
+2. Bar
+3. Baz
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  1. Foo
+  2. Bar
+  3. Baz
+  :::
+::
+
+## `ProseP`
+
+::code-group
+```md [代码]
+仅仅是一段文字。
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  仅仅是一段文字。
+  :::
+::
+
+## `ProseStrong`
+
+::code-group
+```md [代码]
+**仅仅是一段加粗文字。**
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  **仅仅是一段加粗文字。**
+  :::
+::
+
+## `ProseEm`
+
+::code-group
+```md [代码]
+_仅仅是一段斜体文字。_
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  *仅仅是一段斜体文字。*
+  :::
+::
+
+## `ProseTable`
+
+::code-group
+```md [代码]
+| 键  | 类型      | 描述       |
+| --- | --------- | --------- |
+| 1   | 极好      | 表格       |
+| 2   | 极好      | 数据       |
+| 3   | 极好      | 网站       |
+```
+
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  | 键 | 类型 | 描述 |
+  | - | -- | -- |
+  | 1 | 极好 | 表格 |
+  | 2 | 极好 | 数据 |
+  | 3 | 极好 | 网站 |
+  :::
+::
+
+## `ProseTbody`
+
+包含在 **ProseTable** 示例中。
+
+## `ProseTd`
+
+包含在 **ProseTable** 示例中。
+
+## `ProseTh`
+
+包含在 **ProseTable** 示例中。
+
+## `ProseThead`
+
+包含在 **ProseTable** 示例中。
+
+## `ProseTr`
+
+包含在 **ProseTable** 示例中。
+
+::callout
+---
+icon: i-simple-icons-github
+to: https://github.com/nuxt-modules/mdc/tree/main/src/runtime/components/prose
+---
+查看这些组件的源代码请访问 GitHub。
+::
+
+
+# 服务器托管
+
+## 什么是 Node.js 预设？
+
+Node 预设是 Nuxt 的默认预设，构建项目时，Nuxt 会输出一个 Node.js 服务器，你可以通过 `node .output/server/index.mjs` 来运行它。
+
+## 环境要求
+
+如果你使用默认的 `better-sqlite3` 模块来操作 sqlite 数据库，则必须部署在 Glibc 版本高于 2.29 的操作系统上，例如 Debian 11、Ubuntu 20.04。
+
+::note
+你可以使用 `ldd --version` 检查 Glibc 版本。更多信息请参见 [issue #3248](https://github.com/nuxt/content/issues/3248){rel="nofollow"}。
+::
+
+## 使用 Node.js 预设构建
+
+使用 Nuxt 构建命令构建项目：
+
+```bash [Terminal]
+nuxi build
+```
+
+使用 Node 服务器预设运行 `nuxi build` 后，结果将是一个启动可运行 Node 服务器的入口点。
+
+```bash [Terminal]
+$ node .output/server/index.mjs
+Listening on http://localhost:3000
+```
+
+::note
+SQLite 数据库将在服务器启动时在服务器端加载，同时在浏览器中用于客户端导航或操作。
+::
+
+
+# 无服务器托管
+
+## 什么是无服务器托管？
+
+无服务器托管让你无需直接管理服务器即可运行代码和应用 —— 你只需上传代码，云服务提供商会自动处理所有基础设施、扩展和维护，只按你实际使用的计算资源收费。
+
+**在无服务器环境中，每个用户请求都会触发一个新的 Nuxt 服务器实例，这意味着每次都是从头开始启动。** 这种“无状态”特性意味着你不能将数据存储在服务器内存中，也不能使用基于文件的数据库如 SQLite。因此，我们需要使用外部数据库服务（如 D1、Turso 或 PostgreSQL）来持久化数据，独立于你的服务器实例。
+
+## 使用无服务器部署
+
+该模块内置支持多个知名无服务器平台，你可以轻松将项目部署到它们上。查看各个平台的指南：
+
+- [NuxtHub](https://nuxt-content.zhcndoc.com/docs/deploy/nuxthub)
+- [Cloudflare Pages](https://nuxt-content.zhcndoc.com/docs/deploy/cloudflare-pages)
+- [Vercel](https://nuxt-content.zhcndoc.com/docs/deploy/vercel)
+
+如果你想部署到其他平台，可以按照下面的步骤进行。
+
+### 1. 选择数据库服务
+
+在部署项目之前，你需要选择一个数据库服务：
+
+::code-group
+```ts [PostgreSQL]
+// 1. 创建一个 PostgreSQL 数据库
+// 2. 将 `POSTGRES_URL` 添加到环境变量中
+export default defineNuxtConfig({
+  content: {
+    database: {
+      type: 'postgres',
+      url: process.env.POSTGRES_URL
+    }
+  }
+})
+```
+
+```ts [Cloudflare D1]
+// 1. 在你的 Cloudflare 账户中创建一个 D1 数据库
+// 2. 使用相同的绑定名将其链接到你的项目
+export default defineNuxtConfig({
+  content: {
+    database: {
+      type: 'd1',
+      bindingName: '<YOUR_BINDING_NAME>'
+    }
+  }
+})
+```
+
+```ts [LibSQL]
+// 1. 在 Turso.tech 上创建一个 LibSQL 数据库
+// 2. 并添加 `TURSO_DATABASE_URL` 和 `TURSO_AUTH_TOKEN` 环境变量
+export default defineNuxtConfig({
+  modules: ['@nuxt/content'],
+  content: {
+    database: {
+      type: 'libsql',
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    }
+  }
+})
+```
+
+```ts [NuxtHub]
+// 安装 NuxtHub 模块（参见 hub.nuxt.com）
+export default defineNuxtConfig({
+  modules: ['@nuxt/content', '@nuxthub/core'],
+  content: {
+    database: {
+      type: 'd1',
+      binding: 'DB'
+    }
+  },
+  hub: {
+    database: true
+  }
+})
+```
+::
+
+### 2. 部署你的项目
+
+Nuxt Content 使用 Nuxt 部署预设来调整不同托管平台的构建流程。
+
+以下无服务器平台支持零配置：
+
+- [Cloudflare](https://nuxt.com/deploy/cloudflare){rel="nofollow"}
+- [NuxtHub](https://nuxt.com/deploy/nuxthub){rel="nofollow"}
+- [Vercel](https://nuxt.com/deploy/vercel){rel="nofollow"}
+- [Netlify](https://nuxt.com/deploy/netlify){rel="nofollow"}
+
+你只需将构建命令设置为：
+
+```bash [Terminal]
+nuxi build
+```
+
+生成的输出将兼容所选平台。
+
+::note
+链接的数据库将在服务器启动时于服务器端加载。浏览器端将加载一个 [WASM SQLite](https://nuxt-content.zhcndoc.com/docs/advanced/database#wasm-sqlite-in-browser) 数据库，用于客户端导航和操作。
+::
+
+::tip
+如果你想部署到 AWS Lambda，需确保你的 sqlite 文件存放在 `/tmp` 中，因为这是唯一可写的目录。
+
+```ts
+export default defineNuxtConfig({
+  modules: ['@nuxt/content'],
+  content: {
+    database: {
+      type: 'sqlite',
+      filename: '/tmp/contents.sqlite'
+    }
+  }
+})
+```
+::
+
+### 3. 通过预渲染优化
+
+由于每个请求都会触发一个新的 Nuxt 服务器实例，如果不预渲染部分页面，将影响你的无服务器应用性能。
+
+为了优化你的无服务器应用，你可以使用 `routeRules` 选项预渲染页面：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  routeRules: {
+    '/': { prerender: true }
+  }
+})
+```
+
+::tip{to="https://hub.nuxt.com/docs/recipes/pre-rendering"}
+我们推荐查看 **NuxtHub 的预渲染指南**，了解更多优化无服务器应用的不同策略，该指南适用于所有无服务器平台。
+::
+
+
+# NuxtHub
+
+::card
+快速设置
+
+1. 安装 `@nuxthub/core` 模块 `nuxi module add hub`
+2. 使用 `npx nuxthub deploy` 将您的内容部署到 NuxtHub
+::
+
+---
+
+Nuxt Content 模块内置了与 [NuxtHub](https://hub.nuxt.com){rel="nofollow"} 的集成，用于部署您的内容。
+
+要启用 NuxtHub 集成，您需要安装 `@nuxthub/core` 模块并在 `nuxt.config.ts` 中注册。更高效的做法是使用 `nuxi module` 命令一次完成这两个操作。
+
+```bash
+npx nuxi module add hub
+```
+
+仅此而已 🎉
+
+现在您可以使用 `npx nuxthub deploy` 命令将内容部署到 NuxtHub。
+
+```bash
+npx nuxthub deploy
+```
+
+::note
+Nuxt Content 模块会自动启用 NuxtHub 数据库，并更新数据库配置以使用带有 `DB` 绑定名的 Cloudflare D1。（这是 NuxtHub 数据库的默认配置。）
+
+:br
+
+您也可以通过在 `nuxt.config.ts` 中提供自定义数据库配置来覆盖默认配置。
+::
+
+请查看 [NuxtHub 文档](https://hub.nuxt.com/docs/getting-started/deploy){rel="nofollow"} 获取更多信息。
+
+
+# Cloudflare Pages
+
+::card
+快速设置
+
+1. 使用 `nuxi build --preset=cloudflare_pages` 构建您的应用
+2. 在 Cloudflare 控制面板中创建 D1 数据库并连接到项目，绑定名称为 `DB`
+3. 部署/重新部署您的应用
+::
+
+---
+
+Nuxt Content 模块内置与 [Cloudflare Pages](https://pages.cloudflare.com){rel="nofollow"} 的集成以部署您的内容。
+
+该模块会自动检测构建目标并为 Cloudflare Pages 准备必要的配置。目前内容模块仅支持 [`cloudflare-pages` 预设](https://nuxt.com/deploy/cloudflare){rel="nofollow"}。
+
+您可以在 `nuxi build` 命令中使用 `--preset=cloudflare_pages` 选项，或者在 `nuxt.config.ts` 中配置该预设。
+
+```ts
+export default defineNuxtConfig({
+  nitro: {
+    preset: 'cloudflare_pages',
+  },
+});
+```
+
+该模块需要连接一个 D1 数据库才能工作。默认情况下会使用 `DB` 作为绑定名称。您可以通过在 `nuxt.config.ts` 中提供自定义的数据库配置来覆盖该设置。
+
+在创建新的 Cloudflare Pages 项目后，您需要创建一个新的 D1 数据库并将其连接到项目。请确保使用与模块相同的绑定名称。（默认是 `DB`）
+
+就是这么简单 🎉
+
+请查看：
+
+- [Nuxt 部署文档](https://nuxt.com/deploy/cloudflare){rel="nofollow"}
+- [Cloudflare D1 文档](https://developers.cloudflare.com/d1/){rel="nofollow"}
+- [Cloudflare Pages 文档](https://developers.cloudflare.com/pages/){rel="nofollow"}
+
+
+# Vercel
+
+::card
+快速设置
+
+- 执行 `npx vercel deploy` 命令，或前往 Vercel 仪表盘并使用 Git 仓库创建一个新项目。
+::
+
+---
+
+Nuxt Content 项目可以零配置部署到 Vercel。该模块会自动检测 Vercel 环境，并准备部署所需的配置。
+
+您只需执行 `npx vercel deploy` 命令，或前往 Vercel 仪表盘并使用 Git 仓库创建新项目。
+
+就是这么简单 🎉
+
+::note
+默认情况下，模块将在 Vercel 的 `/tmp` 目录使用 SQLite 数据库。您可以通过提供自己的数据库配置来覆盖默认配置。
+
+:br
+
+Vercel 支持多种数据库服务商。您可以通过在 `nuxt.config.ts` 中提供正确的连接字符串来使用其中任何一个。
+::
+
+参考链接：
+
+- [Nuxt 部署文档](https://nuxt.com/deploy/vercel){rel="nofollow"}
+- [Vercel 文档](https://vercel.com/docs/deployments/deployment-methods){rel="nofollow"}
+
+
+# Netlify
+
+::card
+快速设置
+
+- 进入 Netlify 仪表盘，使用 git 仓库创建一个新项目。
+- 在 `依赖管理` 下的 `站点配置` 中，将 Node 版本更改为 `20.x` 或更高。
+- 进入 `部署`，重试上一次部署。
+::
+
+---
+
+Nuxt Content 项目可以无需配置即可部署到 Netlify。该模块会自动检测 Netlify 环境并为 Netlify 准备所需的配置。
+
+您只需进入 Netlify 仪表盘，使用 git 仓库创建一个新项目即可。
+
+::note
+默认情况下，Netlify 使用 Node.js 18.x 版本，但该版本不受模块支持。您需要在 `依赖管理` 下的 `站点配置` 中更改 Node.js 版本。
+::
+
+就是这么简单 🎉
+
+参考资料：
+
+- [Nuxt 部署文档](https://nuxt.com/deploy/netlify){rel="nofollow"}
+- [Netlify 文档](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/){rel="nofollow"}
+
+
+# AWS Amplify
+
+::card
+快速设置
+
+- 在您的项目中安装 `sqlite3` 包。
+- 访问 AWS Amplify 控制台，使用 Git 仓库创建一个新项目并部署应用。
+::
+
+---
+
+Nuxt Content 项目可以零配置部署到 AWS Amplify。
+该模块会自动检测 AWS Amplify 环境，并准备好部署所需的配置。
+
+您只需在项目中安装 `sqlite3` 包，然后访问 AWS Amplify 控制台，使用 Git 仓库创建一个新项目即可。
+
+就是这么简单 🎉
+
+::note
+默认情况下，模块会使用位于 `/tmp` 目录下的 SQLite 数据库。您也可以通过提供自定义数据库配置来覆盖默认配置。
+::
+
+参考链接：
+
+- [Nuxt 部署文档](https://nuxt.com/deploy/aws-amplify){rel="nofollow"}
+
+
+# Docker
+
+Docker 是一个流行的容器化平台，它允许您将应用程序及其所有依赖项打包到一个单独的容器中。这样可以轻松地在任何支持 Docker 的平台上部署您的内容应用。
+
+## 使用 Node.js 镜像
+
+使用 Docker 的 Node.js 镜像，您可以部署您的内容应用。您只需要创建一个 Dockerfile 并构建镜像。以下是一个示例 Dockerfile：
+
+```docker [Dockerfile]
+# 构建阶段 1
+
+FROM node:22-alpine AS build
+WORKDIR /app
+
+RUN corepack enable
+
+# 复制 package.json 和您的锁文件，这里添加 pnpm-lock.yaml 作为示例
+COPY package.json pnpm-lock.yaml .npmrc ./
+
+# 安装依赖
+RUN pnpm i
+
+# 复制整个项目
+COPY . ./
+
+# 构建项目
+RUN pnpm run build
+
+# 构建阶段 2
+
+FROM node:22-alpine
+WORKDIR /app
+
+# 只需要从构建阶段复制 `.output` 文件夹
+COPY --from=build /app/.output/ ./
+
+# 修改端口和主机
+ENV PORT=80
+ENV HOST=0.0.0.0
+
+EXPOSE 80
+
+CMD ["node", "/app/server/index.mjs"]
+```
+
+## 使用 Bun 镜像
+
+如果您喜欢使用 Bun，可以使用官方的 Bun 镜像。以下是一个示例 Dockerfile：
+
+```docker [Dockerfile]
+# 使用官方 Bun 镜像
+# 所有版本见 https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1 AS build
+WORKDIR /app
+
+COPY package.json bun.lockb ./
+
+# 使用 ignore-scripts 避免构建某些 node 模块，如 better-sqlite3
+RUN bun install --frozen-lockfile --ignore-scripts
+
+# 复制整个项目
+COPY . .
+
+RUN bun --bun run build
+
+# 将生产依赖和源码复制到最终镜像
+FROM oven/bun:1 AS production
+WORKDIR /app
+
+# 只需要从构建阶段复制 `.output` 文件夹
+COPY --from=build /app/.output /app
+
+# 运行应用
+EXPOSE 3000/tcp
+ENTRYPOINT [ "bun", "--bun", "run", "/app/server/index.mjs" ]
+```
+
+
+# 静态托管
+
+## 什么是静态托管？
+
+静态托管是一种托管类型，您的网站被构建并作为静态文件（HTML、CSS、JS）进行服务，任何静态文件服务器都可以提供这些文件。
+
+Nuxt Content 可以使用 Nuxt 预渲染部署到静态托管。
+
+## 使用 SSG 构建
+
+要使用静态站点生成构建您的应用，请运行以下命令：
+
+```bash
+npx nuxi generate
+```
+
+::tip{icon="i-lucide-check"}
+此命令将创建一个包含您的静态站点的 `dist/` 目录。您可以将其上传到任何静态托管服务。
+::
+
+Nuxt 将使用内部爬虫自动预渲染所有页面，您可以通过 `nitro.prerender` 选项自定义其行为。
+
+::note{to="https://nuxt.com/docs/getting-started/prerendering"}
+了解更多关于 Nuxt 预渲染的信息。
+::
+
+## 数据库怎么办？
+
+Nuxt Content 将使用 [WASM SQLite](https://nuxt-content.zhcndoc.com/docs/advanced/database#wasm-sqlite-in-browser) 在浏览器中加载数据库，这样，内容查询发生在客户端导航或操作时时，会在浏览器中运行。
+
+
+# 全文搜索
+
+Content 模块提供了一个便捷的工具 [`queryCollectionSearchSections`](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-search-sections)，用于将内容文件拆分成可搜索的章节。这对于在网站中实现全文搜索非常有用。你可以将该工具的结果与 [Nuxt UI Content Search](https://ui.nuxt.com/pro/components/content-search){rel="nofollow"} 或其他搜索库如 [Fuse.js](https://fusejs.io/){rel="nofollow"}、[minisearch](https://lucaong.github.io/minisearch){rel="nofollow"} 等结合使用。
+
+## Nuxt UI Pro
+
+Nuxt UI Pro 提供了一个现成的全文搜索组件。你可以将 `queryCollectionSearchSections` 的结果传递给该组件的 `files` 属性来使用。
+
+详细阅读 [Nuxt UI Content Search](https://ui.nuxt.com/pro/components/content-search){rel="nofollow"}。
+
+::code-group
+```vue [UContentSearchExample.vue]
+<script setup lang="ts">
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'))
+const { data: files } = await useAsyncData('search', () => queryCollectionSearchSections('docs'))
+
+const searchTerm = ref('')
+</script>
+
+<template>
+  <UContentSearch
+    v-model:search-term="searchTerm"
+    :files="files"
+    :navigation="navigation"
+    :fuse="{ resultLimit: 42 }"
+  />
+</template>
+```
+
+  :::preview-card{label="实时预览"}
+    ::::example-fulltext-content-search
+    ::::
+  :::
+::
+
+## MiniSearch 示例
+
+详细阅读 [minisearch](https://lucaong.github.io/minisearch){rel="nofollow"}。
+
+::code-group
+```vue [MiniSearchExample.vue]
+<script setup lang="ts">
+import MiniSearch from 'minisearch'
+
+const query = ref('')
+const { data } = await useAsyncData('search', () => queryCollectionSearchSections('docs'))
+
+const miniSearch = new MiniSearch({
+  fields: ['title', 'content'],
+  storeFields: ['title', 'content'],
+  searchOptions: {
+    prefix: true,
+    fuzzy: 0.2,
+  },
+})
+
+// 将数据添加到 MiniSearch 实例中
+miniSearch.addAll(toValue(data.value))
+const result = computed(() => miniSearch.search(toValue(query)))
+</script>
+
+<template>
+  <UContainer class="p-4">
+    <UCard>
+      <UInput v-model="query" placeholder="搜索..." />
+      <ul>
+        <li v-for="link of result" :key="link.id" class="mt-2">
+          <NuxtLink :to="link.id">{{ link.title }}</NuxtLink>
+          <p class="text-gray-500 text-xs">{{ link.content }}</p>
+        </li>
+      </ul>
+    </UCard>
+  </UContainer>
+</template>
+```
+
+  :::preview-card{label="实时预览"}
+    ::::example-fulltext-mini-search
+    ::::
+  :::
+::
+
+## Fuse.js 示例
+
+详细阅读 [Fuse.js](https://fusejs.io){rel="nofollow"}。
+
+::code-group
+```vue [FusejsExample.vue]
+<script setup lang="ts">
+import Fuse from 'fuse.js'
+
+const query = ref('')
+const { data } = await useAsyncData('search-data', () => queryCollectionSearchSections('docs'))
+
+const fuse = new Fuse(data.value, {
+  keys: ['title', 'description']
+})
+
+const result = computed(() => fuse.search(toValue(query)).slice(0, 10))
+</script>
+
+<template>
+  <UContainer class="p-4">
+    <UCard>
+      <UInput v-model="query" placeholder="搜索..." class="w-full" />
+      <ul>
+        <li v-for="link of result" :key="link.item.id" class="mt-2">
+          <UButton variant="ghost" class="w-full" :to="link.item.id">
+            {{ link.item.title }}
+            <span class="text-gray-500 text-xs">
+              {{ link.item.content?.slice(0, 100) }}...
+            </span>
+          </UButton>
+        </li>
+      </ul>
+    </UCard>
+  </UContainer>
+</template>
+```
+
+  :::preview-card{label="实时预览"}
+    ::::example-fulltext-fusejs
+    ::::
+  :::
+::
+
+
+# 原始内容
+
+在内容版本 2 中，有很多关于在生产环境访问内容原始数据的请求。在内容版本 3 中，可以将内容原始数据传递到生产环境。
+
+为了将原始内容传递到生产环境，您需要在集合的 schema 中定义 `rawbody` 字段。就是这么简单。
+
+Nuxt Content 会检测到 schema 中这个神奇的字段，并用原始内容填充它。
+
+```ts [content.config.ts]
+
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      source: '**',
+      type: 'page',
+      schema: z.object({
+        rawbody: z.string()
+      })
+    })
+  }
+})
+```
+
+您可以使用 `queryCollection()` 来获取原始内容。
+
+```vue [pages/index.vue]
+<script setup lang="ts">
+const route = useRoute()
+const { data } = useAsyncData('page-' + route.path, () => queryCollection('docs').path(route.path).first())
+</script>
+
+<template>
+  <pre>{{ data.rawbody }}</pre>
+</template>
+```
+
+如果您不想传递某个文件的原始内容，可以在该文件的 frontmatter 中添加 `rawbody: ''`。`rawbody` 的自动填充值就像一个默认值，当您在 frontmatter 中定义了 `rawbody` 时，会覆盖自动填写的值。
+
+```md [content.md]
+---
+title: 我的页面
+rawbody: ''
+---
+
+```
+
+::callout
+重要的是要确保 frontmatter 字段的数据类型与集合 schema 中定义的类型相同。在本例中，`rawbody` 是字符串类型，您应考虑传递空字符串。请勿使用布尔值或其他类型的值。
+::
+
+
+# 数据库
+
+在 Content v3 中，我们引入了基于 SQLite 的强大存储层，提供了一种强大且高效的内容管理方法。这相比之前基于文件的存储系统是一个显著的提升，后者在性能和可扩展性方面存在局限。
+
+> 在 Content v2 中，系统在 Nitro 运行时读取并解析内容，为每个内容文件创建缓存文件以存储解析数据。这种方法给网站运行时带来了相当大的开销。
+>
+> - 生产环境中的 I/O 时间较长，因为模块必须加载所有缓存文件来搜索内容。
+> - 此外，由于内容缺乏优化和压缩，导致包体积较大，特别在边缘环境中表现尤为明显。
+
+Content v3 的内容管理包含三个关键步骤，旨在简化流程并提升性能。
+
+## 生成数据库转储文件
+
+对于项目中的每个集合，模块从定义的源读取内容并解析成抽象语法树（AST）。基于集合的模式为每个集合创建特定的表。然后将解析后的内容插入对应的表中，确保数据结构与定义的模式一致，以实现最佳查询效果。所有内容最终保存到转储文件中。
+
+## 冷启动时还原转储文件
+
+在运行时，当应用执行首次内容查询时，模块会读取前一步生成的转储文件，并将其还原到目标数据库中。该过程快速且针对不同部署模式和平台进行了优化。
+
+模块采用了特殊的完整性检查机制，确保数据库内容更新到最新状态。该完整性检查机制还能防止重复导入，保持数据存储的完整性和准确性。
+
+## 浏览器中的 WASM SQLite
+
+针对客户端导航，模块采用类似的方法。当应用执行首次内容查询时，会从服务器下载生成的转储文件，并在浏览器中初始化本地 SQLite 数据库。从此之后，所有查询均在本地执行，无需调用服务器，大大提升了应用响应速度并提供无缝用户体验。
+
+这一架构不仅提升了性能，还支持离线功能，使用户即使在无网络连接时也能访问内容。服务器端与客户端的结合确保 Nuxt Content v3 功能强大且灵活，适用于广泛的用例和环境。
+
+
+# 工具
+
+Nuxt Content 使用 &#x2A;*SQLite 数据库 (`contents.sqlite`)** 来高效地存储和查询内容。如果你遇到 **内容丢失、查询缓慢或数据库问题**，调试你的 SQLite 数据库将会有帮助！
+
+::callout
+---
+icon: i-simple-icons-visualstudiocode
+to: https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite
+---
+一个简单的检查方法？**使用 SQLite VS Code 扩展！**
+::
+
+## 安装 SQLite VS Code 扩展
+
+1. 打开 **Visual Studio Code**。
+2. 进入 **扩展** 面板（Windows/Linux：`Ctrl+Shift+X`，Mac：`Cmd+Shift+X`）。
+3. 搜索 &#x2A;*"SQLite"**（由 `alexcvzz` 发布）并安装。
+4. 打开你的 Nuxt Content 数据库 (`.data/content/contents.sqlite`)。
+
+::tip{icon="i-lucide-lightbulb"}
+如果你看不到 `contents.sqlite`，请先启动你的 Nuxt 应用：
+
+```bash [终端]
+npx nuxi dev
+```
+::
+
+## 找到你的 SQLite 数据库
+
+Nuxt Content 将数据库存储在：
+
+```bash
+.data/content/contents.sqlite
+```
+
+::note{to="https://nuxt.com/docs/getting-started/prerendering"}
+该文件会在你启动 Nuxt 应用时自动生成。无需手动创建！
+::
+
+## 打开并浏览数据库
+
+1. 在 VS Code 中 **右键点击** `contents.sqlite`。
+2. 选择 &#x2A;*“打开数据库”**。
+3. 展开 **数据库资源管理器** 面板查看表和数据。
+
+![VS Code 中的 SQLite 资源管理器](https://github.com/user-attachments/assets/c9f22c4c-7a95-43e8-ab03-aa76f2e49c8e)
+
+## 解决常见问题
+
+### 内容没有显示？
+
+1. **检查数据库是否存在**（`.data/content/contents.sqlite`）。
+2. **执行清理并重启 Nuxt**：
+
+   ```bash [终端]
+   npx nuxi cleanup && npx nuxi dev
+   ```
+3. **检查数据库内是否有内容**（执行 SQL 查询）。
+
+### 手动重置数据库
+
+如果问题非常严重，可以尝试重置数据库：
+
+1. **删除数据库文件**：
+
+   ```bash [终端]
+   rm -rf .data/content/contents.sqlite
+   ```
+2. **运行清理以移除旧缓存**：
+
+   ```bash [终端]
+   npx nuxi cleanup
+   ```
+3. **重启 Nuxt** 以生成全新的数据库：
+
+   ```bash [终端]
+   npx nuxi dev
+   ```
+
+::note{icon="i-lucide-triangle-alert"}
+清理操作会删除缓存数据，别担心——它会自动重新生成！
+::
+
+## 更多调试工具
+
+如果 VS Code 不够用，可以尝试：
+
+- 🖥️ [**DB Browser for SQLite**](https://sqlitebrowser.org/){rel="nofollow"} – 一个用于检查和修改数据库的可视化工具。
+- 🛠️ **SQLite 命令行** – 在终端使用 `sqlite3 contents.sqlite` 执行 SQL 查询。
+
+
+# Hooks
+
+## `content:file:beforeParse`{.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts"}
+
+此钩子在内容解析之前调用。
+
+它可用于修改来自 `file` 的原始内容，或修改转换选项。
+
+```ts
+export default defineNuxtConfig({
+  hooks: {
+    'content:file:beforeParse'(ctx) {
+      // ...
+    }
+  }
+})
+```
+
+## `content:file:afterParse`{.shiki.shiki-themes.material-theme-lighter.material-theme.material-theme-palenight lang="ts"}
+
+此钩子在内容解析之后且保存到数据库之前调用。
+
+```ts
+export default defineNuxtConfig({
+  hooks: {
+    'content:file:afterParse'(ctx) {
+      // ...
+    }
+  }
+})
+```
+
+## 示例用法
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  // ...
+  hooks: {
+    'content:file:beforeParse'(ctx) {
+      const { file } = ctx;
+
+      if (file.id.endsWith(".md")) {
+        file.body = file.body.replace(/react/gi, "Vue");
+      }
+    },
+    'content:file:afterParse'(ctx) {
+      const { file, content } = ctx;
+
+      const wordsPerMinute = 180;
+      const text = typeof file.body === 'string' ? file.body : '';
+      const wordCount = text.split(/\s+/).length;
+
+      content.readingTime = Math.ceil(wordCount / wordsPerMinute);
+    }
+  }
+})
+```
+
+::note{icon="i-lucide-info"}
+在 `content:file:afterParse` 钩子中，我们向内容对象添加了一个自定义属性。为了能在页面中通过 [`queryCollection()`](https://nuxt-content.zhcndoc.com/docs/utils/query-collection) 访问该属性，我们首先需要在内容模式中定义它。
+
+```ts [content.config.ts]
+export default defineContentConfig({
+  collections: {
+    content: defineCollection({
+      type: 'page',
+      source: '**/*.md',
+      schema: z.object({
+        readingTime: z.number().optional()
+      })
+    })
+  }
+});
+```
+::
+
+
+# 自定义来源
+
+默认情况下，Nuxt Content 提供了一些内置的来源，例如本地文件来源和远程 Github 来源。但是，对于某些情况来说，这些还不够，例如，你想从远程 API 获取数据。这种情况下，你可以定义一个自定义来源来获取数据并在你的集合中使用它。
+
+使用 `defineCollectionSource`，你可以定义一个自定义来源。
+
+```ts
+import { defineCollectionSource } from '@nuxt/content'
+
+const hackernewsSource = defineCollectionSource({
+  getKeys: () => {
+    return fetch('https://hacker-news.firebaseio.com/v0/topstories.json')
+      .then(res => res.json())
+      .then(data => data.map((key: string) => `${key}.json`))
+  },
+  getItem: (key: string) => {
+    const id = key.split('.')[0]
+    return fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+      .then(res => res.json())
+  },
+})
+```
+
+然后你可以在你的集合中使用这个来源。
+
+```ts [content.config.ts]
+import { defineContentConfig, defineCollectionSource, defineCollection, z } from '@nuxt/content'
+
+const hackernewsSource = defineCollectionSource({
+  getKeys: () => {
+    return fetch('https://hacker-news.firebaseio.com/v0/topstories.json')
+      .then(res => res.json())
+      .then(data => data.map((key: string) => `${key}.json`))
+  },
+  getItem: (key: string) => {
+    const id = key.split('.')[0]
+    return fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+      .then(res => res.json())
+  },
+})
+
+const hackernews = defineCollection({
+  type: 'data',
+  source: hackernewsSource,
+  schema: z.object({
+    title: z.string(),
+    date: z.date(),
+    type: z.string(),
+    score: z.number(),
+    url: z.string(),
+    by: z.string(),
+  }),
+})
+
+export default defineContentConfig({
+  collections: {
+    hackernews,
+  },
+})
+```
+
+
+# LLM 集成
+
+Nuxt Content 模块集成了 [`nuxt-llms`](https://github.com/nuxtlabs/nuxt-llms){rel="nofollow"}，用于为大型语言模型 (LLMs) 准备内容。当检测到 `nuxt-llms` 时，Content 模块会自动扩展 LLMs 模块，并将类型为 [page](https://content.nuxt.com/docs/collections/types#page-type){rel="nofollow"} 的集合注入到 LLMs 模块中。🚀
+
+## 设置
+
+::prose-steps
+### 安装所需模块
+
+```bash [terminal]
+npm install nuxt-llms
+```
+
+### 配置你的 `nuxt.config.ts`
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  modules: ['@nuxt/content', 'nuxt-llms'],
+  llms: {
+    domain: 'https://your-site.com',
+    title: '你的站点名称',
+    description: '你站点的简要描述',
+  },
+})
+```
+::
+
+就是这么简单 🚀 `/llms.txt` 文件会被自动生成并预渲染。
+
+## 分区
+
+在生成内容时，你可以创建自定义分区，将内容处理为适合 LLM 使用的格式。
+
+你可以向 `llms.sections` 数组中添加自定义分区，并为每个分区定义 `contentCollection` 和 `contentFilters` 选项。
+
+::prose-warning
+如果在 `contentCollection` 选项中未定义分区，模块将仅把 [page](https://content.nuxt.com/docs/collections/types#page-type){rel="nofollow"} 集合添加到 LLMs 模块。
+::
+
+### `contentCollection`
+
+此选项指定要使用哪个内容集合作为来源。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  llms: {
+    sections: [
+      {
+        title: '文档',
+        description: '技术文档和指南',
+        contentCollection: 'docs',
+       },
+    ],
+  },
+})
+```
+
+### `contentFilters`
+
+此选项定义用于选择集合中特定内容的过滤器。
+
+你可以精确控制包含哪些内容。每个过滤器包含：
+
+- `field`：要检查的内容属性
+- `operator`：比较运算符（`=`、`<>`、`>`、`<`、`LIKE`、`IN`、`NOT IN`、`IS NULL`、`IS NOT NULL` 等）
+- `value`：比较的值
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  llms: {
+    sections: [
+      {
+        title: '文档',
+        description: '技术文档和指南',
+        contentCollection: 'docs',
+        contentFilters: [
+            // 只包含 Markdown 文件
+            { field: 'extension', operator: '=', value: 'md' },
+            // 只包含已发布的内容
+            { field: 'draft', operator: '<>', value: true },
+            // 按目录过滤
+            { field: 'path', operator: 'LIKE', value: '/guide%' },
+        ]
+      },
+    ],
+  },
+})
+```
+
+::tip{to="https://github.com/nuxtlabs/nuxt-llms"}
+查看 nuxt-llms 文档以获取有关该模块的更多信息。
+::
+
+
+# 转换器
+
+Nuxt Content 中的 Transformers 允许你在内容文件处理过程中以编程方式解析、修改或分析你的内容文件。它们特别适用于：
+
+- 添加或修改字段（例如，给标题追加内容、生成 slug）
+- 提取元数据（例如，列出使用的组件）
+- 用计算数据丰富内容
+- 支持新的内容类型
+
+## 定义 Transformer
+
+你可以使用来自 `@nuxt/content` 的 `defineTransformer` 辅助函数定义一个 transformer：
+
+```ts [~~/transformers/title-suffix.ts]
+import { defineTransformer } from '@nuxt/content'
+
+export default defineTransformer({
+  name: 'title-suffix',
+  extensions: ['.md'], // 要应用此 transformer 的文件扩展名
+  transform(file) {
+    // 根据需要修改文件对象
+    return {
+      ...file,
+      title: file.title + ' (suffix)',
+    }
+  },
+})
+```
+
+### Transformer 选项
+
+- `name`（字符串）：你的 transformer 的唯一名称。
+- `extensions`（字符串数组）：此 transformer 应应用的文件扩展名（例如 `['.md']`）。
+- `transform`（函数）：接收文件对象并返回修改后文件的函数。
+
+## 注册 Transformers
+
+在你的 `nuxt.config.ts` 中注册 transformers：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      transformers: [
+        '~~/transformers/title-suffix',
+        '~~/transformers/my-custom-transformer',
+      ],
+    },
+  },
+})
+```
+
+## 示例：添加元数据
+
+Transformers 可以向文件添加一个 `__metadata` 字段。该字段不会存储到数据库中，但可用于运行时逻辑。
+
+```ts [~~/transformers/component-metadata.ts]
+import { defineTransformer } from '@nuxt/content'
+
+export default defineTransformer({
+  name: 'component-metadata',
+  extensions: ['.md'],
+  transform(file) {
+    // 示例：检测是否使用了自定义组件
+    const usesMyComponent = file.body?.includes('<MyCustomComponent>')
+    return {
+      ...file,
+      __metadata: {
+        components: usesMyComponent ? ['MyCustomComponent'] : [],
+      },
+    }
+  },
+})
+```
+
+**注意：** `__metadata` 字段仅在运行时可用，不会持久化到内容数据库中。
+
+## API 参考
+
+```ts
+interface Transformer {
+  name: string
+  extensions: string[]
+  transform: (file: ContentFile) => ContentFile
+}
+```
+
+- `ContentFile` 是表示已解析内容文件的对象，包括 frontmatter、主体及其他字段。
+
+## 使用 Transformers 支持新的文件格式
+
+Transformers 不仅限于修改现有内容——它们还可以用于为 Nuxt Content 添加对新文件格式的支持。通过定义带有自定义 `parse` 方法的 transformer，你可以指示 Nuxt Content 如何读取和处理带有新扩展名的文件，如 YAML。
+
+### 示例：YAML 文件支持
+
+假设你想在内容目录中支持 `.yml` 和 `.yaml` 文件。你可以创建一个 transformer，解析 YAML frontmatter 和正文，并为这些扩展名注册它：
+
+```ts [~~/transformers/yaml.ts]
+import { defineTransformer } from '@nuxt/content'
+
+export default defineTransformer({
+  name: 'Yaml',
+  extensions: ['.yml', '.yaml'],
+  parse: (file) => {
+    const { id, body } = file
+    
+    // 使用你喜欢的 YAML 解析器解析正文
+    const parsed = parseYaml(body)
+
+    return {
+      ...parsed,
+      id,
+    }
+  },
+})
+```
+
+像注册其他 transformer 一样在 Nuxt 配置中注册你的 YAML transformer：
+
+```ts
+export default defineNuxtConfig({
+  content: {
+    build: {
+      transformers: [
+        '~~/transformers/yaml',
+        // ...其他 transformers
+      ],
+    },
+  },
+})
+```
+
+此方法允许你扩展 Nuxt Content，以处理你需要的任意自定义文件格式。
+
+
+# 设置 Nuxt Studio
+
+Studio 是一个直观的 CMS 界面，用于编辑你的 Nuxt Content 网站。
+
+它利用 Nuxt Content 内置的 `Preview API`，为内容文件提供最佳编辑体验。编辑者可以通过用户友好的界面编辑他们的 `Markdown`、`YAML` 或 `JSON` 文件。
+
+开发者可以自定义编辑体验并为编辑者提供工具，使编辑者能够专注于内容，无需任何技术专长。
+
+:video{autoplay controls loop poster="/home/videos/HomeNotionLikePoster.webp" src="https://res.cloudinary.com/nuxt/video/upload/v1733494722/contentv3final_rc8bvu.mp4"}
+
+## 认证
+
+Studio 管理后台位于 [nuxt.studio](https://nuxt.studio){rel="nofollow"}。你可以通过 GitHub 或 Google 登录。两种方式会赋予相同的编辑权限，但由于 Studio 与 GitHub [同步](https://nuxt-content.zhcndoc.com/docs/studio/github)，仓库导入必须由 GitHub 用户操作。
+
+::warning
+Google 认证适用于非技术用户。Google 用户必须加入已有项目的团队才能进行编辑。
+::
+
+## 连接你的 Nuxt Content 仓库
+
+登录管理后台后，你可以直接从界面导入你的 Nuxt Content 仓库。
+
+::tip
+有两种选择，你可以导入一个已有的仓库，或使用我们的 [模板](https://nuxt-content.zhcndoc.com/templates)。
+::
+
+唯一的要求是你的仓库必须托管在 GitHub 上。通过界面连接我们的 [GitHub 应用](https://nuxt-content.zhcndoc.com/docs/studio/github)，然后即可将 GitHub 仓库链接到你的 Studio 项目中。
+
+项目创建成功后，你就可以使用 Studio 的编辑器开始编辑文件，并发布你的更改。
+
+## **启用完整编辑体验**
+
+要解锁 Studio 的全部功能，请确保你的项目 URL 在部署部分正确配置。
+
+**这将启用所有 Studio 功能，包括：**
+
+- **网站实时预览：** 在编辑时立即在网站上看到更改效果。
+- **动态表单生成：** 根据你的 Nuxt Content [集合](https://nuxt-content.zhcndoc.com/docs/collections/define)自动生成编辑表单。
+- **增强的 Markdown 编辑器：** 提供更好的编辑体验，包括列出和集成你已暴露的 [Vue 组件](https://nuxt-content.zhcndoc.com/docs/studio/content#vue-components)。
+- **自动应用配置：** 根据你定义的 schema 生成 [应用配置](https://nuxt-content.zhcndoc.com/docs/studio/config)。
+
+::tip
+我们提供了 GitHub Pages 部署方案，使用它可以帮你处理所有要求。如果你想使用自己选择的部署平台，请参照以下简单指南。
+::
+
+要在 Studio 中设置你的 URL，只需在 `nuxt.config.ts` 文件的内容配置中设置 `Preview API`。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio'
+    }
+  }
+})
+```
+
+部署完成后，可通过访问网站的 `/__preview.json` 页面确认 `Preview API` 是否已生效。该元数据页面由 Content 模块自动生成，且必须可访问，才能在 Studio 的自托管部分连接你的 URL。
+
+### 故障排查
+
+如果已生成 `__preview.json` 文件，但在自托管部分设置 URL 时遇到 `Forbidden error: invalid property check` 错误，请按以下步骤操作：
+
+::prose-steps{level="4"}
+#### 确保 `__preview.json` 文件中的 `gitInfo` 字段已设置且准确无误
+
+```json [https://your-website.com/__preview.json]
+"gitInfo": {
+  "name": "content",
+  "owner": "nuxt",
+  "url": "https://github.com/nuxt/content"
+},
+```
+
+  :::warning
+  此信息通常会自动填充。我们支持大多数流行的提供商（NuxtHub、Vercel、Netlify 等），但如果你使用的是不支持或自定义的提供商，可能无法正确获取。
+  :::
+
+#### 在你的 `nuxt.config.ts` 中覆盖 `gitInfo`
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio',
+      gitInfo: {
+        name: '你的仓库名',
+        owner: '你的仓库拥有者/组织',
+        url: '你的 GitHub 仓库 URL'
+      }
+    }
+  }
+})
+```
+
+#### 确保 `__preview.json` 中字段设置正确
+
+`Forbidden error` 应该被修复，你也应当能在 Nuxt Studio 设置你的 URL。如果问题仍未解决，请通过我们的 [Discord 服务器](https://discord.gg/sBXDm6e8SP){rel="nofollow"} 联系我们。
+::
+
+
+# Studio 与 GitHub 之间的实时同步
+
+::tip
+本节解释了 Studio 与 GitHub 之间的同步行为。此过程直接由平台处理，无需任何外部操作。本页面的目的是提供纯粹的信息。
+::
+
+## 概述
+
+Nuxt Studio 集成了 [GitHub](https://github.com){rel="nofollow"} API，实现 Studio 与您的 GitHub 仓库之间的顺畅同步。这一顶级集成是通过利用 [GitHub 应用](https://docs.github.com/en/developers/apps/getting-started-with-apps/about-apps#about-github-apps){rel="nofollow"} 实现的。
+
+## 安装
+
+在创建 Studio 项目时，您需要在您的个人账户或您管理的组织中安装 [Nuxt Studio GitHub 应用](https://github.com/apps/nuxt-studio){rel="nofollow"}。安装 GitHub 应用需要组织所有权或仓库中的管理员权限。如果您没有必要的权限，仓库所有者需要批准该请求。
+
+您可以通过点击应用内的任意位置的 [使用 GitHub 安装](https://github.com/apps/nuxt-studio/installations/new){rel="nofollow"} 访问安装页面。
+
+### 权限
+
+安装我们的 GitHub 应用时，系统会提示您授予某些权限：
+
+- 对 `actions`、`metadata`、`members` 和 `plan` 的读取权限
+- 对 `secrets`、`administration`、`contents`、`pages`、`pull requests` 和 `workflows` 的读写权限
+
+我们需要对 `actions` 的读取权限，以便在拉取请求或仓库默认分支的工作流运行失败时发送通知。`metadata` 是必需的，用于获取仓库数据，`members` 用于导入您的组织成员和仓库协作者，`plan` 用于根据您的 GitHub 账户计划推荐功能。
+
+Nuxt Studio 代表您创建仓库、分支、拉取请求，并执行提交和合并。我们还提供一键部署到 GitHub Pages，支持工作流和环境变量密钥的即时预览和管理。为实现此目的，我们需要对 `administration`、`contents`、`pages`、`pull requests`、`workflows` 和 `secrets` 的读写权限。
+
+### 仓库安装
+
+安装我们的 GitHub 应用时，系统会提示您选择所有仓库或其中的子集。此选择可随时通过访问 [GitHub 应用设置](https://github.com/apps/nuxt-studio/installations/new){rel="nofollow"} 进行更改。
+
+点击 `Install` 后，Nuxt Studio 会安装您所选的每个仓库，使您能够执行上述所有操作。
+
+## 卸载
+
+所有从 GitHub 导入的数据都直接关联到您的 GitHub 应用安装。如果您卸载该 GitHub 应用，所有相关数据将被删除。
+
+如果您删除 GitHub 仓库，关联的 Nuxt Studio 项目也将自动移除。但是，如果该项目订阅了团队计划，订阅不会自动取消。您需要通过 [Lemon Squeezy]() 手动结束订阅，或[联系我们](https://nuxt-content.zhcndoc.com/team@nuxt.studio) 寻求帮助。
+
+
+# 编辑您的内容
+
+Nuxt Studio 为开发者和内容编辑者提供了一个多功能的工作空间，让他们可以自由选择以下不同的编辑器：
+
+- 用于 `Markdown` 文件的 [类 Notion 编辑器](https://nuxt-content.zhcndoc.com/#notion-like-editor-markdown-files)
+- 用于 `YAML` 和 `JSON` 文件的 [表单编辑器](https://nuxt-content.zhcndoc.com/#form-editor-yaml-and-json-files)
+- 用于任何类型文件的 [代码编辑器](https://nuxt-content.zhcndoc.com/#code-editor)（仅限技术用户）
+
+::tip
+您可以在项目的设置页面选择您喜欢的编辑器。
+::
+
+每种编辑器都有其专用的用途。有些用户习惯代码编辑，而有些则喜欢非技术性的视觉方式。最终，**两种编辑器的最终输出都是代码语法**。
+
+## 类 Notion 编辑器（`Markdown` 文件）
+
+![使用视觉界面编辑您的网站](https://nuxt-content.zhcndoc.com/docs/studio/visual-markdown-editor.webp)
+
+此编辑器深受 Notion 启发，Notion 以其直观的设计和灵活性闻名。类似于标准文本编辑器，该编辑器的设计使其易于熟悉和使用。但它凭借改善写作体验的额外功能脱颖而出。
+
+::tip{to="https://nuxt-content.zhcndoc.com/blog/visual-editor"}
+您想了解我们是如何构建此编辑器以及其幕后工作机制吗？请查阅此博客文章。
+::
+
+### Frontmatter
+
+[Frontmatter](https://nuxt-content.zhcndoc.com/docs/files/markdown#frontmatter) 是基于 Markdown 的 CMS 的一种约定，用于为页面提供元数据，比如描述、标题或任何其他您想以 `key: value` 形式存储的数据。
+
+基于用户提供的 [集合和模式](https://nuxt-content.zhcndoc.com/docs/collections/define)，系统会自动生成一个表单，供编辑器编辑这些元数据。
+
+:video{autoplay controls loop poster="/home/videos/HomeNotionLikePoster.webp" src="https://res.cloudinary.com/nuxt/video/upload/v1739982761/frontmatterform_yjafgt.mp4"}
+
+::prose-note
+---
+to: https://nuxt-content.zhcndoc.com/#form-editor-yaml-and-json-files
+---
+查看此部分以了解基于模式生成表单的更多信息。
+::
+
+### 工具栏
+
+高亮选中文本即会显示工具栏，您可以使用所有标准文本编辑功能（标题格式、加粗、斜体、删除线、代码、链接、类、无序列表、有序列表等）。
+
+### 媒体
+
+用户可以直接将图片拖放到编辑器中。上传模态框会打开，让您选择目标文件夹。
+
+通过键入 `/` 并搜索 `Image` 或 `Video`，可以快速插入媒体。模态框会打开，您可以从媒体库（即 Nuxt 应用的 `public` 文件夹）中选择想要插入的媒体。
+
+在媒体模态框中，您可以为 SEO 和无障碍目的设置[alt 属性](https://www.w3schools.com/tags/att_img_alt.asp){rel="nofollow"}。
+
+### Vue 组件
+
+此编辑器的卓越功能之一是能够直接在编辑器中集成和自定义任何复杂的 `Vue` 组件。
+
+#### 创建并集成您自己的组件
+
+开发者可以创建任何视觉复杂的组件，编辑者能够使用它们并专注于内容。编辑者还可以调整组件属性、样式及行为以满足具体需求，只要开发者使其可定制即可。
+
+::steps{level="4"}
+#### 创建您的组件
+
+您可以创建 Vue 组件并将它们集成到 Markdown 中。只需将组件放置在 `/components/content` 文件夹中即可使用。
+
+```vue [components/content/HomeFeature.vue]
+<template>
+  <div class="flex items-start gap-3">
+    <div class="flex items-center justify-center border rounded-lg p-1.5">
+      <UIcon :name="icon" />
+    </div>
+    <div class="flex flex-col">
+      <h3 class="font-semibold">
+        <ContentSlot name="title" />
+      </h3>
+      <span>
+        <ContentSlot name="description" />
+      </span>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+defineProps({
+  icon: {
+    type: String,
+    default: 'i-ph-cursor-click',
+  },
+})
+</script>
+```
+
+#### 使用 [MDC 语法](https://nuxt-content.zhcndoc.com/docs/files/markdown#mdc-syntax) 轻松将这些组件集成到任何 Markdown 文件中
+
+```mdc [content/index.md]
+::home-feature
+  ---
+  icon: i-mdi-vuejs
+  ---
+  #title
+  嵌入式 Vue 组件
+  #description
+  在类 Notion 编辑器中编辑插槽和属性。
+::
+```
+
+#### 使用我们的 Studio 编辑器进行编辑
+
+视觉编辑器简化了组件编辑，允许您直接在视觉编辑器中集成和编辑组件。非技术用户无需任何技术知识即可操作**插槽**和**属性**。
+
+:video{autoplay controls loop src="https://res.cloudinary.com/nuxt/video/upload/v1744126742/studio/finalpropscomps_usfabp.mp4"}
+
+所有位于 `/components/content` 文件夹中的组件都可以在编辑器中使用。Studio 用户可以在编辑时任意处键入 `/` 来访问可用组件列表。
+
+  :::tip{to="https://nuxt-content.zhcndoc.com/docs/studio/debug"}
+  查看此部分以验证您在本地开发中将 
+  
+  `Vue`
+  
+   组件集成到编辑器中的操作。
+  :::
+::
+
+#### 集成来自外部库的内置组件
+
+默认情况下，您可以在 Markdown 文件内集成任何组件，且它们会在 Studio 中工作且可编辑，但外部组件**不会显示在 Studio 的组件列表中，也无法由 Studio 编辑器手动集成**。
+
+若要在 Studio 中列出此组件并抓取其所有元数据，您需要在 Nuxt 配置文件中将其设置为全局组件。
+
+以下示例演示如何集成来自 [Nuxt UI](https://ui.nuxt.com){rel="nofollow"} 库的 Button 和 Icon 组件：
+
+```ts
+export default defineNuxtConfig({
+  hooks: {
+    'components:extend': (components) => {
+      const globals = components.filter(c => ['UButton', 'UIcon'].includes(c.pascalName))
+
+      globals.forEach(c => c.global = true)
+    }
+  },
+})
+```
+
+## 表单编辑器
+
+![使用自动生成表单编辑 YAML 和 JSON](https://nuxt-content.zhcndoc.com/blog/frontmatters.png)
+
+此编辑器适用于编辑 `Markdown` 文件的 [frontmatter]() 或编辑 `JSON` / `YAML` 文件。
+
+它避免您直接操作复杂的文件语法，而是根据用户提供的[集合模式](https://nuxt-content.zhcndoc.com/docs/collections/define)自动生成表单。
+
+### **使用** `zod` **模式定义您的表单**
+
+::prose-note{to="https://nuxt-content.zhcndoc.com/docs/collections/define"}
+在专门章节了解更多关于集合模式定义内容。
+::
+
+一旦在集合中定义了 `schema` 属性，Studio 界面会自动生成对应的表单。
+
+::prose-code-group
+```ts [content.config.ts]
+export default defineContentConfig({
+  collections: {
+    posts: defineCollection({
+      type: 'page',
+      source: 'blog/*.md',
+      schema: z.object({
+        draft: z.boolean().default(false),
+        category: z.enum(['Alps', 'Himalaya', 'Pyrenees']).optional(),
+        date: z.date(),
+        image: z.object({
+          src: z.string().editor({ input: 'media' }),
+          alt: z.string(),
+        }),
+        slug: z.string().editor({ hidden: true }),
+        icon: z.string().optional().editor({ input: 'icon' }),
+        authors: z.array(z.object({
+          slug: z.string(),
+          username: z.string(),
+          name: z.string(),
+          to: z.string(),
+          avatar: z.object({
+            src: z.string(),
+            alt: z.string(),
+          }),
+        })),
+      }),
+    }),
+  },
+})    
+```
+
+  :::preview-card{icon="i-lucide-eye" label="生成的表单"}
+  ![表单预览](https://nuxt-content.zhcndoc.com/docs/studio/preview-schema.png)
+  :::
+::
+
+### **原生输入映射**
+
+Zod 的基础类型自动映射为对应的表单输入：
+
+- **字符串** → 文本输入框
+- **日期** → 日期选择器
+- **数字** → 数字输入框（计数器）
+- **布尔** → 切换开关
+- **枚举** → 下拉选择框
+- **字符串数组** → 徽章列表输入
+- **对象数组** → 折叠面板中嵌入表单的项目列表
+
+:video{autoplay controls loop poster="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.jpg" src="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.mp4"}
+
+### 自定义输入映射
+
+Studio 超越基础类型。您可以使用 `editor` 方法自定义表单字段，它用元数据扩展 Zod 类型以增强编辑器界面。
+
+这允许您定义自定义输入或隐藏字段。
+
+#### 用法
+
+```ts [content.config.ts]
+mainScreen: z.string().editor({ input: 'media' })
+```
+
+#### 选项
+
+##### `input: 'media' | 'icon'`
+
+可设置编辑器输入类型。目前支持 `icon` 和 `media`。
+
+##### `hidden: Boolean`
+
+此选项用来阻止字段在 Studio 编辑器中显示。
+
+::prose-tip
+Studio 输入完全可扩展。我们可以根据用户需求创建任意数量的输入类型。
+::
+
+## 代码编辑器
+
+![使用我们的代码编辑器直接编辑您的原始内容](https://nuxt-content.zhcndoc.com/docs/studio/code-editor.webp)
+
+尽管前面两个编辑器针对特定文件扩展名（`md` 或 `yaml`/`json`），代码编辑器可用于任何类型的文件。
+
+它提供对内容的完全控制，允许您直接编写原始内容：
+
+- `Markdown` 文件的 [MDC](https://nuxt-content.zhcndoc.com/docs/files/markdown) 语法
+- [JSON](https://nuxt-content.zhcndoc.com/docs/files/json) 或 [YAML](https://nuxt-content.zhcndoc.com/docs/files/yaml) 语法
+
+当您使用代码编辑器保存文件时，内容会精准保存，保持所有特定的语法和格式。此编辑器适合熟悉代码语法（`Markdown`、`YAML` 或 `JSON`）且希望精确控制内容结构的用户。
+
+
+# 在 Nuxt Content Studio CMS 中管理和整合媒体
+
+## 浏览您的媒体
+
+所有位于 `/public` 目录下的媒体都可以在 Studio 平台的 **媒体** 标签页中访问。
+
+![Studio 上的媒体库](https://nuxt-content.zhcndoc.com/docs/studio/editors-medias.webp)
+
+这是一个为非技术用户设计的直观界面，用于管理他们的 `/public` 目录。
+
+用户可以轻松浏览文件夹，在任意层级上传新媒体，并通过拖放操作将媒体移动到其他文件夹，从而简化媒体的组织工作。
+
+该界面旨在为非技术用户提供直观体验，可视为一种用户友好的集成开发环境（IDE）。
+
+## 在类似 Notion 的编辑器中使用
+
+用户可以直接将图片拖放到编辑器中。上传模态窗口会打开，让您选择目标文件夹。
+
+通过输入 `/` 并搜索 `Image`，用户可以快速插入媒体。一个模态窗口会打开，让他们选择想要插入的媒体。
+
+在媒体模态窗口中，您可以设置用于 SEO 和无障碍访问的 [alt 属性](https://www.w3schools.com/tags/att_img_alt.asp){rel="nofollow"}。
+
+
+# 自定义应用配置编辑
+
+进入编辑器的 **Config** 选项卡时，您可以浏览配置以定制您的网站。这些配置代表您在 `app.config.ts` 文件中定义的设置。
+
+## `app.config.ts`
+
+[`app.config.ts`](https://nuxt.com/docs/guide/directory-structure/app-config){rel="nofollow"} 文件是 Nuxt 3 引入的配置文件。它是一个 TypeScript 文件，允许您配置应用的各个方面。开发者可以轻松地使用此文件将任何网站转换为可配置的体验。
+
+## 自定义编辑
+
+::prose-note
+确保您的应用中至少有一个空的配置文件。
+
+```ts [app.config.ts]
+export default defineAppConfig({})
+```
+::
+
+要在 Studio 中为您的 `app.config.ts` 创建定制的编辑体验，需要在项目中创建一个 `nuxt.schema.ts` 文件。该 schema 用于表示您的 `app.config.ts`。
+
+### 辅助方法
+
+::prose-note
+这些辅助方法由 Nuxt Content 的 `Preview API` 提供。
+::
+
+- `group` 方法用于定制父对象。
+- `field` 方法用于定制输入（即叶子节点）。
+
+```ts [nuxt.schema.ts]
+import { field, group } from '@nuxt/content/preview'
+
+export default defineNuxtSchema({
+  appConfig: {
+    parent: group({
+      title: '父级标题',
+      description: '父级描述。',
+      icon: 'i-icon-to-display',
+      fields: {
+        leaf: field({
+          type: '用于编辑该字段的组件类型',
+          title: '字段标题',
+          description: '字段描述',
+          icon: 'i-icon-to-display',
+          default: '默认值'
+        })
+      }
+    })
+  }
+})
+```
+
+::tip
+无需必须包含所有的应用配置键；只需添加那些您希望在 Studio 界面展示的字段即可。
+::
+
+#### 输入类型
+
+`field()` 方法第一个参数中的 `type` 可接受多种值：
+
+- string
+- number
+- boolean
+- array
+- object
+- icon
+- media
+
+基于这些类型，Studio UI 会适配显示相应的输入类型。例如，`icon` 类型会显示图标选择器， `media` 类型会展示媒体库。
+
+如果您在 `field()` 方法中提供 `required` 字段，文本输入可以显示为下拉选择而非传统输入框：
+
+```ts [nuxt.schema.ts]
+import { field, group } from '@nuxt/content/preview'
+
+export default defineNuxtSchema({
+  appConfig: {
+    parent: group({
+      title: 'UI',
+      description: 'UI 配置',
+      icon: 'i-ph-palette-fill',
+      fields: {
+        primary: field({
+          type: 'string',
+          title: '主色',
+          description: '您的 UI 主色。',
+          icon: 'i-ph-palette',
+          default: 'sky',
+          required: ['sky', 'mint', 'rose', 'amber']
+        })
+      }
+    })
+  }
+})
+```
+
+### 在 Studio 中编辑
+
+一旦您的 schema 部署完成，任何用户都可以访问 **Data** 区域，使用生成的表单进行操作。
+
+表单中的任何更新都会直接应用到 `app.config.ts` 文件。您可以在审查页面查看这些更改。
+
+::code-group
+  :::preview-card{icon="i-lucide-eye" label="预览"}
+  ![Studio 中的应用配置 UI](https://nuxt-content.zhcndoc.com/docs/studio/home-data-studio-dark.webp)
+  :::
+
+```ts [nuxt.schema.ts]
+export default defineNuxtSchema({
+  ui: group({
+    title: 'UI',
+    description: 'UI 自定义。',
+    icon: 'i-mdi-palette-outline',
+    fields: {
+      primary: field({
+        type: 'string',
+        title: '主色',
+        description: '您的 UI 主色。',
+        icon: 'i-mdi-palette-outline',
+        required: ['sky', 'mint', 'rose', 'amber', 'violet', 'emerald', 'fuchsia', '...']
+      }),
+      gray: field({ ... }),
+      icons: group({
+        title: '图标',
+        description: '管理 UI Pro 中使用的图标。',
+        icon: 'i-mdi-application-settings-outline',
+        fields: {
+          search: field({ ...}),
+          dark: field({ ... }),
+          light: field({ ... }),
+          external: field({ ...}),
+          chevron: field({ ... }),
+          hash: field({ ... })
+        }
+      })
+    }
+  })
+})
+```
+::
+
+::tip{to="https://nuxt-content.zhcndoc.com/docs/studio/debug"}
+查看此章节，以验证您在本地开发中的 schema 配置。
+::
+
+::tip{to="https://github.com/nuxt-ui-pro/docs/blob/main/nuxt.schema.ts"}
+想要实际示例，请查看我们为 UI Pro Docs starter 开发的 schema。
+::
+
+
+# 本地调试
+
+## 目的
+
+本节的目标是说明如何在发布到生产环境前，在本地验证您的自定义内容。
+
+如果您想：
+
+- 创建一个 `nuxt.schema.ts` 文件并在 Studio 上[生成相应的接口](https://nuxt-content.zhcndoc.com/docs/studio/config)。
+- 集成[自定义 Vue 组件](https://nuxt-content.zhcndoc.com/docs/studio/content)，并确保在编辑器中编辑功能正常。
+
+这将对您有所帮助。
+
+## 教程
+
+::steps
+### 在 Studio 导入您的项目
+
+### 在本地克隆您的仓库
+
+### 在开发环境中启用 Nuxt Content 预览
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    preview: {
+      // 强制在开发环境初始化模块
+      dev: true
+    }
+  }
+})
+```
+
+### 使用带 `--tunnel` 参数的开发命令启动应用，以暴露到互联网
+
+```bash [Terminal]
+npx nuxt dev --tunnel
+```
+
+![本地隧道暴露](https://nuxt-content.zhcndoc.com/docs/studio/dev-tunnel.png)
+
+### 确认元数据文件已生成
+
+`__preview.json` 文件应可通过 `https://your-localtunnel-url/__preview.json` 访问
+
+### 复制隧道 URL 并将其粘贴到 Studio 平台部署标签页的自托管部分
+::
+
+::tip
+就这样！现在您应该能够访问 Studio UI，确认您的配置接口已成功生成，并且您的 Vue 组件及其属性和插槽在编辑器中可用。
+::
+
+::warning
+任何对 `nuxt.config.ts` 文件的修改或 Vue 文件的更改，都需要重启 Nuxt 开发服务器。服务器重启后，您可以通过命令菜单调用 `Sync meta` 操作 :shortcut{value="meta"} :shortcut{value="K"} 来同步 Studio 接口。刷新 Studio 应用也会应用更新。
+::
+
+
+# 基于 Git 的 Nuxt 项目内容管理系统
+
+::u-page-hero
+  :::div{.hidden.sm:block}
+    ::::u-color-mode-image
+    ---
+    class: size-full absolute bottom-0 inset-0 z-[-1]
+    dark: /home/hero-dark.svg
+    light: /home/hero-light.svg
+    ---
+    ::::
+  :::
+
+#title{unwrap="p"}
+基于 Git 的 :br Nuxt 项目内容管理系统。
+
+#description
+Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您的应用内容。它允许开发者以 Markdown、YAML、CSV 或 JSON 文件格式编写内容，然后在应用中查询并展示它们。
+
+#links{unwrap="p"}
+  :::u-button
+  ---
+  label: 开始使用
+  size: xl
+  to: https://nuxt-content.zhcndoc.com/docs/getting-started/installation
+  trailingIcon: i-lucide-arrow-right
+  ---
+  :::
+
+  :::u-button
+  ---
+  color: neutral
+  label: 打开可视化编辑器
+  size: xl
+  target: _blank
+  to: https://nuxt.studio
+  variant: subtle
+  ---
+  :::
+::
+
+::u-page-section
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-files
+  ---
+  #title{unwrap="p"}
+  基于文件的 CMS
+  
+  #description{unwrap="p"}
+  以 Markdown、YAML、CSV 或 JSON 格式编写内容，并在组件中查询。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-filter
+  ---
+  #title{unwrap="p"}
+  查询构建器
+  
+  #description{unwrap="p"}
+  使用类 MongoDB 的 API 查询内容，按需获取正确的数据。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-database
+  ---
+  #title{unwrap="p"}
+  SQLite 驱动
+  
+  #description{unwrap="p"}
+  向内容中添加自定义字段，适用于各种类型的项目。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-simple-icons-markdown
+  ---
+  #title{unwrap="p"}
+  Markdown 与 Vue
+  
+  #description{unwrap="p"}
+  在 Markdown 文件中使用 Vue 组件，支持 props、插槽和嵌套组件。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-list-minus
+  ---
+  #title{unwrap="p"}
+  代码高亮
+  
+  #description{unwrap="p"}
+  结合 Shiki 集成支持 VS Code 主题，在网站上显示漂亮的代码块。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-mouse-pointer-click
+  ---
+  #title{unwrap="p"}
+  可视化编辑器
+  
+  #description{unwrap="p"}
+  通过我们的可视化编辑器 Nuxt Studio，让团队成员轻松编辑 Nuxt Content 项目。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-panel-left
+  ---
+  #title{unwrap="p"}
+  导航生成
+  
+  #description{unwrap="p"}
+  从内容文件生成结构化对象，几分钟内展示导航菜单。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-heading-1
+  ---
+  #title{unwrap="p"}
+  文章组件
+  
+  #description{unwrap="p"}
+  使用 Vue 组件自定义 HTML 排版标签，让内容风格统一。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-globe
+  ---
+  #title{unwrap="p"}
+  部署无处不在
+  
+  #description{unwrap="p"}
+  Nuxt Content 兼容所有托管服务，支持静态、服务端、无服务器和边缘部署。
+  :::
+::
+
+::u-page-section
+#title
+内容管理所需的一切
+
+#description
+结合基于文件的简单性与 Vue 组件的强大功能。构建内容丰富的网站，从文档页到复杂应用。
+
+  :::div{.hidden.sm:block}
+    ::::u-color-mode-image
+    ---
+    class: size-full absolute top-0 inset-0
+    dark: /home/features-dark.svg
+    light: /home/features-light.svg
+    ---
+    ::::
+  :::
+::
+
+::u-page-section
+---
+reverse: true
+orientation: horizontal
+---
+  :::code-group
+    ::::preview-card{.!h-[458px] icon="i-lucide-eye" label="预览"}
+      :::::example-landing-hero
+      ---
+      class: "!h-[458px]"
+      image: /mountains/everest.jpg
+      ---
+      #title
+      珠穆朗玛峰。
+      
+      #description
+      珠穆朗玛峰是世界上海拔最高的山峰，海拔8848米。
+      :::::
+    ::::
+  
+  ```mdc [content/index.md]
+  ---
+  title: 山峰网站
+  description: 一个关于世界最具标志性山峰的网站。
+  ---
+  
+  ::landing-hero
+  ---
+  image: /mountains/everest.png
+  ---
+  #title
+  珠穆朗玛峰。
+  
+  #description
+  珠穆朗玛峰是世界上海拔最高的山峰，海拔8848米。
+  ::
+  ```
+  
+  ```vue [components/LandingHero.vue]
+  <script setup lang="ts">
+  defineProps<{ image: string }>()
+  </script>
+  
+  <template>
+    <section class="flex flex-col sm:flex-row sm:items-center flex-col-reverse gap-4 py-8 sm:gap-12 sm:py-12">
+      <div>
+        <h1 class="text-4xl font-semibold">
+          <slot name="title" />
+        </h1>
+        <div class="text-base text-gray-600 dark:text-gray-300">
+          <slot name="description" />
+        </div>
+      </div>
+      <img :src="image" class="w-1/2 rounded-lg">
+    </section>
+  </template>
+  ```
+  :::
+
+#title
+Markdown 遇见 [Vue]{.text-(--ui-primary)} 组件
+
+#description
+我们创造了 MDC 语法，让你可以在 Markdown 文件中使用带有 props 和插槽的 Vue 组件。
+
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-list
+  ---
+  #title{unwrap="p"}
+  用 frontmatter 语法指定 props
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-hash
+  ---
+  #title{unwrap="p"}
+  使用 `#` 来定义组件插槽
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-code-xml
+  ---
+  #title{unwrap="p"}
+  添加任意其他 HTML 属性
+  :::
+
+#links
+  :::u-button
+  ---
+  color: neutral
+  label: 了解更多关于 MDC
+  to: https://nuxt-content.zhcndoc.com/docs/files/markdown#mdc-syntax
+  trailingIcon: i-lucide-arrow-right
+  variant: subtle
+  ---
+  :::
+::
+
+::u-page-section
+---
+orientation: horizontal
+---
+  :::code-group
+  ```vue [pages/blog.vue]
+  <script setup lang="ts">
+  const { data: posts } = await useAsyncData('blog', () => {
+    return queryCollection('blog').all()
+  })
+  </script>
+  
+  <template>
+    <div>
+      <h1>博客</h1>
+      <ul>
+        <li v-for="post in posts" :key="post.id">
+          <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
+        </li>
+      </ul>
+    </div>
+  </template>
+  ```
+  
+  ```ts [content.config.ts]
+  import { defineContentConfig, defineCollection, z } from '@nuxt/content'
+  
+  export default defineContentConfig({
+    collections: {
+      blog: defineCollection({
+        source: 'blog/*.md',
+        type: 'page',
+        // 为文档集定义自定义 schema
+        schema: z.object({
+          tags: z.array(z.string()),
+          image: z.string(),
+          date: z.Date()
+        })
+      })
+    }
+  })
+  ```
+  :::
+
+#title
+[类型安全]{.text-(--ui-secondary)} 查询
+
+#description
+使用集合定义内容结构，并通过 schema 验证实现完全的类型安全查询。
+
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-layout-grid
+  ---
+  #title{unwrap="p"}
+  为相似内容文件创建集合
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-circle-check
+  ---
+  #title{unwrap="p"}
+  为集合 frontmatter 定义 schema
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-text-cursor
+  ---
+  #title{unwrap="p"}
+  在 Vue 文件中获得自动补全
+  :::
+
+#links
+  :::u-button
+  ---
+  color: neutral
+  label: 了解更多关于内容集合
+  to: https://nuxt-content.zhcndoc.com/docs/collections/define
+  trailingIcon: i-lucide-arrow-right
+  variant: subtle
+  ---
+  :::
+::
+
+::u-page-section
+---
+reverse: true
+orientation: horizontal
+---
+:video{autoplay controls loop src="https://res.cloudinary.com/nuxt/video/upload/v1733494722/contentv3final_rc8bvu.mp4"}
+
+#title{unwrap="p"}
+让 [任何人编辑]{.text-(--ui-primary)} 您的网站
+
+#description
+通过 **Studio** 编辑您的 Nuxt Content 网站——我们的 CMS 平台，提供类似 Notion 的 Markdown 编辑器和为 `YAML` 与 `JSON` 文件生成的表单。支持实时预览和在线协作。
+
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-mouse-pointer-click
+  ---
+  #title{unwrap="p"}
+  拖拽式 Markdown 可视化编辑器
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-file-text
+  ---
+  #title{unwrap="p"}
+  为 YML 和 JSON 文件生成表单
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-simple-icons-google
+  ---
+  #title{unwrap="p"}
+  邀请编辑者通过 Google 登录并发布更改
+  :::
+
+#links
+  :::u-button
+  ---
+  color: neutral
+  label: 探索 Studio
+  to: https://nuxt-content.zhcndoc.com/studio
+  trailingIcon: i-lucide-arrow-right
+  ---
+  :::
+::
+
+::u-page-section
+  :::div{.hidden.sm:block}
+    ::::u-color-mode-image
+    ---
+    class: size-full absolute bottom-0 inset-0 z-[-1]
+    dark: /home/cta-dark.svg
+    light: /home/cta-light.svg
+    ---
+    ::::
+  :::
+
+#title
+为您的 Nuxt 项目添加基于 Git 的 CMS。
+
+#links
+  :::u-button
+  ---
+  label: 阅读文档
+  to: https://nuxt-content.zhcndoc.com/docs/getting-started/installation
+  trailingIcon: i-lucide-arrow-right
+  ---
+  :::
+
+  :::u-button
+  ---
+  color: neutral
+  label: 打开 Studio
+  target: _blank
+  to: https://nuxt.studio
+  variant: outline
+  ---
+  :::
+::
+
+
+# 认识 Studio，为所有人打造的内容编辑
+
+::u-page-hero
+  :::div{.hidden.sm:block}
+    ::::u-color-mode-image
+    ---
+    class: size-full absolute bottom-0 inset-x-4 z-[-1]
+    dark: /home/hero-dark.svg
+    light: /home/hero-light.svg
+    ---
+    ::::
+  :::
+
+#title{unwrap="p"}
+认识 Studio，内容编辑 :br 面向每个人。
+
+#description
+**Nuxt Studio** 为您的 Nuxt Content 项目带来可视化编辑。任何人都可以借助我们多功能的编辑器贡献网站内容，该编辑器兼容 markdown、YAML 或 JSON。无需技术专长。*为开发者打造，适用于所有人。*
+
+#links{unwrap="p"}
+  :::u-button
+  ---
+  label: 免费开始使用
+  size: xl
+  target: _blank
+  to: https://nuxt.studio/signin
+  trailingIcon: i-lucide-arrow-right
+  ---
+  :::
+
+  :::u-button
+  ---
+  color: neutral
+  label: 阅读文档
+  size: xl
+  to: https://nuxt-content.zhcndoc.com/docs/studio/setup
+  variant: subtle
+  ---
+  :::
+::
+
+::u-page-section
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-circle-user
+  ---
+  #title{unwrap="p"}
+  GitHub 与 Google 认证
+  
+  #description{unwrap="p"}
+  为各角色提供个性化工作空间：开发者、撰写者及客户。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-file-pen
+  ---
+  #title{unwrap="p"}
+  轻松更新内容
+  
+  #description{unwrap="p"}
+  从 Markdown 到 YAML 编辑，我们的可视化编辑器专为非技术用户设计。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-users
+  ---
+  #title{unwrap="p"}
+  实时协作
+  
+  #description{unwrap="p"}
+  利用我们的协作功能，团队成员能实时共同撰写。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-sparkles
+  ---
+  #title{unwrap="p"}
+  从代码到编辑
+  
+  #description{unwrap="p"}
+  开发者构建基础，撰写者则可安全地编辑内容。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-panels-top-left
+  ---
+  #title{unwrap="p"}
+  发布前审核
+  
+  #description{unwrap="p"}
+  在网站上线前审核您的更改内容。
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-mouse-pointer-click
+  ---
+  #title{unwrap="p"}
+  即用模板
+  
+  #description{unwrap="p"}
+  利用为 SaaS 网站、博客、文档等预构建的模板快速开始。
+  :::
+::
+
+::u-page-section
+---
+orientation: horizontal
+---
+  :::code-group
+  ```vue [components/content/HomeFeature.vue]
+  <script setup lang="ts">
+    defineProps({
+      icon: {
+        type: String,
+        default: 'i-ph-cursor-click',
+      },
+    })
+  </script>
+  
+  <template>
+    <div class="flex items-start gap-3">
+      <div class="flex items-center justify-center border rounded-lg p-1.5">
+        <UIcon :name="icon" />
+      </div>
+      <div class="flex flex-col">
+        <h3 class="font-semibold">
+          <slot name="title" />
+        </h3>
+        <span>
+          <slot name="description" />
+        </span>
+      </div>
+    </div>
+  </template>
+  ```
+  
+  ```mdc [content/index.md]
+  ::home-feature
+    ---
+    icon: i-mdi-vuejs
+    ---
+    #title
+    嵌入式 Vue 组件
+    #description
+    可在类 Notion 编辑器中编辑插槽与属性。
+  ::
+  ```
+  
+    ::::preview-card{icon="i-lucide-eye" label="编辑器"}
+    ![Studio 中的 Vue 组件编辑](https://nuxt-content.zhcndoc.com/docs/studio/home-content-studio-dark.webp)
+    ::::
+  :::
+
+#title{unwrap="p"}
+开发者创建 [编辑体验]{.text-(--ui-primary)}
+
+#description
+开发者以自己的方式构建基础设施：自定义组件、媒体库及网站配置。
+
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-settings-2
+  ---
+  #title{unwrap="p"}
+  可定制且可编辑的 Vue 组件
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-simple-icons-markdown
+  ---
+  #title{unwrap="p"}
+  使用我们的可视化编辑器编辑 Markdown
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-brush
+  ---
+  #title{unwrap="p"}
+  可视化编辑您的 app.config
+  :::
+
+#links
+  :::u-button
+  ---
+  color: neutral
+  label: 了解更多关于自定义组件
+  to: https://nuxt-content.zhcndoc.com/docs/files/markdown#vue-components
+  trailingIcon: i-lucide-arrow-right
+  variant: subtle
+  ---
+  :::
+::
+
+::u-page-section
+---
+reverse: true
+orientation: horizontal
+---
+:video{autoplay controls loop src="https://res.cloudinary.com/nuxt/video/upload/v1744126742/studio/finalpropscomps_usfabp.mp4"}
+
+#title{unwrap="p"}
+让 [任何人编辑]{.text-(--ui-primary)} 您的 Nuxt Content 网站
+
+#description
+团队和客户获得功能强大的可视化编辑器用于内容管理，从文本编辑到媒体管理——全程无需接触代码。
+
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-mouse-pointer-click
+  ---
+  #title{unwrap="p"}
+  带拖拽的 Markdown 可视化编辑器
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-file-text
+  ---
+  #title{unwrap="p"}
+  为 `YML` 和 `JSON` 文件生成表单
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-image
+  ---
+  #title{unwrap="p"}
+  集中管理所有媒体资源
+  :::
+::
+
+::u-page-section
+---
+orientation: horizontal
+---
+  :::u-color-mode-image
+  ---
+  class: size-full
+  dark: /home/pro-dark.svg
+  light: /home/pro-light.svg
+  ---
+  :::
+
+#title
+[一起编辑]{.text-(--ui-primary)}，即时预览
+
+#description
+团队协同编辑内容并通过实时预览看到网站实时变化。从文本编辑到组件更新，每一次更改都会反映在最终网站设计中。体验无延迟、无需手动刷新且顺畅的内容创作流程。
+
+#features
+  :::u-page-feature
+  ---
+  icon: i-lucide-files
+  ---
+  #title{unwrap="p"}
+  实时在网站上查看您的更改
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-link
+  ---
+  #title{unwrap="p"}
+  分享带有实时更新的预览链接给任何人
+  :::
+
+  :::u-page-feature
+  ---
+  icon: i-lucide-list
+  ---
+  #title{unwrap="p"}
+  发布前回顾所有更改
+  :::
+::
+
+::u-page-section
+  :::div{.hidden.sm:block}
+    ::::u-color-mode-image
+    ---
+    class: size-full absolute bottom-0 inset-x-4 z-[-1]
+    dark: /home/cta-dark.svg
+    light: /home/cta-light.svg
+    ---
+    ::::
+  :::
+
+#title
+编辑您的 [Nuxt Content]{.text-(--ui-primary)} 网站的 [最佳方式]{.text-(--ui-primary)}
+
+#links
+  :::u-button
+  ---
+  label: 免费开始使用
+  target: _blank
+  to: https://nuxt.studio/signin
+  trailingIcon: i-lucide-arrow-right
+  ---
+  :::
+
+  :::u-button
+  ---
+  color: neutral
+  label: 查看价格
+  to: https://nuxt-content.zhcndoc.com/studio/pricing
+  variant: outline
+  ---
+  :::
+
+#description
+导入您的 Nuxt Content 网站并邀请团队立即协作。
+::
+
+
+# 画布
+
+::template-core
+Canvas 作品集是一个完全可定制的国际化作品集模板，使用 Nuxt 和 Nuxt UI 构建，旨在帮助您轻松展示作品、推荐语和关键信息。该模板集成了 Nuxt Studio，提供流畅的编辑体验，同时利用 Nuxt Content 进行内容管理。Canvas 作品集在性能、灵活性和响应式设计方面表现出色，为开发者和创意人员提供了坚实的基础。
+
+- **现代组件与布局** – 包含内置组件。
+- **Nuxt UI v3** – 使用预制的可定制 UI 组件。
+- **NuxtHub 支持** - 几秒钟内部署到 NuxtHub。
+- **Tailwind CSS** – 美观且响应式的设计系统。
+- **可用的联系表单** – 集成 Resend，轻松处理邮件。
+- **多语言支持** – 由 Nuxt i18n 驱动。
+- **SEO 友好** – 支持 Open Graph 图片（Nuxt OG Image）和 Nuxt Robots，实现自动生成 robots.txt。
+- **良好实践** – 自动生成网站地图，优化图片（Nuxt Image），以及 ESLint（Nuxt 配置采用 Flat 配置）。
+- **完全响应式** – 兼容所有现代浏览器和设备。
+- **极简且专业的设计** – 简洁、优雅且易于定制。
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 架构
+      content: 充分利用 Nuxt 3 及其模块生态系统的强大功能。
+    - label: 支持 Nuxt Studio
+      content: 在 Nuxt Studio 中实时预览并编辑主题内容和外观。
+    - label: Vue 组件
+      content: 在内容中插入内置组件（或自己的组件）。
+    - label: 书写 Markdown
+      content: 享受 Markdown 的简便与轻松，探索 MDC 语法。
+    - label: 随处部署
+      content: 通过 Studio 一键部署，或在 Vercel、Netlify 零配置部署。可选择静态生成、按需渲染（Node），或 CloudFlare
+        Workers 的边缘渲染。
+    - label: 可扩展
+      content: 自定义整体设计，或通过插槽添加组件——您可以打造属于自己的 Content-Wind。
+  ---
+  :::
+::
+
+
+# Content Wind
+
+::template-core
+一个轻量级的 Nuxt 主题，用于构建基于 Nuxt Content、TailwindCSS 和 Iconify 的 Markdown 驱动网站
+
+- 在 Markdown 页面中使用布局
+- 支持元标签自动生成
+- 可配置的排版组件
+- 从页面生成导航
+- 支持明暗模式切换
+- 访问来自 100+ 图标集的 100,000 个图标
+- 使用 Shiki 高亮代码块
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 架构
+      content: 充分利用 Nuxt 3 及其模块生态系统的强大功能。
+    - label: Nuxt Studio 兼容
+      content: 在 Nuxt Studio 中实时预览并编辑主题内容与外观。
+    - label: Vue 组件
+      content: 在内容中插入内置组件（或你自己的组件）。
+    - label: 编写 Markdown
+      content: 享受 Markdown 的简洁易用，并探索 MDC 语法。
+    - label: 可部署在任意平台
+      content: 通过 Studio 一键部署，或零配置部署到 Vercel 或 Netlify。支持静态生成、按需渲染（Node）或基于 CloudFlare
+        Workers 的边缘渲染。
+    - label: 可扩展
+      content: 自定义整体设计，或通过插槽添加组件 —— 你可以让 Content-Wind 独一无二。
+  ---
+  :::
+::
+
+
+# 文档
+
+::template-core
+[Nuxt UI Pro](https://ui.nuxt.com/pro){rel="nofollow"} 是一组高级组件，作为 [Nuxt UI](https://ui.nuxt.com){rel="nofollow"} 的扩展，旨在帮助您在几分钟内创建漂亮且响应式的 Nuxt 应用。
+
+Nuxt UI 团队致力于提供最佳的集成和定制体验，同时 Studio 团队提供与 Nuxt Studio 的完全兼容性。
+
+- **完全可定制**：可通过您的应用配置更改任意组件的样式，或通过 ui 属性进行专门定制。
+- **轻松编写 Markdown**：Nuxt UI Pro 重写了 Nuxt Content 的 prose 组件，使其更出色，还新增了 Callout、CodeGroup、Field 等组件。
+- **精美的排版样式**：预配置了 Tailwind CSS 排版插件，样式与 Nuxt UI 组件和颜色匹配。
+- **开箱即用的全文搜索**：Nuxt UI Pro 配备了现成的命令面板组件，无需再配置 Algolia DocSearch。
+- **全面插槽支持**：每个组件都利用 Vue 的插槽功能，给予您构建任意内容的灵活性。
+- **响应式设计**：Nuxt UI Pro 组件旨在构建您的内容结构，天生响应式，适应各种屏幕尺寸。
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 3
+      content: 由 Nuxt 3 驱动，带来最佳性能和 SEO。
+    - label: Markdown
+      content: 借助 Nuxt Content 使用 MDC 编写页面。
+    - label: Nuxt UI
+      content: 提供大量完全可定制的组件。
+    - label: TypeScript
+      content: 享受完备的类型化开发体验。
+    - label: Nuxt Studio
+      content: 支持 Nuxt Studio，实现快速更新和预览。
+    - label: 搜索
+      content: 由 Fuse.js 驱动的全文搜索模态框。
+  ---
+  :::
+::
+
+
+# 登陆页
+
+::div{.flex.justify-center}
+:video{.rounded-lg autoplay controls loop :width='1000' src="https://res.cloudinary.com/nuxt/video/upload/v1745425967/studio/landing_q03gdo.mp4"}
+::
+
+::template-core
+[Nuxt UI Pro](https://ui.nuxt.com/pro){rel="nofollow"} 是一套高级组件集合，是 [Nuxt UI](https://ui.nuxt.com){rel="nofollow"} 的扩展，旨在帮助您在几分钟内创建吸引人且响应迅速的 Nuxt 应用程序。
+
+Nuxt UI 团队致力于提供最佳集成和定制体验，而 Studio 团队则提供与 Nuxt Studio 的完全兼容性。
+
+- **完全可定制**：您可以通过应用配置更改 UI 样式，或通过 `index.yml` 文件编辑您的登陆页内容。
+- **美观的排版样式**：预配置了 Tailwind CSS 排版插件，并且样式与 Nuxt UI 组件和配色相匹配。
+- **响应式设计**：Nuxt UI Pro 组件旨在构建您的内容，它们具有响应式设计，能够适应任何屏幕尺寸。
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 3
+      content: 由 Nuxt 3 驱动，提供最佳性能和 SEO。
+    - label: Content v3
+      content: 使用 yaml 文件编写内容，或使用支持 MDC 语法的 Markdown。
+    - label: Nuxt UI v3
+      content: 提供大量完全可定制的组件。
+    - label: TypeScript
+      content: 完全类型化的开发体验。
+    - label: Nuxt Studio
+      content: 由 Nuxt Studio 支持，实现快速更新和预览。
+  ---
+  :::
+::
+
+
+# 极简入门
+
+::template-core
+释放你的想象力，使用我们的极简入门：
+
+- 从一张白纸开始，打造你梦想中的应用。
+- Nuxt Content 已全部配置完成。
+- 使用 Markdown 和 Vue 组件轻松组合页面，配合直观的 MDC 语法增强体验。
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 架构
+      content: 利用 Nuxt 3 及其模块生态系统的全部强大功能。
+    - label: 支持 Nuxt Studio
+      content: 在 Nuxt Studio 中通过实时预览编辑主题内容和外观。
+    - label: Vue 组件
+      content: 在内容中使用内置组件（或你自己的组件）。
+    - label: 编写 Markdown
+      content: 享受 Markdown 的简便与轻松，探索 MDC 语法。
+    - label: 部署无忧
+      content: 一键从 Studio 部署，或零配置部署到 Vercel 或 Netlify。可选择静态生成、按需渲染（Node）或 CloudFlare
+        Worker 的边缘渲染。
+  ---
+  :::
+::
+
+
+# Minted 目录
+
+::template-core
+Minted 目录是一个高度可定制的模板，旨在快速构建成功的目录网站。
+
+- 创建具有定制样式/品牌的目录网站
+- 使用 Markdown 管理列表
+- SEO 优化
+- 通过标签实现搜索和分类
+- 博客页面
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 架构
+      content: 充分利用 Nuxt 3 及其模块生态系统的强大功能。
+    - label: 支持 Nuxt Studio
+      content: 在 Nuxt Studio 内实时预览，编辑主题内容和外观。
+    - label: Vue 组件
+      content: 在内容中插入内置组件（或自定义组件）。
+    - label: 编写 Markdown
+      content: 享受 Markdown 的简洁易用，并发现 MDC 语法。
+    - label: 可部署于任何平台
+      content: 通过 Studio 一键部署，或在 Vercel、Netlify 上零配置部署。可选择静态生成、按需渲染（Node）或在 CloudFlare
+        Workers 上进行边缘渲染。
+    - label: 可扩展
+      content: 自定义整体设计，或使用插槽添加组件——可将 Minted 目录打造为专属于你的模板。
+  ---
+  :::
+::
+
+
+# 作品集
+
+::div{.flex.justify-center}
+:video{.rounded-lg autoplay controls loop :width='1000' src="https://res.cloudinary.com/nuxt/video/upload/v1746088224/studio/d53kg6qoo802zy3dzmh0.mp4"}
+::
+
+::template-core
+[Nuxt UI Pro](https://ui.nuxt.com/pro){rel="nofollow"} 是一套高级组件集合，是 [Nuxt UI](https://ui.nuxt.com){rel="nofollow"} 的扩展，旨在帮助你在几分钟内创建吸引人且响应式的 Nuxt 应用程序。
+
+Nuxt UI 团队致力于提供最佳的集成和定制体验，而 Studio 团队则提供与 Nuxt Studio 的完全兼容性。
+
+- **完全可定制**：可以通过你的应用配置更改任何组件的样式，或通过 ui 属性专门定制它们。
+- **轻松编写 Markdown**：Nuxt UI Pro 覆盖了 Nuxt Content 的 prose 组件，使其更加出色，还新增了 Callout、CodeGroup、Field 等组件。
+- **优美的排版样式**：预配置了 Tailwind CSS 排版插件，并根据 Nuxt UI 组件和颜色进行了样式调整。
+- **开箱即用的全文搜索**：Nuxt UI Pro 配备了即用的命令面板组件，无需再配置 Algolia DocSearch。
+- **组件支持插槽**：每个组件都利用了 Vue 插槽的强大功能，给予你构建任何内容的灵活性。
+- **响应式设计**：Nuxt UI Pro 组件旨在结构化你的内容，默认响应式，能适配任何屏幕尺寸。
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 3
+      content: 由 Nuxt 3 驱动，提供最佳性能和 SEO。
+    - label: Markdown
+      content: 借助 Nuxt Content 使用 MDC 编写页面。
+    - label: Nuxt UI
+      content: 提供大量完全可定制的组件。
+    - label: TypeScript
+      content: 完全类型化的开发体验。
+    - label: Nuxt Studio
+      content: 由 Nuxt Studio 支持，快速更新和预览。
+  ---
+  :::
+::
+
+
+# Saas
+
+::div{.flex.justify-center}
+:video{.rounded-lg autoplay controls loop :width='1000' src="https://res.cloudinary.com/nuxt/video/upload/v1744979325/studio/saas_cafkml.mp4"}
+::
+
+::template-core
+[Nuxt UI Pro](https://ui.nuxt.com/pro){rel="nofollow"} 是一套高级组件集，是 [Nuxt UI](https://ui.nuxt.com){rel="nofollow"} 的扩展，旨在帮助您用几分钟时间创建吸引人且响应迅速的 Nuxt 应用。
+
+Nuxt UI 团队致力于提供最佳的集成和定制体验，而 Studio 团队则确保与 Nuxt Studio 的完全兼容。
+
+- **完全可定制**：可通过您的应用配置更改任何组件的样式，也可以通过 ui 属性专门定制它们。
+- **轻松编写 Markdown**：Nuxt UI Pro 重写了 Nuxt Content 的 prose 组件，使其更加出色，还新增了 Callout、CodeGroup、Field 等组件。
+- **精美的排版样式**：预配置了 Tailwind CSS 排版插件，样式与 Nuxt UI 组件及颜色相匹配。
+- **开箱即用的全文搜索**：Nuxt UI Pro 内置了可直接使用的命令面板组件，无需再设置 Algolia DocSearch。
+- **全面的插槽支持**：每个组件均利用 Vue 的插槽功能，为您提供构建任何内容的灵活性。
+- **响应式设计**：Nuxt UI Pro 组件旨在构建您的内容结构，响应式设计可适应任何屏幕尺寸。
+
+#right
+  :::template-features
+  ---
+  features:
+    - label: Nuxt 3
+      content: 由 Nuxt 3 驱动，实现最佳性能和 SEO。
+    - label: Markdown
+      content: 借助 Nuxt Content 使用 MDC 编写页面。
+    - label: Nuxt UI
+      content: 提供一套高度可定制的丰富组件。
+    - label: TypeScript
+      content: 完整的类型化开发体验。
+    - label: Nuxt Studio
+      content: 支持 Nuxt Studio，提供快速更新和预览。
+    - label: Search
+      content: 由 Fuse.js 提供支持的全文搜索模态框。
+  ---
+  :::
+::
+
+
+# Docus，华丽回归
+
+我们彻底重写了 [Docus](https://docus.dev){rel="nofollow"} 主题。以 Nuxt 生态系统为动力、由 Nuxt UI 设计，带来一个全新且现代的基础，旨在提供最佳的文档体验。
+
+目标很简单：汲取 **Nuxt 生态系统中最优秀的部分**，交付一个强大、优雅且易于维护的文档主题。
+
+## **Docus v2 有什么新变化？**
+
+### **📦 一个真正的** [Nuxt]{.text-primary} **应用，只有一个依赖**
+
+Docus 构建于 [Nuxt 3](https://nuxt.com){rel="nofollow"} 之上（已启用 4 版本兼容模式，已为 Nuxt 4 做好准备）。这意味着你的文档是一个完整的 Nuxt 应用，可访问 Nuxt 的全部功能：组件、模块、插件、运行时配置等。
+
+**但**，**最棒的是**... 你只需安装 **docus** 这个包。它捆绑了所有必要的官方 Nuxt 模块，让你可以在几秒钟内开始编写文档。在你的项目中只需一个 `package.json` 文件和一个包含 Markdown 文件的 `content/` 文件夹，就能马上开始。
+
+::prose-tip{to="https://docus.dev/concepts/nuxt"}
+了解更多 Docus 中的 Nuxt 层专属章节。
+::
+
+### **✨ 由** [Nuxt]{.text-primary} **UI Pro 设计**
+
+Docus v2 由 **Nuxt UI Pro** 驱动，开箱即用美观、响应式且无障碍的主题。配合 **Tailwind CSS v4**、**CSS 变量** 和 **Tailwind Variants API**，你的文档默认美观且完全可定制。
+
+你可以通过简单修改 `app.config.ts` ，全局或逐组件调整颜色、更新排版或组件样式。
+
+::prose-tip{to="https://docus.dev/concepts/theme"}
+了解更多 Docus 中的 UI 主题专属章节。
+::
+
+::prose-note
+目前需要 UI Pro 许可证，但我们正努力很快让其免费向所有人开放。
+::
+
+### **✍️ 拥有超能力的 Markdown（由** [Nuxt]{.text-primary} &#x2A;*Content 支持的 MDC 语法）**
+
+写文档从未如此简单。只需一个 Markdown 文件夹即可。此外，借助 Nuxt Content 和 MDC 语法，你可以在 Markdown 中嵌入交互式 Vue 组件，使用任何 Nuxt UI 组件或自定义组件。
+
+::prose-tip{to="https://docus.dev/concepts/edition"}
+了解更多 Docus 中的 MDC 语法专属章节。
+::
+
+### 🖥️ 准备好支持 [Nuxt]{.text-primary} Studio
+
+Docus 完美配合 **Nuxt Studio**，让你完全在浏览器中管理和编辑文档。无需终端，无需本地环境设置，是与非技术贡献者协作或团队集中管理文档的理想方式。
+
+::prose-tip{to="https://docus.dev/getting-started/studio"}
+了解更多 Docus 中的 Studio 编辑器专属章节。
+::
+
+### **🔍 开箱即用的 SEO**
+
+技术 SEO 既复杂又乏味。Docus 提供了一个稳健的默认可选设置，开箱即用，同时让你完全控制 SEO 元数据，从页面元信息到社交分享图片。
+
+::prose-tip{to="https://docus.dev/concepts/configuration"}
+了解更多 Docus 中的应用配置专属章节。
+::
+
+### **🔧 通过组件覆盖实现完全自定义**
+
+需要替换部分布局或 UI？Docus 使用 **Nuxt Layers** 让你覆盖我们定义的核心组件。只需在项目的 `components/` 目录中创建同名组件，Docus 会自动使用它。
+
+::prose-tip{to="https://docus.dev/concepts/customization"}
+了解更多 Docus 中组件覆盖专属章节。
+::
+
+### **🤖 默认集成大型语言模型（LLMs）**
+
+Docus 默认集成了 `nuxt-llms`，为大型语言模型（LLMs）准备你的内容。所有文档页面均被注入，且自动生成并预渲染 `/llms.txt` 文件。
+
+::prose-tip{to="https://docus.dev/concepts/llms"}
+了解更多 Docus 中 LLMs 集成专属章节。
+::
+
+### **🧠 为即刻使用的文档提供智能默认**
+
+Docus 含有贴心默认设置，节省你的时间：
+
+- ✅ 根据文件夹结构自动生成侧边栏导航
+- 🔍 使用 Fuse.js 支持全文搜索
+- ✨ 优化排版和布局
+- 🌙 支持开箱即用的暗黑模式
+- 🖼️ 集成 Nuxt Image，实现响应式和优化图像
+
+### **🔁 简单迁移**
+
+从任何基于 Markdown 的系统迁移都非常简单：将 `.md` 文件放入 `content/` 文件夹，立即上线。
+
+## **接下来是什么？**
+
+### **🔧 今天就试试 Docus**
+
+```bash
+npx docus init docs
+```
+
+就这么简单 🚀 你可以编辑 `content/` 文件夹开始编写文档了。
+
+::prose-tip{to="https://docus.dev"}
+访问文档以了解 Docus 的全部内容。
+::
+
+### **🤝 贡献**
+
+我们已将仓库迁移到 **NuxtLabs** GitHub 组织，并清理了问题跟踪器，重新开始。
+
+无论是修复 Bug、建议新功能还是编写文档，我们都非常欢迎你的帮助。欢迎反馈、贡献和关于 Docus 未来的讨论！
+
+
+# 介绍 Nuxt Studio v2
+
+::warning
+本文发表于 2025 年 1 月 6 日 [Content](https://github.com/nuxt/content){rel="nofollow"} 和 [Studio](https://github.com/nuxtlabs/studio-module){rel="nofollow"} 模块合并之前。因此，内容可能存在一些不一致。Studio 模块现已废弃，作为 Content 模块的可选功能提供。了解如何在[此指南](https://nuxt-content.zhcndoc.com/docs/getting-started)中启用它。
+::
+
+我们很高兴宣布 Nuxt Studio v2 的发布，这是一次重大更新，带来了全新界面，特别基于用户反馈为用户量身设计。
+
+::tip
+Studio 针对 **Nuxt Content** 项目进行了优化，但唯一真正的要求是拥有包含 Markdown 文件的 *content* 文件夹。这个简单配置足以开始使用该平台编辑和发布文件。
+::
+
+### **更加直观的界面**
+
+![Nuxt studio v2 界面](https://nuxt-content.zhcndoc.com/blog/v2-interface.webp)
+
+版本 2 的主要改进是对界面的**全面重构**。我们将其设计得更直观、更易用，尤其对非技术用户更友好。我们的目标是简化用户体验，让创建和设置项目变得更轻松。新界面简洁明快，旨在优化您的工作流程。
+
+### **谷歌认证**
+
+![谷歌和 GitHub 认证](https://nuxt-content.zhcndoc.com/blog/google-github.webp)
+
+我们现在提供两种不同的认证方式。您可以用 **GitHub** 或 **Google** 登录。这两种方式赋予相同的编辑权限，但由于 Studio 与 GitHub 同步，部分功能专属 GitHub 用户，尤其是项目创建。
+
+::warning
+由于 Google 用户无法创建项目，需**加入已有项目的团队**以进行编辑。
+::
+
+### **最简配置即可编辑文件**
+
+您现在无需任何配置即可编辑内容，只需导入您的仓库即可。您可以浏览文件和媒体，编辑内容并发布到 GitHub。
+
+团队协作功能也已支持。
+
+![类 Notion 编辑器支持协作](https://nuxt-content.zhcndoc.com/blog/collaborate.webp)
+
+::warning
+编辑器中的媒体在未设置实时预览前不会显示（详见下文）。
+::
+
+### 简化的实时预览设置
+
+![实时预览开启于类 Notion 编辑器与网站之间](https://nuxt-content.zhcndoc.com/blog/preview.webp)
+
+由于实时预览功能需要部署的 URL，我们使设置尽可能简单。
+
+虽然 GitHub Pages 部署依然可用且无需您配置，但自托管项目的要求已简化，移除了令牌校验。[启用 Studio 模块](https://nuxt.studio/docs/get-started/setup#enable-the-live-preview){rel="nofollow"} 是&#x2A;*唯一剩下的要求。**
+
+::warning{to="https://github.com/nuxtlabs/studio-module"}
+务必使用最新版本的 **Studio 模块** 以确保兼容性及访问新功能。
+::
+
+### 全新的文档
+
+随着全新平台上线，带来了[新文档](https://nuxt.studio/docs/get-started/introduction){rel="nofollow"}。欢迎查阅，深入了解全新的 Studio。
+
+无论您是[编辑者](https://nuxt.studio/docs/editors/introduction){rel="nofollow"}还是[开发者](https://nuxt.studio/docs/developers/introduction){rel="nofollow"}，现在都有专属的文档章节。
+
+### Studio 的新方向
+
+大多数可用 CMS 解决方案要么面向开发者提供高度可定制化，要么面向内容编辑者非常友好，Studio 希望兼顾二者。
+
+**开发者提供工具，使编辑者专注内容，无需任何技术知识。**
+
+::tip
+我们的类 Notion 编辑器前景广阔，期待与社区共同发展。
+::
+
+###
+
+
+# 如何将您的 Nuxt 文档网站升级到 Content x UI v3
+
+**2025 年以「三」的力量开启！**
+
+新年伊始，我们喜爱的工具迎来了重大更新。UI 团队即将发布 **UI / UI Pro 库** 的 **3 版本**（目前处于 alpha 版本），而 Content 团队已经发布了 **Nuxt Content v3**。
+
+这些更新意味着所有结合了 **Content** 和 **UI** 的入门模板都需要更新以适配最新版本。为帮助您顺利完成迁移，本指南将演示如何将 **Nuxt UI Pro Docs Starter** 迁移到全新的 **Content v3 和 Nuxt UI v3** 包。
+
+::prose-tip{to="https://github.com/nuxt-ui-pro/docs/tree/v3"}
+查看 UI Pro 文档入门模板仓库源码。
+::
+
+## Content 迁移（v2 → v3）
+
+### 1. 将包更新到 v3
+
+::code-group
+```bash [pnpm]
+pnpm add @nuxt/content@^3
+```
+
+```bash [yarn]
+yarn add @nuxt/content@^3
+```
+
+```bash [npm]
+npm install @nuxt/content@^3
+```
+
+```bash [bun]
+bun add @nuxt/content@^3
+```
+::
+
+### 2. 创建 `content.config.ts` 文件
+
+该配置文件定义数据结构。集合（collection）代表一组相关内容。以 docs starter 为例，包含两个不同的集合，`landing` 集合代表主页，另一个 `docs` 集合包含文档页面。
+
+```js [content.config.ts]
+import { defineContentConfig, defineCollection, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    landing: defineCollection({
+      type: 'page',
+      source: 'index.yml'
+    }),
+    docs: defineCollection({
+      type: 'page',
+      source: {
+        include: '**',
+        exclude: ['index.yml']
+      },
+      schema: z.object({
+        links: z.array(z.object({
+          label: z.string(),
+          icon: z.string(),
+          to: z.string(),
+          target: z.string().optional()
+        })).optional()
+      })
+    })
+  }
+})
+```
+
+在 [`page`](https://nuxt-content.zhcndoc.com/docs/collections/types#page-type) 类型提供的内置字段基础上，我们为 `docs` 集合额外添加了 `links` 字段，以便在文档的 [页面头部](https://ui3.nuxt.dev/components/page-header){rel="nofollow"} 有选择地显示它们。
+
+::prose-tip
+`type: page` 表示内容文件与网站页面之间存在一一对应关系。
+::
+
+### 3. 迁移 `app.vue`
+
+::prose-steps{level="4"}
+#### 导航抓取方法更新：从 `fetchContentNavigation` 迁移为 `queryCollectionNavigation`
+
+  :::prose-code-group
+  ```ts [app.vue (v3)]
+  const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'))
+  
+  ```
+  
+  ```ts [app.vue (v2)]
+  const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
+  ```
+  :::
+
+#### 内容搜索命令面板数据使用新方法 `queryCollectionSearchSections`
+
+  :::prose-code-group
+  ```ts [app.vue (v3)]
+  const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
+    server: false,
+  })
+  ```
+  
+  ```ts [app.vue (v2)]
+  const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
+    default: () => [],
+    server: false
+  })
+  ```
+  :::
+::
+
+### 4. 迁移首页
+
+::prose-steps{level="4"}
+#### 首页数据抓取方法更新：从 `queryContent` 迁移为 `queryCollection`
+
+  :::prose-code-group
+  ```ts [index.vue (v3)]
+  const { data: page } = await useAsyncData('index', () => queryCollection('landing').path('/').first())
+  ```
+  
+  ```ts [index.vue (v2)]
+  const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
+  ```
+  :::
+
+#### 使用 [`page`](https://nuxt-content.zhcndoc.com/docs/collections/types#page-type) 类型提供的 `seo` 字段填充 `useSeoMeta`
+
+```ts [index.vue]
+useSeoMeta({
+  title: page.value.seo.title,
+  ogTitle: page.value.seo.title,
+  description: page.value.seo.description,
+  ogDescription: page.value.seo.description
+})
+```
+
+  :::prose-note
+  请注意，当未设置时，`seo` 字段会被根级的 `title` 和 `description` 自动覆盖。
+  :::
+::
+
+### 5. 迁移捕获全部文档页面
+
+::prose-steps{level="4"}
+#### 文档页面及其周边内容抓取更新为使用 `queryCollection` 和 `queryCollectionItemSurroundings`
+
+  :::prose-code-group
+  ```ts [docs/[...slug\\].vue (v3)]
+  const { data } = await useAsyncData(route.path, () => Promise.all([
+    queryCollection('docs').path(route.path).first(),
+    queryCollectionItemSurroundings('docs', route.path, {
+      fields: ['title', 'description'],
+    }),
+  ]), {
+    transform: ([page, surround]) => ({ page, surround }),
+  })
+  
+  const page = computed(() => data.value?.page)
+  const surround = computed(() => data.value?.surround)
+  ```
+  
+  ```ts [docs/[...slug\\].vue (v2)]
+  const { data: page } = await useAsyncData(route.path, () => queryContent(route.path).findOne())
+  
+  const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent()
+    .where({ _extension: 'md', navigation: { $ne: false } })
+    .only(['title', 'description', '_path'])
+    .findSurround(withoutTrailingSlash(route.path))
+  )
+  ```
+  :::
+
+#### 使用 [`page`](https://nuxt-content.zhcndoc.com/docs/collections/types#page-type) 类型提供的 `seo` 字段填充 `useSeoMeta`
+
+```ts [index.vue]
+useSeoMeta({
+  title: page.value.seo.title,
+  ogTitle: `${page.value.seo.title} - ${seo?.siteName}`,
+  description: page.value.seo.description,
+  ogDescription: page.value.seo.description
+})
+```
+
+  :::prose-note
+  请注意，当未设置时，`seo` 字段会被根级的 `title` 和 `description` 自动覆盖。
+  :::
+::
+
+### 6. 更新类型
+
+Content v3 大幅改进了类型支持，大部分手动声明类型的需求已无，类型将由 Nuxt Content API 直接提供。
+
+文档入门模板中唯一需要关注的是导航项类型，将 `NavItem` 替换为 `ContentNavigationItem` 。
+
+```ts
+import type { ContentNavigationItem } from '@nuxt/content'
+
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
+```
+
+### 7. 替换文件夹元数据文件
+
+所有 `_dir.yml` 文件命名改为 `.navigation.yml`
+
+### 8. 迁移 Studio 激活方式
+
+由于 [studio 模块](https://nuxt.studio){rel="nofollow"} 已废弃，且新的通用 `Preview API` 已直接集成到 Nuxt Content，我们可以从依赖和 `nuxt.config.ts` 的模块列表中移除 `@nuxthq/studio` 包。
+
+只需在 Nuxt 配置文件中启用预览模式，将 Studio API 绑定即可。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio'
+    }
+  },
+})
+```
+
+最后，为了保持 [app config 文件可由 Studio 更新](https://nuxt-content.zhcndoc.com/docs/studio/config)，只需将 `nuxt.schema.ts` 文件中的辅助导入由 `@nuxthq/studio/theme` 更改为 `@nuxt/content/preview`。
+
+::prose-tip
+到此为止，内容已使用 Content v3 驱动。接下来让我们迁移到 [Nuxt UI / UI Pro](https://ui3.nuxt.dev){rel="nofollow"} 版本 3。
+::
+
+## Nuxt UI Pro 迁移（v1 → v3）
+
+::prose-caution
+这是一次迁移指导，不涵盖所有破坏性变更。请检查文档中使用的每个组件，确认是否需要更新属性、插槽或样式。
+::
+
+### 1. 将包设置为 v3
+
+::prose-note
+为与 UI 版本统一（从 v1 直接跳至 v2），Nuxt UI Pro 跳过了版本 2，直接更新到 v3。
+::
+
+::prose-steps{level="4"}
+#### 安装 Nuxt UI v3 alpha 版
+
+  :::code-group{sync="pm"}
+  ```bash [pnpm]
+  pnpm add @nuxt/ui-pro@next
+  ```
+  
+  ```bash [yarn]
+  yarn add @nuxt/ui-pro@next
+  ```
+  
+  ```bash [npm]
+  npm install @nuxt/ui-pro@next
+  ```
+  
+  ```bash [bun]
+  bun add @nuxt/ui-pro@next
+  ```
+  :::
+
+#### 在 Nuxt 配置中添加模块
+
+无需再在模块中添加 `@nuxt/ui`，因为它已被 `@nuxt/ui-pro` 自动引入。
+
+  :::prose-code-group
+  ```ts [nuxt.config.ts (v3)]
+  export default defineNuxtConfig({
+    modules: ['@nuxt/ui-pro']
+  })
+  ```
+  
+  ```ts [nuxt.config.ts (v1)]
+  export default defineNuxtConfig({
+    extends: ['@nuxt/ui-pro'],
+    modules: ['@nuxt/ui']
+  })
+  ```
+  :::
+
+  :::prose-note
+  **Nuxt UI Pro V3** 被视为模块，而非层（layer）。
+  :::
+
+#### 在 CSS 中引入 Tailwind CSS 和 Nuxt UI Pro
+
+```css [assets/css/main.css]
+@import "tailwindcss" theme(static);
+@import "@nuxt/ui-pro";
+```
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui-pro'],
+  css: ['~/assets/css/main.css']
+})
+```
+
+#### 移除 tailwind 配置文件，使用 CSS 优先的主题定制
+
+Nuxt UI v3 使用 Tailwind CSS v4，采用 CSS 优先的配置方式。现可在 `@theme` 指令内使用 CSS 变量定制主题。
+
+- 删除 `tailwind.config.ts` 文件
+- 在 `main.css` 文件中使用 `@theme` 指令应用主题
+- 使用 `@source` 指令让 Tailwind 能检测 `markdown` 文件中的类名
+
+```css [assets/css/main.css]
+@import "tailwindcss" theme(static);
+@import "@nuxt/ui-pro";
+
+@source "../content/**/*";
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+
+  --color-green-50: #EFFDF5;
+  --color-green-100: #D9FBE8;
+  --color-green-200: #B3F5D1;
+  --color-green-300: #75EDAE;
+  --color-green-400: #00DC82;
+  --color-green-500: #00C16A;
+  --color-green-600: #00A155;
+  --color-green-700: #007F45;
+  --color-green-800: #016538;
+  --color-green-900: #0A5331;
+  --color-green-950: #052E16;
+}
+
+```
+::
+
+### 2. 更新 `app.config.ts` 中的 `ui` 配置
+
+::prose-caution{to="https://ui3.nuxt.dev/getting-started/theme#customize-theme"}
+组件中的 `ui` 属性或 `app.config.ts` 中的 `ui` 键的所有重载已废弃，请参考 **UI / UI Pro** 文档进行核查。
+::
+
+::prose-code-group
+```ts [app.config.ts (v3)]
+export default defineAppConfig({
+  ui: {
+    colors: {
+      primary: 'green',
+      neutral: 'slate'
+    }
+  },
+  uiPro: {
+    footer: {
+      slots: {
+        root: 'border-t border-gray-200 dark:border-gray-800',
+        left: 'text-sm text-gray-500 dark:text-gray-400'
+      }
+    }
+  },
+}
+```
+
+```ts [app.config.ts (v1)]
+export default defineAppConfig({
+  ui: {
+    primary: 'green',
+    gray: 'slate',
+    footer: {
+      bottom: {
+        left: 'text-sm text-gray-500 dark:text-gray-400',
+        wrapper: 'border-t border-gray-200 dark:border-gray-800'
+      }
+    }
+  },
+})
+```
+::
+
+### 3. 迁移 `error.vue` 页面
+
+可以使用新的 `UError` 组件作为完整的页面结构。
+
+::prose-code-group
+```vue [error.vue (v3)]
+<template>
+  <div>
+    <AppHeader />
+
+    <UError :error="error" />
+
+    <AppFooter />
+
+    <ClientOnly>
+      <LazyUContentSearch
+        :files="files"
+        :navigation="navigation"
+      />
+    </ClientOnly>
+  </div>
+</template>
+```
+
+```vue [error.vue (v1)]
+<template>
+  <div>
+    <AppHeader />
+
+    <UMain>
+      <UContainer>
+        <UPage>
+          <UPageError :error="error" />
+        </UPage>
+      </UContainer>
+    </UMain>
+
+    <AppFooter />
+
+    <ClientOnly>
+      <LazyUContentSearch
+        :files="files"
+        :navigation="navigation"
+      />
+    </ClientOnly>
+
+    <UNotifications />
+  </div>
+</template>
+```
+::
+
+### 4. 迁移 `app.vue` 页面
+
+- `Main`、`Footer` 和 `LazyUContentSearch` 组件在本例中无需更新。
+- `Notification` 组件可以移除，因为 `Toast` 由 `App` 组件直接管理。
+- `NavigationTree` 组件可替换为 `NavigationMenu` 或 `ContentNavigation` 组件展示内容导航。
+
+::prose-code-group
+```vue [Header.vue (v3)]
+<script>
+// 内容导航由 queryCollectionNavigation('docs') 提供
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
+</script>
+
+<template>
+  <UHeader>
+    <template #content>
+      <UContentNavigation
+        highlight
+        :navigation="navigation"
+      />
+     </template>
+   </UHeader>
+</template>
+```
+
+```vue [Header.vue (v1)]
+<script>
+// 内容导航由 fetchContentNavigation() 提供
+const navigation = inject<Ref<NavItem[]>>('navigation')
+</script>
+
+<template>
+  <UHeader>
+    <template #panel>
+      <UNavigationTree :links="mapContentNavigation(navigation)" />
+     </template>
+   </UHeader>
+</template>
+```
+::
+
+### 5. 更新首页
+
+我们决定将首页内容从 `YML` 迁移到 `Markdown` 。
+
+::prose-tip
+这么做是因为 Markdown 中使用的组件不再需要全局暴露（也不必创建在 `components/content` 文件夹中），Content v3 会自动处理这些。
+::
+
+::prose-steps{level="4"}
+#### 更新内容配置
+
+```ts [content.config.ts]
+export default defineContentConfig({
+  collections: {
+    landing: defineCollection({
+      type: 'page',
+      source: 'index.md'
+    }),
+    docs: defineCollection({
+      type: 'page',
+      source: {
+        include: '**',
+        exclude: ['index.md']
+      },
+      ...
+    })
+  }
+})
+```
+
+#### 使用 `ContentRenderer` 渲染 `Markdown`
+
+  :::prose-note
+  由于首页包含非 prose Vue 组件，需将 `ContentRenderer` 组件的 `prose` 属性设置为 `false`，以避免 Markdown 应用 prose 样式。
+  :::
+
+  :::prose-code-group
+  ```vue [index.vue (v3)]
+  <template>
+    <UContainer>
+      <ContentRenderer
+        v-if="page"
+        :value="page"
+        :prose="false"
+      />
+    </UContainer>
+  </template>
+  ```
+  
+  ```vue [index.vue (v1)]
+  <template>
+    <div>
+      <ULandingHero
+        v-if="page.hero"
+        v-bind="page.hero"
+      >
+        <template #headline>
+          <UBadge
+            v-if="page.hero.headline"
+            variant="subtle"
+            size="lg"
+            class="relative rounded-full font-semibold"
+          >
+            <NuxtLink
+              :to="page.hero.headline.to"
+              target="_blank"
+              class="focus:outline-none"
+              tabindex="-1"
+            >
+              <span
+                class="absolute inset-0"
+                aria-hidden="true"
+              />
+            </NuxtLink>
+  
+            {{ page.hero.headline.label }}
+  
+            <UIcon
+              v-if="page.hero.headline.icon"
+              :name="page.hero.headline.icon"
+              class="ml-1 w-4 h-4 pointer-events-none"
+            />
+          </UBadge>
+        </template>
+  
+        <template #title>
+          <MDC cache-key="head-title" :value="page.hero.title" />
+        </template>
+  
+        <MDC
+          :value="page.hero.code"
+          cache-key="head-code"
+          class="prose prose-primary dark:prose-invert mx-auto"
+        />
+      </ULandingHero>
+  
+      <ULandingSection
+        :title="page.features.title"
+        :links="page.features.links"
+      >
+        <UPageGrid>
+          <ULandingCard
+            v-for="(item, index) of page.features.items"
+            :key="index"
+            v-bind="item"
+          />
+        </UPageGrid>
+      </ULandingSection>
+    </div>
+  </template>
+  ```
+  :::
+
+#### 迁移 Vue 组件到 MDC 语法
+
+请将 `index.md` 中的所有组件迁移至遵循 [MDC 语法](https://nuxt-content.zhcndoc.com/docs/files/markdown) 格式。
+
+首页组件已重组并标准化为通用的 `Page` 组件。
+
+- `LandingHero` 改为 `PageHero`
+- `LandingSection` 改为 `PageSection`
+- `LandingCard` 改为 `PageCard`（但我们将使用 `PageFeature`） :prose-tip[在 GitHub 上查看最终的 `Markdown` 文件示例。]{to="https://github.com/nuxt-ui-pro/docs/blob/v3/content/index.md"}
+::
+
+### 6. 迁移文档页面
+
+::prose-steps{level="4"}
+#### 布局
+
+- `Aside` 组件已重命名为 `PageAside`。
+- 可使用 `ContentNavigation` 组件（替代旧的 `NavigationTree`）展示由 `queryCollectionNavigation` 返回的内容导航。 :prose-code-group[```vue \[layout/docs.vue (v3)\]
+  <template>
+    <UContainer>
+      <UPage>
+        <template #left>
+          <UPageAside>
+            <UContentNavigation
+              highlight
+              :navigation="navigation"
+            />
+          </UPageAside>
+        </template>
+
+        <slot />
+      </UPage>
+    </UContainer>
+  </template>
+  ``````vue \[layout/docs.vue (v1)\]
+  <template>
+    <UContainer>
+      <UPage>
+        <template #left>
+          <UAside>
+            <UNavigationTree :links="mapContentNavigation(navigation)" />
+          </UAside>
+        </template>
+
+        <slot />
+      </UPage>
+    </UContainer>
+  </template>
+  ```]
+
+#### 捕获全部页面
+
+- `Divider` 改名为 `Separator`
+- `findPageHeadline` 必须从 `#ui-pro/utils/content` 导入
+- `PageBody` 组件不再存在 `prose` 属性
+::
+
+::prose-tip{to="https://github.com/nuxt-ui-pro/docs/tree/v3"}
+完成！文档入门模板现已完全运行于 UI 和 Content v3 🎉
+::
+
+## 在 Studio 中编辑
+
+如果您使用 Nuxt Studio 编辑文档，也需要迁移相关代码。
+
+Studio 模块已废弃，新的通用 `Preview API` 已内嵌于 Nuxt Content，您可移除依赖及 `nuxt.config.ts` 中的 `@nuxthq/studio` 模块，只需在 Nuxt 配置中启用预览模式并绑定 Studio API。
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio'
+    }
+  },
+})
+```
+
+要保持 app 配置文件可由 Studio 更新，请将 `nuxt.schema.ts` 文件中的辅助导入由 `@nuxthq/studio/theme` 切换为 `@nuxt/content/preview`。
+
+:video{autoplay controls loop poster="https://res.cloudinary.com/nuxt/video/upload/v1737458923/studio/docs-v3_lqfasl.png" src="https://res.cloudinary.com/nuxt/video/upload/v1737458923/studio/docs-v3_lqfasl.mp4"}
+
+
+# **发布 Nuxt Content 3.0**
+
+我们非常激动地宣布 Nuxt Content 3.0.0 的首个稳定版本 ✨
+
+## 🚀 性能提升
+
+Nuxt Content v3 放弃了基于文件的存储方式，转而采用 SQL 数据库系统。使用数据库代替基于文件的存储可减少查询大规模数据集时的许多 I/O 操作。
+
+::prose-note
+全新的数据库系统优化了数据文件的存储和结构方式，确保更佳的性能和可扩展性。此更新完全是幕后进行，不影响您在 Content 中可使用的文件类型（`yml`、`json` 和 `markdown`）。
+::
+
+这一切对用户透明，Nuxt Content 依然支持零配置下的开发模式、[服务器托管](https://nuxt-content.zhcndoc.com/docs/deploy/server)和[静态生成](https://nuxt-content.zhcndoc.com/docs/deploy/static)。
+
+此外，现在支持[无服务器托管](https://nuxt-content.zhcndoc.com/docs/deploy/serverless)，客户端导航性能也得到提升。
+
+### 无服务器兼容性
+
+Nuxt Content v2 的一个关键挑战是为了存储所有内容文件导致捆绑包体积过大。这在部署到无服务器或边缘平台如 [Netlify](https://netlify.com){rel="nofollow"}、[NuxtHub](https://hub.nuxt.com){rel="nofollow"} 或 [Vercel](https://vercel.com){rel="nofollow"} 时是个问题。
+
+在无服务器环境中，每个用户请求都会触发 Nuxt 服务器的新实例，每次都是从零开始。此“无状态”特性意味着无法在服务器内存中存储数据，亦不能使用基于文件的数据库如 SQLite。因此，我们实现了数据库适配器，可以独立于你的服务器实例持久化数据。
+
+::prose-note
+我们会根据你配置中的[数据库类型](https://cfec52f9.content-f0q.pages.dev/docs/getting-started/configuration#database){rel="nofollow"}手动切换到对应的服务提供者（如 Vercel / Postgres，NuxtHub / D1……）。
+::
+
+### 浏览器端的 WASM SQLite
+
+对于客户端导航，模块使用类似的方法。当应用执行第一条内容查询时，会从服务器下载生成的转储文件，并在浏览器内初始化本地 SQLite 数据库。从此之后，所有查询都在本地执行，无需再调用服务器：极大提升了应用响应速度，带来无缝的用户体验。
+
+## 🗄️ 内容集合
+
+集合是 Nuxt Content 项目中相关内容项的分组。它们帮助更高效地组织和管理大型数据集。
+
+### **定义集合**
+
+你现在可以在 [`content.config.ts`](https://nuxt-content.zhcndoc.com/docs/getting-started/configuration) 文件中定义集合，以配置数据库结构、实用类型以及查找、解析和查询内容的方法。
+
+### **集合模式**
+
+模式确保集合内数据的一致性，并提升 TypeScript 的类型推断，以更好地集成 Nuxt Content 工具。
+
+```ts [content.config.ts]
+import { defineCollection, z } from '@nuxt/content'
+
+// 导出集合
+export const collections = {
+  // 使用 `defineCollection` 工具定义集合
+  posts: defineCollection({
+    // 指定此集合中的内容类型
+    type: 'page',
+    // 加载匹配此模式的所有文件
+    source: 'blog/**/*.md',
+    // 为此集合定义自定义模式
+    schema: z.object({
+      date: z.date(),
+      image: z.object({
+        src: z.string(),
+        alt: z.string()
+      }),
+      badge: z.object({
+        label: z.string(),
+        color: z.string()
+      })
+    })
+  }),
+}
+```
+
+::prose-tip{to="https://nuxt-content.zhcndoc.com/docs/collections/define"}
+在文档中了解更多关于集合的内容。
+::
+
+## 🔧 简化的 Vue 工具
+
+我们简化了工具，现暴露：
+
+- [queryCollection](https://nuxt-content.zhcndoc.com/docs/utils/query-collection) 用于通过强大的查询构建器获取集合
+- [queryCollectionNavigation](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-navigation) 用于获取特定集合生成的导航
+- [queryCollectionItemSurroundings](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-item-surroundings) 用于获取特定路径的相邻内容
+- [queryCollectionSearchSections](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-search-sections) 用于从集合获取可搜索的章节，增强内容发现
+
+这四个工具允许你在 Vue 页面和组件中高效获取和查询内容：
+
+```vue [pages/blog.vue]
+<script setup lang="ts">
+const { data: posts } = await useAsyncData('blog', () => {
+  return queryCollection('blog').all()
+})
+</script>
+
+<template>
+  <div>
+    <h1>博客</h1>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
+      </li>
+    </ul>
+  </div>
+</template>
+```
+
+## 📦 内置组件
+
+我们更新了组件，只包含必要的部分：
+
+- [ContentRenderer](https://nuxt-content.zhcndoc.com/docs/components/content-renderer) 用于渲染解析后的 Markdown 为 HTML 和 Vue 组件
+- [Slot](https://nuxt-content.zhcndoc.com/docs/components/slot) 取代了 `ContentSlot`，因我们现在支持用指令解包，使你的 Vue 组件能完美兼容 Vue 和 Markdown 中的使用
+- [Prose 组件](https://nuxt-content.zhcndoc.com/docs/components/prose) 是为 MDC 语法量身打造的预设计组件，集成了样式以提升外观表现
+
+以下是显示 Markdown 文件内容的示例：
+
+```vue [pages/about.vue]
+<script lang="ts" setup>
+const { data: page } = await useAsyncData(() => {
+  return queryCollection('content').path('/about').first()
+})
+</script>
+
+<template>
+  <ContentRenderer v-if="page" :value="page" />
+  <p v-else>关于页面尚未编写。</p>
+</template>
+```
+
+## 🔷 TypeScript 集成
+
+新的集合系统为所有数据自动提供 TypeScript 类型。每个工具和 API 均基于你的集合定义实现强类型，确保开发过程中的类型安全。
+
+## ⬆️ 从 V2 迁移
+
+迁移尽可能简便，因此我们编写了 [迁移指南](https://nuxt-content.zhcndoc.com/docs/getting-started/migration)。
+
+::prose-note
+注意，我们决定移除基于文档的驱动模式，以简化模块使用。
+::
+
+## 🖼️ Studio 集成
+
+[Nuxt Studio](https://nuxt-content.zhcndoc.com/studio) 是一个可视化编辑运行中 **Nuxt Content** 项目的平台。支持 `Markdown`、`YAML` 和 `JSON` 文件，编辑器确保灵活与易用。
+
+### 预览 API
+
+之前独立的模块 [Studio 模块](https://github.com/nuxtlabs/studio-module){rel="nofollow"} 已升级得更加通用，现直接集成在 Nuxt Content 作为一个 `预览 API`。
+
+启用 Studio 的预览功能比以往更简单 —— 只需在 Nuxt Content 配置中将 Studio API 设置为你的 `Preview API`：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio'
+    }
+  }
+})
+```
+
+这一简化意味着不再需要额外安装模块来支持 Studio，设置更快更简便。此外，预览 API 现已泛化，支持其他服务提供提供顶级的编辑体验。
+
+### **统一文档**
+
+除了集成，我们还将 **Content** 和 **Studio** 的文档与网站统一成一个全面的资源。仅 Studio 平台（用户登录后可用）保持为一个[独立站点](https://nuxt.studio){rel="nofollow"}。
+
+**我们现在可以在 Studio 中利用数据结构和集合**。Studio 平台支持并适配 **集合** 和 **用户自定义模式**。此改进将支持针对 `YAML` 和 `JSON` 文件及 Markdown 文件中的 front-matter 自动生成表单。
+
+
+# Nuxt Studio 可视化编辑器幕后揭秘
+
+## **简介**
+
+Nuxt Studio 为开发者和内容撰写者提供了多功能的工作空间，允许他们在两个截然不同的编辑器之间进行选择，用于内容的创建和管理：Markdown 编辑器和可视化编辑器。
+
+![从项目设置中选择你喜欢的编辑器](https://nuxt-content.zhcndoc.com/blog/favorite-editor.webp)
+
+每个编辑器都有其独特的用途——有些用户习惯于 Markdown 编辑，而另一些则更喜欢非技术化的可视化方式。
+
+最终，**这两种编辑器的最终输出都是 Markdown 语法**。
+
+本文将阐述可视化编辑器背后的技术流程，探讨它如何解析 Markdown、如何转换回 Markdown，以及为何这一过程有时可能会导致与原始内容的差异。
+
+## **Markdown 编辑器**
+
+![在 Nuxt Studio 中直接编辑 Markdown](https://nuxt-content.zhcndoc.com/blog/markdown-editor.webp)
+
+Nuxt Studio 中的 Markdown 编辑器允许你完全控制内容，可以直接编写 [MDC](https://nuxt-content.zhcndoc.com/docs/files/markdown)（增强型 Markdown 语法）。该语法支持直接将 Vue 组件集成到 Markdown 文件中，提供了更灵活的页面结构编排能力。
+
+当你在 Markdown 编辑器中保存文件时，内容会完全保持你所编写的形式，保留所有特定语法与格式。对于熟悉 Markdown 并希望精确控制内容布局和结构的用户来说，这款编辑器是理想选择。
+
+## **可视化编辑器**
+
+![在 Nuxt Studio 中使用可视化编辑器编辑你的内容](https://nuxt-content.zhcndoc.com/blog/visual-editor.webp)
+
+可视化编辑器是一种基于 [TipTap](https://tiptap.dev/){rel="nofollow"} 和 [ProseMirror](https://prosemirror.net/){rel="nofollow"} 构建的所见即所得（WYSIWYG）工具，旨在屏蔽 Markdown 语法的复杂性，提供更直观的视觉编辑体验。对于不想直接处理原始 Markdown 代码的用户，这款编辑器尤其友好。
+
+### **可视化编辑器如何处理文件**
+
+当你用可视化编辑器打开 Markdown 文件时，Nuxt Studio 首先会解析原始 Markdown 文件。借助 [MDC 模块](https://github.com/nuxt-modules/mdc){rel="nofollow"}，它生成一个抽象语法树（AST）。随后，该 AST 被转换为 TipTap 兼容的格式（TipTap AST），以便编辑器能够精准地可视化渲染文档内容。
+
+一旦可视化编辑器展示内容，用户便可通过直观的视觉方式进行更新。在幕后，编辑器持续地将 TipTap AST 转换回 MDC AST，再回转为 MDC 语法，确保内容始终保持 Markdown 格式。
+
+### **为什么未修改内容时原始 Markdown 文件会发生变化**
+
+![检测到自动 Markdown 解析时弹出提醒](https://nuxt-content.zhcndoc.com/blog/automatic-parsing-modal.webp)
+
+#### **非关键性变化**
+
+当可视化编辑器将视觉格式转换回 Markdown 时，会应用一套预设的 Markdown 标准解析算法。这些标准有时可能与原内容存在细微差别。这类变化通常影响不大，仅仅是 Markdown 语法的另一种有效写法，渲染后的网站表现应保持一致。
+
+#### **关键性变化**
+
+理想情况下，Markdown 的所有特性都能在可视化编辑器中有直接而准确的对应。我们已构建自定义 TipTap 扩展，以支持自定义 MDC 语法，例如 [Vue 组件](https://nuxt-content.zhcndoc.com/docs/files/markdown#vue-components)编辑或 [front-matter](https://nuxt-content.zhcndoc.com/docs/files/markdown#front-matter) 等。然而，在个别罕见的情况下，尤其是涉及复杂或不常见的 Markdown 元素时，可视化编辑器可能无法完全支持或正确解析这些元素。此时，编辑器可能会在解析过程中对这些元素进行近似处理、简化乃至省略。
+
+这类差异可能导致转换回 Markdown 时出现数据丢失或回退。虽然这种情况较少发生，但有可能影响内容的展示效果或功能。
+
+我们的主要目标是防止任何内容丢失，保持 Markdown 文件的完整性。如果你遇到从可视化编辑器切换回 Markdown 时出现不完美的情况，欢迎在我们的 Discord 服务器上反馈。你的反馈对我们改进和完善可视化编辑器极为重要，能确保满足所有用户的需求。
+
+## **减少非预期变化的最佳实践**
+
+为避免丢失重要格式或内容，请遵循以下建议：
+
+- **避免使用复杂的 HTML 结构**。由于 MDC 语法允许集成 Vue 组件，更推荐创建可复用组件，方便插入 Markdown 并在编辑器内编辑，而不是依赖复杂的 HTML 代码。
+- **保持编辑器的一致性**。尽可能选择最适合你需求的编辑器，并在整个页面编辑过程中保持使用同一编辑器。
+- **切换编辑器后务必检查变更**。切换编辑器后，务必在审核页面检查 Markdown 内容，并通过预览确保没有重要元素被修改。
+
+## **结语**
+
+在 Nuxt Studio 中切换 Markdown 编辑器和可视化编辑器可以带来灵活的编辑体验，但需要注意背后的技术影响。
+
+理解可视化编辑器如何处理和转换 Markdown，有助于确保你所撰写的 Markdown 内容能准确地在可视化编辑器中显示，使非技术用户能够轻松编辑所有内容，而不破坏原始 Markdown 文件。
+
+###
+
+
+# 可视化 Front-matter 编辑
+
+::warning
+本文发布于 2025 年 1 月 6 日 [Content](https://github.com/nuxt/content){rel="nofollow"} 和 [Studio](https://github.com/nuxtlabs/studio-module){rel="nofollow"} 模块合并之前。因此，本文可能存在一些不一致之处。Studio 模块现已弃用，作为 Content 模块的可选功能提供。请参阅[这份指南](https://nuxt-content.zhcndoc.com/docs/getting-started)了解如何启用。
+::
+
+## 可视化 Front-Matter 编辑
+
+现在您无需编写 `YAML` 语法即可编辑 markdown front-matter。Nuxt Studio 会自动生成用户友好的表单，简化元数据编辑。
+
+:video{autoplay controls loop poster="https://res.cloudinary.com/nuxt/video/upload/v1729157955/frontmatterform2_rmh58v.jpg" src="https://res.cloudinary.com/nuxt/video/upload/v1729157955/frontmatterform2_rmh58v.mp4"}
+
+## 什么是 Front-matter？
+
+Front-matter 是基于 Markdown 的 CMS 中用于为页面提供元数据（如描述、标题等）的约定。在 [Nuxt Content](https://nuxt-content.zhcndoc.com/docs/files/markdown#front-matter) 中，front-matter 使用的是 YAML 语法。
+
+::callout
+---
+icon: i-ph-info
+to: https://nuxt-content.zhcndoc.com/docs/files/markdown#front-matter
+---
+关于 front-matter 语法的详细信息，请参阅 Nuxt Content 文档。
+::
+
+## 我们非技术编辑器的最后一环
+
+Nuxt Studio 从发布编辑器起就以非技术用户为设计核心。我们的目标是让每个人都能轻松编辑 markdown 和内容。
+
+自动生成 front-matter 表单是下一步的合理进展。通过摆脱 YAML 语法的复杂性，简化了非开发者的编辑流程，提供动态输入选项，如图片选择器、日期选择器、布尔切换等。此增强使我们实现了完全可视化且用户友好的内容管理体验。
+
+## 扩展至所有 YAML 和 JSON 文件
+
+不久之后，表单生成功能将扩展至您在 Nuxt Studio 中编辑的所有 `YAML` 和 `JSON` 文件，让结构化数据的操作更为轻松便捷。
+
+## 展望 Nuxt Content v3
+
+::callout{icon="i-ph-lightbulb"}
+本节内容仅为 [Nuxt Content v3](https://github.com/nuxt/content/tree/v3){rel="nofollow"} 的预告，我们将很快发布更详尽的博文。
+::
+
+我们正积极开发下一重大版本 Nuxt Content，这将带来显著的性能提升和新功能，进一步提升内容管理体验。
+
+### 性能优化
+
+Nuxt Content v2 的一大挑战是需要较大的包体积来存储所有内容文件，这在向边缘平台（如 [NuxtHub](https://hub.nuxt.com/){rel="nofollow"}）部署时造成了问题。
+
+为解决此问题，Nuxt Content v3 在生产环境中不再使用基于文件的存储方式，而是采用 SQL 数据库系统。此变更对用户透明。我们为开发模式、静态生成、服务器渲染及通过 NuxtHub 的边缘部署提供零配置支持。
+
+### 引入 Collections（集合）
+
+Collections 是 Nuxt Content 项目中相关内容项的分组，帮助更高效地组织和管理大型数据集。
+
+#### 定义 Collections
+
+您可以在 `content.config.ts` 文件中定义 collections，Nuxt Content 将用它配置数据库结构、类型工具及用于查找、解析和查询内容的方法。
+
+#### Collections 方案（Schema）
+
+方案可确保 collections 内部的一致性，并改善 TypeScript 类型定义，增强与 Nuxt Content 工具的集成。
+
+```ts [content.config.ts]
+import { defineCollection, z } from '@nuxt/content'
+
+// 导出 collections
+export const collections = {
+  // 使用 `defineCollection` 工具定义 collection
+  posts: defineCollection({
+    // 指定该 collection 中内容的类型
+    type: 'page',
+    // 加载匹配此模式的所有文件
+    source: 'blog/**/*.md',
+    // 为该 collection 定义自定义 schema
+    schema: z.object({
+      date: z.date(),
+      image: z.object({
+        src: z.string(),
+        alt: z.string()
+      }),
+      badge: z.object({
+        label: z.string(),
+        color: z.string()
+      })
+    })
+  }),
+}
+```
+
+### 针对 Nuxt Studio 精心打造
+
+Nuxt Studio 最初与 Nuxt Content v2 同步开发，但在 v3 中，我们以 Nuxt Studio 体验为目标重构模块。我们的宗旨是打造最佳内容编辑 CMS 平台，同时提供极佳的开发者体验。
+
+例如，collection schema 将助力我们进一步增强 Studio 中的表单生成。您甚至可以直接在 schema 中设置字段的编辑器类型。
+
+```ts [content.config.ts]
+image: z.object({
+    src: z.string().editor({ type: 'media' }),
+    alt: z.string()
+}),
+icon: z.string().editor({ type: 'icon' })
+```
+
+::callout{icon="i-ph-lightbulb" to="https://github.com/nuxt/content/tree/main"}
+Nuxt Content v3 已正式发布。欢迎尝试并向我们反馈意见。
+::
+
+
+# Studio 表单自定义
+
+[Studio](https://nuxt.studio){rel="nofollow"} 表单是基于您内容配置文件中定义的集合模式动态生成的。无论您是在编辑 `Markdown` 文件的 [frontmatter](https://nuxt-content.zhcndoc.com/docs/files/markdown#frontmatter)，还是 `JSON` / `YAML` 文件，这种行为都是适用的。
+
+:video{autoplay controls poster="https://res.cloudinary.com/nuxt/video/upload/v1739982761/frontmatterform_yjafgt.png" src="https://res.cloudinary.com/nuxt/video/upload/v1739982761/frontmatterform_yjafgt.mp4"}
+
+## **使用** `zod` **模式定义您的表单**
+
+Nuxt Content 利用 [zod](https://github.com/colinhacks/zod){rel="nofollow"} 让您定义一种类型安全的内容模式。此模式不仅用于验证您的数据，还为 **Studio** 中的表单生成提供支持。
+
+### **内置的 zod 辅助工具**
+
+您可以通过向集合添加 `schema` 属性并使用 [zod](https://github.com/colinhacks/zod){rel="nofollow"} 模式来定义您的内容模式。
+
+`@nuxt/content` 暴露了一个 `z` 对象，包含一组用于常见数据类型的 [Zod](https://nuxt-content.zhcndoc.com) 工具。
+
+::prose-code-group
+```ts [content.config.ts]
+export default defineContentConfig({
+  collections: {
+    posts: defineCollection({
+      type: 'page',
+      source: 'blog/*.md',
+      schema: z.object({
+        draft: z.boolean().default(false),
+        category: z.enum(['Alps', 'Himalaya', 'Pyrenees']).optional(),
+        date: z.date(),
+        image: z.object({
+          src: z.string().editor({ input: 'media' }),
+          alt: z.string(),
+        }),
+        slug: z.string().editor({ hidden: true }),
+        icon: z.string().optional().editor({ input: 'icon' }),
+        authors: z.array(z.object({
+          slug: z.string(),
+          username: z.string(),
+          name: z.string(),
+          to: z.string(),
+          avatar: z.object({
+            src: z.string(),
+            alt: z.string(),
+          }),
+        })),
+      }),
+    }),
+  },
+})    
+```
+
+  :::preview-card{icon="i-lucide-eye" label="生成的表单"}
+  ![表单预览](https://nuxt-content.zhcndoc.com/docs/studio/preview-schema.png)
+  :::
+::
+
+### **原生输入映射**
+
+原始 Zod 类型会自动映射为 **Studio** 中相应的表单输入：
+
+- **字符串** → 文本输入框
+- **日期** → 日期选择器
+- **数字** → 数字输入（计数器）
+- **布尔值** → 开关切换
+- **枚举** → 下拉选择框
+- **字符串数组** → 徽章输入列表
+- **对象数组** → 可折叠项嵌套表单
+
+:video{autoplay controls loop poster="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.jpg" src="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.mp4"}
+
+### 自定义输入映射
+
+内容不仅限于原始类型。您可以使用 `editor` 方法自定义表单字段，该方法通过元数据扩展 Zod 类型，以增强编辑器界面功能。
+
+这使您能够定义自定义输入或者隐藏字段。
+
+#### 用法
+
+```ts [content.config.ts]
+mainScreen: z.string().editor({ input: 'media' })
+```
+
+#### 选项
+
+##### `input: 'media' | 'icon'`
+
+您可以设置编辑器输入类型。目前支持 icon 和 media，因为它们已在 Studio 编辑器中被处理。
+
+##### `hidden: Boolean`
+
+此选项可用于避免字段在 Studio 编辑器中显示。
+
+::prose-tip
+Studio 输入完全可扩展。我们可以根据用户需求创建任意数量的输入控件。
+::
+
+
+# 视觉化 YAML 和 JSON 文件编辑
+
+::warning
+本文发表于 [Content](https://github.com/nuxt/content){rel="nofollow"} 和 [Studio](https://github.com/nuxtlabs/studio-module){rel="nofollow"} 模块于 2025 年 1 月 6 日合并之前。因此，文中内容可能存在一些不一致之处。Studio 模块现已废弃，并作为 Content 模块的可选功能提供。请参阅 [此指南](https://nuxt-content.zhcndoc.com/docs/getting-started) 了解如何启用。
+::
+
+## `YAML` 和 `JSON` 文件的自动生成表单
+
+:video{controls loop src="https://res.cloudinary.com/nuxt/video/upload/v1730132248/yml-json-form_n9czcs.mp4"}
+
+延续我们让 Nuxt Studio 成为非技术用户编辑 Nuxt 网站内容工具的旅程，我们很高兴地宣布，现在可以通过生成的视觉表单来编辑 `YAML` 和 `JSON` 文件。这次更新免去了用户直接操作复杂文件语法（如 YAML 或 JSON）的需求。
+
+::callout{icon="i-ph-info"}
+目前数组尚未通过表单支持，但我们计划在 Nuxt Content v3 发布集合和用户定义的 schema 后进行支持。详见下文章节。
+::
+
+### 同步导航
+
+此次更新同时改进了非 Markdown 格式（如 YAML 和 JSON）预览与所选文件间的同步导航。请将 Studio 模块更新至最新版本 `v2.2.0` 以应用此修复。
+
+## 迈向 Nuxt Content v3
+
+我们很高兴地宣布，Nuxt Content v3 的第四个 alpha 版本已发布，且 [**草稿文档**](https://content.nuxt.com/){rel="nofollow"} 已开放。
+
+### 下一步？
+
+未来几个月，我们将专注于测试和优化 Nuxt Content v3，确保其稳健且适合生产环境发布。以下是与 Nuxt Studio 相关的主要改进：
+
+- **合并 Studio 模块**：不久后，Studio 模块将直接集成进 Nuxt Content。Nuxt Content v3 发布后，只需在 `nuxt.config.ts` 文件中设置 `content.editor: true` 即可启用 Studio。该简化意味着无需额外模块，安装更快捷。
+- **统一文档**：模块合并后，我们将把 [Content](https://content.nuxt.com){rel="nofollow"} 和 [Studio](https://nuxt.studio){rel="nofollow"} 的文档及网站合并为一个综合资源。Studio 平台本身（用户登录后可用）将作为独立站点保留。
+- **充分利用 Studio 中的数据结构和集合**：借助 Nuxt Content v3，Studio 平台将支持并适配 [集合](https://nuxt-content.zhcndoc.com/docs/collections/define) 和用户定义的 schema，实现针对 YAML、JSON 文件及 Markdown 的 front-matter 的基于 schema 的表单生成。
+
+这些更新体现了我们为您的 Nuxt 网站提供最佳内容编辑平台的承诺。敬请期待！

@@ -1,0 +1,2 @@
+import{e as o,r as t,B as e,c as s,C as a,s as r}from"../../../../nitro/nitro.mjs";import{r as i}from"../../../../_/auth.mjs";import"node:buffer";import"node:process";import"node:timers";import"node:events";import"node:async_hooks";import"node:path";const m=o((async o=>{await i(o),t("cache");const m=e(o,"key")||"";if(!/\.[a-z0-9]+$/i.test(m))throw s({statusCode:400,message:"Invalid key"});const n=a("cache");return await n.removeItem(m),r(o)}));export{m as default};
+//# sourceMappingURL=_...key_.delete.mjs.map
