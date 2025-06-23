@@ -102,7 +102,7 @@ export async function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest
     return []
   }).filter(({ source }) => source.cwd)
 
-  const dirsToWatch = Array.from(new Set(sourceMap.map(({ source }) => source.cwd)))
+  const dirsToWatch = Array.from(new Set(sourceMap.map(({ prefix }) => prefix)))
     // Filter out empty cwd for custom collections
     .filter(Boolean)
 
@@ -114,7 +114,7 @@ export async function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest
         if (prefix && path.startsWith(prefix)) {
           return micromatch.isMatch(
             path.substring(cwd.length),
-            source.include,
+            '**',
             { ignore: source!.exclude || [], dot: true },
           )
         }
