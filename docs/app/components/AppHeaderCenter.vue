@@ -1,9 +1,8 @@
-import colors from 'tailwindcss/colors'
+<script setup lang="ts">
+const route = useRoute()
 
-export const useNavLinks = () => {
-  const route = useRoute()
-
-  return computed(() => [{
+const links = computed(() => [
+  {
     label: '文档',
     icon: 'i-lucide-book-open',
     to: '/docs/getting-started',
@@ -24,22 +23,19 @@ export const useNavLinks = () => {
     }],
   }, {
     label: '模板',
-    icon: 'i-lucide-panels-top-left',
+    icon: 'i-lucide-layout-template',
     to: '/templates',
   }, {
     label: '博客',
     icon: 'i-lucide-file-text',
     to: '/blog',
-  }, {
-    label: '更新日志',
-    icon: 'i-lucide-history',
-    to: '/changelog',
-  }])
-}
+  },
+])
+</script>
 
-export const useThemeColor = () => {
-  const colorMode = useColorMode()
-  const appConfig = useAppConfig()
-
-  return computed(() => colorMode.value === 'dark' ? colors[appConfig.ui.colors!.neutral as keyof typeof colors][900] : 'white')
-}
+<template>
+  <UNavigationMenu
+    :items="links"
+    variant="link"
+  />
+</template>

@@ -1,11 +1,13 @@
 ---
+prose: true
 seo:
   title: 基于 Git 的 Nuxt 项目内容管理系统
-  description: Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式来管理应用内容。它允许开发者以 Markdown、YAML 或 JSON 文件格式编写内容，然后在应用中查询并展示这些内容。
+  description: Nuxt Content 是一个用于 Nuxt 的模块，提供了一种简单的方法来管理您应用程序的内容。它允许开发者以 Markdown、YAML 或 JSON 文件的形式编写内容，然后在他们的应用程序中查询和显示这些内容。
+  ogImage: https://content.nuxt.com/social.png
 ---
 
 ::u-page-hero
-  :::div{.hidden.sm:block}
+  :::div{class="hidden md:block"}
     ::::u-color-mode-image
     ---
     class: size-full absolute bottom-0 inset-0 z-[-1]
@@ -152,7 +154,7 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
 #description
 结合基于文件的简单性与 Vue 组件的强大功能。构建内容丰富的网站，从文档页到复杂应用。
 
-  :::div{.hidden.sm:block}
+  :::div{.hidden.md:block}
     ::::u-color-mode-image
     ---
     class: size-full absolute top-0 inset-0
@@ -168,58 +170,78 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
 reverse: true
 orientation: horizontal
 ---
-  :::code-group
-    ::::preview-card{.!h-[458px] icon="i-lucide-eye" label="预览"}
-      :::::example-landing-hero
+  :::tabs
+    ::::tabs-item
+    ---
+    icon: i-lucide-eye
+    label: Preview
+    ---
+      :::::browser-frame
+        :::::example-landing-hero
+        ---
+        image: /mountains/everest.jpg
+        ---
+        #title
+        珠穆朗玛峰
+        
+        #description
+        珠穆朗玛峰是世界上最高的山，海拔 8,848 米。
+        :::::
+      :::::
+    ::::
+
+    ::::tabs-item
+    ---
+    icon: i-simple-icons-markdown
+    label: content/index.md
+    ---
+      ```mdc [content/index.md]
       ---
-      class: "!h-[458px]"
+      title: 山脉网站
+      description: 一个关于世界上最具标志性的山脉的网站。
+      ---
+
+      ::landing-hero
+      ---
       image: /mountains/everest.jpg
       ---
       #title
-      珠穆朗玛峰。
-      
+      珠穆朗玛峰
+
       #description
-      珠穆朗玛峰是世界上海拔最高的山峰，海拔8848米。
-      :::::
+      珠穆朗玛峰是世界上最高的山，海拔 8,848 米。
+      ::
+
+      ```
     ::::
-  
-  ```mdc [content/index.md]
-  ---
-  title: 山峰网站
-  description: 一个关于世界最具标志性山峰的网站。
-  ---
-  
-  ::landing-hero
-  ---
-  image: /mountains/everest.png
-  ---
-  #title
-  珠穆朗玛峰。
-  
-  #description
-  珠穆朗玛峰是世界上海拔最高的山峰，海拔8848米。
-  ::
-  ```
-  
-  ```vue [components/LandingHero.vue]
-  <script setup lang="ts">
-  defineProps<{ image: string }>()
-  </script>
-  
-  <template>
-    <section class="flex flex-col sm:flex-row sm:items-center flex-col-reverse gap-4 py-8 sm:gap-12 sm:py-12">
-      <div>
-        <h1 class="text-4xl font-semibold">
-          <slot name="title" />
-        </h1>
-        <div class="text-base text-gray-600 dark:text-gray-300">
-          <slot name="description" />
-        </div>
-      </div>
-      <img :src="image" class="w-1/2 rounded-lg">
-    </section>
-  </template>
-  ```
+
+    ::::tabs-item
+    ---
+    icon: i-simple-icons-vuedotjs
+    label: components/LandingHero.vue
+    ---
+      ```vue [components/LandingHero.vue]
+        <script setup lang="ts">
+        defineProps<{
+          image: string 
+        }>()
+        </script>
+        
+        <template>
+          <section class="flex flex-col sm:flex-row sm:items-center gap-4 py-8 sm:gap-12 sm:py-12">
+            <div>
+              <h1 class="text-4xl font-semibold">
+                <slot name="title" />
+              </h1>
+              <div class="text-base text-gray-600 dark:text-gray-300">
+                <slot name="description" />
+              </div>
+            </div>
+            <img :src="image" class="w-1/2 rounded-lg">
+          </section>
+        </template>
+      ```
+    ::::
   :::
 
 #title
@@ -269,44 +291,56 @@ Markdown 遇见 [Vue]{.text-(--ui-primary)} 组件
 ---
 orientation: horizontal
 ---
-  :::code-group
-  ```vue [pages/blog.vue]
-  <script setup lang="ts">
-  const { data: posts } = await useAsyncData('blog', () => {
-    return queryCollection('blog').all()
-  })
-  </script>
-  
-  <template>
-    <div>
-      <h1>博客</h1>
-      <ul>
-        <li v-for="post in posts" :key="post.id">
-          <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
-        </li>
-      </ul>
-    </div>
-  </template>
-  ```
-  
-  ```ts [content.config.ts]
-  import { defineContentConfig, defineCollection, z } from '@nuxt/content'
-  
-  export default defineContentConfig({
-    collections: {
-      blog: defineCollection({
-        source: 'blog/*.md',
-        type: 'page',
-        // 为文档集定义自定义 schema
-        schema: z.object({
-          tags: z.array(z.string()),
-          image: z.string(),
-          date: z.Date()
+  :::tabs
+    ::::tabs-item
+    ---
+    icon: i-simple-icons-vuedotjs
+    label: pages/blog.vue
+    ---
+    ```vue [pages/blog.vue]
+    <script setup lang="ts">
+    const { data: posts } = await useAsyncData('blog', () => {
+      return queryCollection('blog').all()
+    })
+    </script>
+    
+    <template>
+      <div>
+        <h1>博客</h1>
+        <ul>
+          <li v-for="post in posts" :key="post.id">
+            <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
+          </li>
+        </ul>
+      </div>
+    </template>
+    ```
+    ::::
+
+    ::::tabs-item
+    ---
+    icon: i-simple-icons-typescript
+    label: content.config.ts
+    ---
+    ```ts [content.config.ts]
+    import { defineContentConfig, defineCollection, z } from '@nuxt/content'
+
+    export default defineContentConfig({
+      collections: {
+        blog: defineCollection({
+          source: 'blog/*.md',
+          type: 'page',
+          // Define custom schema for docs collection
+          schema: z.object({
+            tags: z.array(z.string()),
+            image: z.string(),
+            date: z.Date()
+          })
         })
-      })
-    }
-  })
-  ```
+      }
+    })
+    ```
+    ::::
   :::
 
 #title
@@ -404,7 +438,7 @@ orientation: horizontal
 ::
 
 ::u-page-section
-  :::div{.hidden.sm:block}
+  :::div{.hidden.md:block}
     ::::u-color-mode-image
     ---
     class: size-full absolute bottom-0 inset-0 z-[-1]

@@ -1,46 +1,20 @@
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { defineNuxtConfig } from 'nuxt/config'
-import { resolve } from 'pathe'
-import pkg from '../package.json'
 
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/ui-pro',
-    '@nuxt/content',
-    '@nuxt/image',
-    '@nuxthub/core',
-    '@nuxtjs/plausible',
-    '@vueuse/nuxt',
-    'nuxt-og-image',
-    'nuxt-llms',
-  ],
-
-  app: {
-    rootAttrs: {
-      // @ts-expect-error - vaul-drawer-wrapper is not typed
-      'vaul-drawer-wrapper': '',
-      'class': 'bg-(--ui-bg)',
-    },
-  },
-
-  css: [
-    '~/assets/css/main.css',
-  ],
-
+  modules: ['@nuxtjs/plausible', '@vueuse/nuxt', '@nuxthub/core'],
+  css: ['../app/assets/css/main.css'],
   site: {
+    name: 'Nuxt Content 中文文档',
     url: 'https://nuxt-content.zhcndoc.com',
   },
-
   content: {
     experimental: {
       nativeSqlite: true,
     },
     build: {
       markdown: {
-        toc: {
-          depth: 4,
-          searchDepth: 4,
-        },
         highlight: {
           langs: ['docker'],
         },
@@ -52,22 +26,9 @@ export default defineNuxtConfig({
     },
   },
 
-  mdc: {
-    highlight: {
-      noApiRoute: false,
-    },
-  },
-
   ui: {
     fonts: false,
   },
-
-  runtimeConfig: {
-    public: {
-      version: pkg.version,
-    },
-  },
-
   routeRules: {
     ...(readFileSync(resolve(__dirname, '_redirects'), 'utf-8'))
       .split('\n')
@@ -77,67 +38,13 @@ export default defineNuxtConfig({
         return Object.assign(acc, { [from]: { redirect: to } })
       }, {} as Record<string, { redirect: string }>),
   },
-
   future: {
     compatibilityVersion: 4,
   },
-
-  compatibilityDate: '2024-07-09',
-
-  nitro: {
-    prerender: {
-      routes: ['/'],
-      crawlLinks: true,
-    },
-    cloudflare: {
-      pages: {
-        routes: {
-          exclude: [
-            '/docs/*',
-          ],
-        },
-      },
-    },
-  },
-
   hub: {
     database: true,
     cache: true,
   },
-
-  icon: {
-    clientBundle: {
-      scan: true,
-      icons: [
-        'lucide:arrow-left',
-        'lucide:arrow-up-right',
-        'lucide:book-open',
-        'lucide:cloud-upload',
-        'lucide:file-pen-line',
-        'lucide:file',
-        'lucide:history',
-        'lucide:monitor',
-        'lucide:moon',
-        'lucide:square-code',
-        'lucide:square-function',
-        'lucide:sun',
-        'lucide:terminal',
-        'lucide:x',
-        'vscode-icons:file-type-bun',
-        'vscode-icons:file-type-npm',
-        'vscode-icons:file-type-nuxt',
-        'vscode-icons:file-type-pnpm',
-        'vscode-icons:file-type-yaml',
-        'vscode-icons:file-type-yarn',
-      ],
-    },
-    serverBundle: 'local',
-  },
-
-  image: {
-    provider: 'ipx',
-  },
-
   llms: {
     domain: 'https://nuxt-content.zhcndoc.com',
     title: 'Nuxt Content 中文文档',
@@ -150,9 +57,5 @@ export default defineNuxtConfig({
       title: 'Complete Documentation',
       description: 'The complete documentation including all content',
     },
-  },
-
-  ogImage: {
-    zeroRuntime: true,
   },
 })

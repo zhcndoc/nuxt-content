@@ -62,7 +62,7 @@ export default defineContentConfig({
 })    
 ```
 
-  :::preview-card{icon="i-lucide-eye" label="生成的表单"}
+  :::code-preview{icon="i-lucide-eye" label="生成的表单"}
   ![表单预览](/docs/studio/preview-schema.png)
   :::
 ::
