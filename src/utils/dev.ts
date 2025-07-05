@@ -9,7 +9,8 @@ import chokidar from 'chokidar'
 import micromatch from 'micromatch'
 import type { WebSocket } from 'ws'
 import { WebSocketServer } from 'ws'
-import { listen, type Listener } from 'listhen'
+import { listen } from 'listhen'
+import type { Listener } from 'listhen'
 import { withTrailingSlash } from 'ufo'
 import type { ModuleOptions, ResolvedCollection } from '../types'
 import type { Manifest } from '../types/manifest'
@@ -110,7 +111,7 @@ export async function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest
     ignoreInitial: true,
     ignored: (path) => {
       const match = sourceMap.find(({ source, cwd, prefix }) => {
-        if (path + '/' === prefix) return true
+        if (withTrailingSlash(path) === prefix) return true
         if (prefix && path.startsWith(prefix)) {
           return micromatch.isMatch(
             path.substring(cwd.length),
