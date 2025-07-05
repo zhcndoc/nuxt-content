@@ -1,0 +1,2 @@
+import{bi as n}from"../nitro/nitro.mjs";function handleAndDispatchCustomEvent(n,e,t){const i=t.originalEvent.target,s=new CustomEvent(n,{bubbles:!1,cancelable:!0,detail:t});e&&i.addEventListener(n,e,{once:!0}),i.dispatchEvent(s)}function findValuesBetween(e,t,i){const s=e.findIndex(e=>n(e,t)),a=e.findIndex(e=>n(e,i));if(-1===s||-1===a)return[];const[o,d]=[s,a].sort((n,e)=>n-e);return e.slice(o,d+1)}export{findValuesBetween as f,handleAndDispatchCustomEvent as h};
+//# sourceMappingURL=arrays.mjs.map

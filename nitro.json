@@ -1,0 +1,28 @@
+{
+  "date": "2025-07-05T15:04:29.790Z",
+  "preset": "cloudflare-pages",
+  "framework": {
+    "name": "nuxt",
+    "version": "3.17.6"
+  },
+  "versions": {
+    "nitro": "2.11.13"
+  },
+  "commands": {
+    "preview": "npx nuxthub preview",
+    "deploy": "npx nuxthub deploy"
+  },
+  "config": {
+    "cloudflare": {
+      "deployConfig": false,
+      "nodeCompat": true,
+      "pages": {
+        "routes": {
+          "exclude": [
+            "/__og-image__/static/*"
+          ]
+        }
+      }
+    }
+  }
+}

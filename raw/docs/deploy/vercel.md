@@ -1,0 +1,34 @@
+# Vercel
+
+> 将您的内容应用部署到 Vercel
+
+<card>
+
+快速设置
+
+- 执行 `npx vercel deploy` 命令，或前往 Vercel 仪表盘并使用 Git 仓库创建一个新项目。
+
+</card>
+
+---
+
+Nuxt Content 项目可以零配置部署到 Vercel。该模块会自动检测 Vercel 环境，并准备部署所需的配置。
+
+您只需执行 `npx vercel deploy` 命令，或前往 Vercel 仪表盘并使用 Git 仓库创建新项目。
+
+就是这么简单 🎉
+
+<note>
+
+默认情况下，模块将在 Vercel 的 `/tmp` 目录使用 SQLite 数据库。您可以通过提供自己的数据库配置来覆盖默认配置。
+
+<br />
+
+Vercel 支持多种数据库服务商。您可以通过在 `nuxt.config.ts` 中提供正确的连接字符串来使用其中任何一个。
+
+</note>
+
+参考链接：
+
+- [Nuxt 部署文档](https://nuxt.com/deploy/vercel)
+- [Vercel 文档](https://vercel.com/docs/deployments/deployment-methods)

@@ -1,0 +1,91 @@
+# 工具
+
+> 调试工具
+
+Nuxt Content 使用 **SQLite 数据库 (contents.sqlite)** 来高效地存储和查询内容。如果你遇到 **内容丢失、查询缓慢或数据库问题**，调试你的 SQLite 数据库将会有帮助！
+
+<callout icon="i-simple-icons-visualstudiocode" to="https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite">
+
+一个简单的检查方法？**使用 SQLite VS Code 扩展！**
+
+</callout>
+
+## 安装 SQLite VS Code 扩展
+
+1. 打开 **Visual Studio Code**。
+2. 进入 **扩展** 面板（Windows/Linux：`Ctrl+Shift+X`，Mac：`Cmd+Shift+X`）。
+3. 搜索 **"SQLite"**（由 `alexcvzz` 发布）并安装。
+4. 打开你的 Nuxt Content 数据库 (`.data/content/contents.sqlite`)。
+
+<tip icon="i-lucide-lightbulb">
+
+如果你看不到 `contents.sqlite`，请先启动你的 Nuxt 应用：
+
+```bash [终端]
+npx nuxi dev
+```
+
+</tip>
+
+## 找到你的 SQLite 数据库
+
+Nuxt Content 将数据库存储在：
+
+```bash
+.data/content/contents.sqlite
+```
+
+<note to="https://nuxt.com/docs/getting-started/prerendering">
+
+该文件会在你启动 Nuxt 应用时自动生成。无需手动创建！
+
+</note>
+
+## 打开并浏览数据库
+
+1. 在 VS Code 中 **右键点击** `contents.sqlite`。
+2. 选择 **“打开数据库”**。
+3. 展开 **数据库资源管理器** 面板查看表和数据。
+
+![VS Code 中的 SQLite 资源管理器](https://github.com/user-attachments/assets/c9f22c4c-7a95-43e8-ab03-aa76f2e49c8e)
+
+## 解决常见问题
+
+### 内容没有显示？
+
+1. **检查数据库是否存在**（`.data/content/contents.sqlite`）。
+2. **执行清理并重启 Nuxt**：
+```bash [终端]
+npx nuxi cleanup && npx nuxi dev
+```
+3. **检查数据库内是否有内容**（执行 SQL 查询）。
+
+### 手动重置数据库
+
+如果问题非常严重，可以尝试重置数据库：
+
+1. **删除数据库文件**：
+```bash [终端]
+rm -rf .data/content/contents.sqlite
+```
+2. **运行清理以移除旧缓存**：
+```bash [终端]
+npx nuxi cleanup
+```
+3. **重启 Nuxt** 以生成全新的数据库：
+```bash [终端]
+npx nuxi dev
+```
+
+<note icon="i-lucide-triangle-alert">
+
+清理操作会删除缓存数据，别担心——它会自动重新生成！
+
+</note>
+
+## 更多调试工具
+
+如果 VS Code 不够用，可以尝试：
+
+- 🖥️ [**DB Browser for SQLite**](https://sqlitebrowser.org/) – 一个用于检查和修改数据库的可视化工具。
+- 🛠️ **SQLite 命令行** – 在终端使用 `sqlite3 contents.sqlite` 执行 SQL 查询。

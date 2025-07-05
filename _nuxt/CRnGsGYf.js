@@ -1,0 +1,1 @@
+const o=(e,r={year:"numeric",month:"long",day:"numeric"})=>new Date(e).toLocaleDateString("en",r),a={free:{color:"secondary",label:"Free"},"nuxt-ui-pro":{color:"primary",label:"Nuxt UI Pro"}};export{a as T,o as f};
