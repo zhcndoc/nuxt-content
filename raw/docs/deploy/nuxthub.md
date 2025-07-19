@@ -1,0 +1,42 @@
+# NuxtHub
+
+> 将您的内容应用部署到 NuxtHub
+
+<card>
+
+快速设置
+
+1. 安装 `@nuxthub/core` 模块 `nuxi module add hub`
+2. 使用 `npx nuxthub deploy` 将您的内容部署到 NuxtHub
+
+</card>
+
+---
+
+Nuxt Content 模块内置了与 [NuxtHub](https://hub.nuxt.com) 的集成，用于部署您的内容。
+
+要启用 NuxtHub 集成，您需要安装 `@nuxthub/core` 模块并在 `nuxt.config.ts` 中注册。更高效的做法是使用 `nuxi module` 命令一次完成这两个操作。
+
+```bash
+npx nuxi module add hub
+```
+
+仅此而已 🎉
+
+现在您可以使用 `npx nuxthub deploy` 命令将内容部署到 NuxtHub。
+
+```bash
+npx nuxthub deploy
+```
+
+<note>
+
+Nuxt Content 模块会自动启用 NuxtHub 数据库，并更新数据库配置以使用带有 `DB` 绑定名的 Cloudflare D1。（这是 NuxtHub 数据库的默认配置。）
+
+<br />
+
+您也可以通过在 `nuxt.config.ts` 中提供自定义数据库配置来覆盖默认配置。
+
+</note>
+
+请查看 [NuxtHub 文档](https://hub.nuxt.com/docs/getting-started/deploy) 获取更多信息。

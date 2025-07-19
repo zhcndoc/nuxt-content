@@ -1,0 +1,146 @@
+# CSV
+
+> 如何定义、编写和查询 CSV 数据。
+
+## 定义集合
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    authors: defineCollection({
+      type: 'data',
+      source: 'authors/**.csv',
+      schema: z.object({
+        name: z.string(),
+        email: z.string(),
+        avatar: z.string()
+      })
+    })
+  }
+})
+```
+
+## 创建 `.csv` 文件
+
+在 `content/authors/` 目录下创建作者文件。
+
+<code-group>
+
+```csv [users.csv]
+id,name,email
+1,John Doe,john@example.com
+2,Jane Smith,jane@example.com
+3,Alice Johnson,alice@example.com
+```
+
+```csv [team.csv]
+name,role,avatar
+John Doe,Developer,https://avatars.githubusercontent.com/u/1?v=4
+Jane Smith,Designer,https://avatars.githubusercontent.com/u/2?v=4
+```
+
+</code-group>
+
+<warning>
+
+每个 CSV 文件应包含定义列名称的表头行，解析时会将其用作对象的键名。
+
+</warning>
+
+## 查询数据
+
+现在我们可以查询作者数据了：
+
+```vue
+<script lang="ts" setup>
+// 查找单个作者
+const { data: author } = await useAsyncData('john-doe', () => {
+  return queryCollection('authors')
+    .where('name', '=', 'John Doe')
+    .first()
+})
+
+// 获取所有作者
+const { data: authors } = await useAsyncData('authors', () => {
+  return queryCollection('authors')
+    .order('name', 'ASC')
+    .all()
+})
+</script>
+
+<template>
+  <ul>
+    <li v-for="author in authors" :key="author.id">
+      {{ author.name }} ({{ author.email }})
+    </li>
+  </ul>
+</template>
+```
+
+## 配置
+
+你可以在 `nuxt.config.ts` 中配置 CSV 文件的解析方式：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      csv: {
+        // 将 CSV 数据转换为 JSON 对象
+        json: true,
+        // 指定自定义分隔符（默认是 ','）
+        delimiter: ','
+      }
+    }
+  }
+})
+```
+
+启用配置中的 `json: true` 后，每一行都会被转换成一个 JavaScript 对象，表头行用作键名：
+
+```json
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "email": "jane@example.com"
+  }
+]
+```
+
+## 自定义分隔符
+
+如果你的 CSV 文件使用不同的分隔符，可以在配置中指定：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      csv: {
+        delimiter: ';' // 使用分号作为分隔符
+      }
+    }
+  }
+})
+```
+
+这样会解析如下格式的 CSV 文件：
+
+```csv [semicolon-data.csv]
+id;name;email
+1;John Doe;john@example.com
+2;Jane Smith;jane@example.com
+```
+
+<note>
+
+如果不需要 CSV 支持，可以通过设置 `csv: false` 来禁用 CSV 解析器。
+
+</note>

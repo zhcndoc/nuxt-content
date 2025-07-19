@@ -1,0 +1,2 @@
+import{_ as o,a as e,v as t}from"./server.mjs";import{bK as s}from"../nitro/nitro.mjs";import"node:buffer";import"node:process";import"node:timers";import"node:events";import"cloudflare:workers";import"node:async_hooks";import"node:path";const r={};const n=r.setup;r.setup=(o,e)=>{const s=t.useSSRContext();return(s.modules||(s.modules=new Set)).add("pages/templates.vue"),n?n(o,e):void 0};const m=o(r,[["ssrRender",function(o,t,r,n){t(s(e,n,null,r))}]]);export{m as default};
+//# sourceMappingURL=templates-U_CTWuB1.mjs.map

@@ -1,0 +1,17 @@
+{
+  "ai": false,
+  "analytics": false,
+  "blob": false,
+  "browser": false,
+  "cache": true,
+  "database": true,
+  "kv": false,
+  "vectorize": {},
+  "bindings": {
+    "observability": {
+      "logs": true
+    },
+    "hyperdrive": {}
+  },
+  "nitroPreset": "cloudflare_pages"
+}

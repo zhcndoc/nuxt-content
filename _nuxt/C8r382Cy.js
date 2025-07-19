@@ -1,0 +1,1 @@
+import{j as t,c as a,i as c,g as e,V as o}from"./rGAD7fjP.js";const r={},d={class:"grid grid-cols-1 gap-6 md:grid-cols-3"},n={class:"md:col-span-2"},l={class:"md:col-span-1"};function i(s,_){return c(),a("div",d,[e("div",n,[o(s.$slots,"default")]),e("div",l,[o(s.$slots,"right")])])}const p=Object.assign(t(r,[["render",i]]),{__name:"TemplateCore"});export{p as default};
