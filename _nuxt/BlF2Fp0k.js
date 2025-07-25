@@ -1,0 +1,1 @@
+import{r as s}from"./BYUBsUIl.js";import{j as t,c as o,i as r,g as a,V as c}from"./CLjKqnHh.js";import"./C2bHYaEW.js";const n={},l={class:"pt-4"},i={class:"text-4xl"};function p(e,_){return r(),o("section",l,[a("h1",i,[s(e.$slots,"default",{mdcUnwrap:"p"})]),c(e.$slots,"description")])}const x=Object.assign(t(n,[["render",p]]),{__name:"ExampleHero"});export{x as default};
