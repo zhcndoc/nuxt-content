@@ -1,0 +1,1 @@
+import{r as t}from"./BQ0ZeTVa.js";import{_ as r,d as a,e as s}from"./DNycOlgr.js";import"./BN_7HF1G.js";const o={},c={class:"text-4xl text-black dark:text-white"};function n(e,l){return s(),a("h1",c,[t(e.$slots,"default",{mdcUnwrap:"p"})])}const p=Object.assign(r(o,[["render",n]]),{__name:"ExampleTitle"});export{p as default};

@@ -1,0 +1,2 @@
+import{G as e,p as o,v as n,a5 as a,a6 as t,a7 as r,a8 as s}from"./server.mjs";function defineOgImageComponent(u,p={},f={}){return function(u={}){const p=e(),f=o(),i=f.path||"/";p.payload.path===i&&(n.ref(!1).value=!0);const{defaults:c}=a(),m=n.toValue(u);if(!1===m)return;const d=m;for(const e in c)void 0===d[e]&&(d[e]=c[e]);if(f.query&&(d._query=f.query),d.url)return void t(d);const l=r(i,d);s(l,d,p.ssrContext)}({...f,component:u,props:p})}export{defineOgImageComponent as d};
+//# sourceMappingURL=defineOgImageComponent-CeVx5M4C.mjs.map

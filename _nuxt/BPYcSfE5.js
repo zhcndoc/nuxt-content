@@ -1,0 +1,1 @@
+import{z as r,A as l,d as c,e as p,V as u,n as d,aA as s}from"./DNycOlgr.js";const i={base:""},_={__name:"ProseTbody",props:{class:{type:null,required:!1}},setup(e){const a=e,o=r(),t=l(()=>s({extend:s(i),...o.uiPro?.prose?.tbody||{}}));return(n,m)=>(p(),c("tbody",{class:d(t.value({class:a.class}))},[u(n.$slots,"default")],2))}};export{_ as default};

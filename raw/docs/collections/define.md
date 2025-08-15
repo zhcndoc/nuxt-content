@@ -1,0 +1,166 @@
+# 定义内容集合
+
+> 了解如何在 Nuxt 应用中定义和配置内容集合。
+
+Nuxt Content 模块会自动解析位于 Nuxt 应用根目录下 `content/` 文件夹中的所有内容文件。此设置允许你自由地组织文件夹结构，以满足项目需求。
+
+为了更好地组织内容，你可以使用内容集合 (Content Collections)，它们帮助你更有效地分类和管理内容。这些集合在 `content.config.ts` 文件中定义。
+
+<warning>
+
+如果没有 `content.config.ts` 文件，内容文件夹中的所有文件都会被默认解析和导入。但一旦添加了配置文件，只有符合集合中指定路径模式的文件才会被导入。
+
+</warning>
+
+## 什么是内容集合？
+
+内容集合是 Nuxt Content 项目中组织相关内容的方式。它们提供了一种结构化方法来管理内容，使查询、展示和维护网站数据更加便捷。
+
+关键特性包括：
+
+- **逻辑分组**：将相似内容归为一类，如博客文章、产品页面或文档
+- **共享配置**：对集合内所有条目应用通用设置和验证
+- **优化查询**：高效获取和筛选相关内容项
+- **自动类型推断**：在开发环境中获得类型安全和自动补全
+- **灵活结构**：按内容类型、类别或任何适合你的逻辑分组组织集合
+
+## 定义集合
+
+在项目根目录创建一个 `content.config.ts` 文件。这个特殊文件用于配置你的集合数据库、工具类型和内容处理。
+
+以下是一个基础示例：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      // Specify the type of content in this collection
+      type: 'page',
+      // Load every file inside the `content` directory
+      source: '**',
+    })
+  }
+})
+```
+
+<warning>
+
+目前，一个文档设计为仅归属一个集合。如果同一文件被多个集合引用，实时重新加载功能将无法正常工作。为避免此问题，建议使用 `exclude` 属性，通过合适的正则表达式显式排除文档在其他集合中出现。
+
+该话题仍在此 issue 中讨论中：[nuxt/content#2966](https://github.com/nuxt/content/issues/2966)。
+
+</warning>
+
+### 集合模式 (Schema)
+
+模式用于强制集合内数据的一致性，并作为 TypeScript 类型的唯一来源。
+
+除内置字段外，你还可以通过为集合添加 `schema` 属性，利用 [`zod`](https://zod.dev) 模式定义自定义模式：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    blog: defineCollection({
+      type: 'page',
+      source: 'blog/*.md',
+      // Define custom schema for docs collection
+      schema: z.object({
+        tags: z.array(z.string()),
+        image: z.string(),
+        date: z.date()
+      })
+    })
+  }
+})
+```
+
+<note>
+
+`@nuxt/content` 暴露了一个 `z` 对象，包含一组用于常见数据类型的 Zod 模式。完整文档请查看 [Zod 的 README](https://github.com/colinhacks/zod)，了解它的工作原理及可用特性。
+
+</note>
+
+<tip>
+
+你可以定义任意数量的集合，以组织不同类型的内容。
+
+</tip>
+
+## 查询集合
+
+使用 [`queryCollection`](/docs/utils/query-collection) 工具从集合中获取一个或所有内容项：
+
+```vue [pages/blog.vue]
+<script setup lang="ts">
+const { data: posts } = await useAsyncData('blog', () => queryCollection('blog').all())
+</script>
+
+<template>
+  <div>
+    <h1>博客</h1>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
+      </li>
+    </ul>
+  </div>
+</template>
+```
+
+<note to="/docs/utils/query-collection">
+
+了解更多关于可用查询选项的信息，请查阅我们的 `queryCollections` API 文档。
+
+</note>
+
+## defineCollection()
+
+`defineCollection` 函数用于在内容配置中定义一个集合。它的 TypeScript 签名如下：
+
+```ts
+function defineCollection(collection: Collection): DefinedCollection
+
+type Collection = {
+  // 决定内容如何处理
+  type: 'page' | 'data'
+  // 指定内容位置
+  source?: string | CollectionSource
+  // 用于内容验证和类型定义的 Zod 模式
+  schema?: ZodObject<T>
+}
+```
+
+<note to="/docs/collections/types">
+
+了解更多关于集合类型的内容。
+
+</note>
+
+```ts
+type CollectionSource = {
+  // 用于匹配内容的 glob 模式
+  include: string
+  // 路径前缀（仅适用于 'page' 类型）
+  prefix?: string
+  // 排除内容的 glob 模式数组
+  exclude?: string[]
+  // 匹配内容的根目录
+  cwd?: string
+  // 远程 git 仓库地址（例如：https://github.com/nuxt/content）
+  repository?: string
+  // 私有仓库的认证令牌（例如 GitHub 个人访问令牌）
+  authToken?: string
+}
+```
+
+<note to="/docs/collections/sources">
+
+了解更多关于集合资源的信息。
+
+</note>
+
+该函数返回已定义的集合对象。
