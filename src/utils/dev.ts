@@ -43,8 +43,13 @@ export async function startSocketServer(nuxt: Nuxt, options: ModuleOptions, mani
 
     nuxt.hook('close', async () => {
       // Close WebSocket server
-      await websocket?.close()
-      await listener?.server?.close()
+      if (websocket) {
+        await websocket.close()
+      }
+      // Close listener server
+      if (listener) {
+        await listener.close()
+      }
     })
   }
 
@@ -55,16 +60,16 @@ export async function startSocketServer(nuxt: Nuxt, options: ModuleOptions, mani
       await Promise.all(insertQuery.map(query => db.exec(query)))
     }
 
-    const collectionDump = manifest.dump[collection.name]
-    const keyIndex = collectionDump?.findIndex(item => item.includes(`'${key}'`))
-    const indexToUpdate = keyIndex !== -1 ? keyIndex : collectionDump?.length
+    const collectionDump = manifest.dump[collection.name]!
+    const keyIndex = collectionDump.findIndex(item => item.includes(`'${key}'`))
+    const indexToUpdate = keyIndex !== -1 ? keyIndex : collectionDump.length
     const itemsToRemove = keyIndex === -1 ? 0 : 1
 
     if (insertQuery) {
-      collectionDump?.splice(indexToUpdate, itemsToRemove, ...insertQuery)
+      collectionDump.splice(indexToUpdate, itemsToRemove, ...insertQuery)
     }
     else {
-      collectionDump?.splice(indexToUpdate, itemsToRemove)
+      collectionDump.splice(indexToUpdate, itemsToRemove)
     }
 
     updateTemplates({
@@ -211,8 +216,11 @@ export async function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest
   }
 
   nuxt.hook('close', async () => {
-    watcher.close()
-    db.close()
+    if (watcher) {
+      watcher.removeAllListeners()
+      watcher.close()
+      db.close()
+    }
   })
 }
 
