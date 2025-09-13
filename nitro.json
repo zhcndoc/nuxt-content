@@ -1,0 +1,28 @@
+{
+  "date": "2025-09-13T04:50:23.611Z",
+  "preset": "cloudflare-pages",
+  "framework": {
+    "name": "nuxt",
+    "version": "4.1.1"
+  },
+  "versions": {
+    "nitro": "2.12.5"
+  },
+  "commands": {
+    "preview": "npx wrangler pages dev .",
+    "deploy": "npx wrangler pages deploy ."
+  },
+  "config": {
+    "cloudflare": {
+      "deployConfig": false,
+      "nodeCompat": true,
+      "pages": {
+        "routes": {
+          "exclude": [
+            "/__og-image__/static/*"
+          ]
+        }
+      }
+    }
+  }
+}
