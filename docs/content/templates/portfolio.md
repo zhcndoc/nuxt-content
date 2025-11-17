@@ -10,13 +10,11 @@ description: 一个时尚现代的作品集模板，用于展示你的作品、�
 licenseType: nuxt-ui-pro
 mainScreen: /templates/portfolio.jpg
 name: portfolio
-owner: nuxt-ui-pro
+owner: nuxt-ui-templates
 draft: false
+image1: /templates/portfolio-light.png
+image2: /templates/portfolio-dark.png
 ---
-
-::div{.flex.justify-center}
-:video{.rounded-lg autoplay controls loop :width='1000' src="https://res.cloudinary.com/nuxt/video/upload/v1746088224/studio/d53kg6qoo802zy3dzmh0.mp4"}
-::
 
 ::template-core
 [Nuxt UI Pro](https://ui.nuxt.com/pro) 是一套高级组件集合，是 [Nuxt UI](https://ui.nuxt.com) 的扩展，旨在帮助你在几分钟内创建吸引人且响应式的 Nuxt 应用程序。
@@ -46,4 +44,3 @@ Nuxt UI 团队致力于提供最佳的集成和定制体验，而 Studio 团队�
       content: 由 Nuxt Studio 支持，快速更新和预览。
   ---
   :::
-::

@@ -11,10 +11,9 @@ description: 使用此模板，几秒钟内即可创建您的文档。
 licenseType: nuxt-ui-pro
 mainScreen: /templates/docs.jpg
 name: docs
-owner: nuxt-ui-pro
-image1: /templates/docs-1.webp
-image2: /templates/docs-2.webp
-image3: /templates/docs-3.webp
+owner: nuxt-ui-templates
+image1: /templates/docs-light.png
+image2: /templates/docs-dark.png
 ---
 
 ::template-core

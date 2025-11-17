@@ -7,14 +7,19 @@ seo:
 ---
 
 ::u-page-hero
-  :::div{class="hidden md:block"}
-    ::::u-color-mode-image
-    ---
-    class: size-full absolute bottom-0 inset-0 z-[-1]
-    dark: /home/hero-dark.svg
-    light: /home/hero-light.svg
-    ---
-    ::::
+---
+orientation: horizontal
+---
+#headline
+  :::u-button
+  ---
+  size: sm
+  to: /blog/studio-module-alpha
+  variant: outline
+  trailing-icon: i-lucide-arrow-right
+  class: mb-3 rounded-full
+  ---
+  Nuxt Studio alpha 已发布
   :::
 
 #title{unwrap="p"}
@@ -23,7 +28,7 @@ seo:
 #description
 Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您的应用内容。它允许开发者以 Markdown、YAML、CSV 或 JSON 文件格式编写内容，然后在应用中查询并展示它们。
 
-#links{unwrap="p"}
+#links
   :::u-button
   ---
   label: 开始使用
@@ -32,8 +37,11 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
   trailingIcon: i-lucide-arrow-right
   ---
   :::
+  :u-input-copy{value="npx nuxt module add content"}
 
-  :::u-button
+#default
+  ::code-group
+  ```mdc [content/index.md]
   ---
   color: neutral
   label: 打开可视化编辑器
@@ -42,7 +50,33 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
   to: https://nuxt.studio
   variant: subtle
   ---
-  :::
+
+  ::my-vue-hero-component{orientation="horizontal"}
+  #title
+  欢迎来到山脉网站。
+  #description
+  这是一个关于山脉的网站描述。
+  ::
+
+  这是一个包含 **加粗** 和 _斜体_ 文本的段落。
+  ```
+  ```vue [pages/index.vue]
+  <script setup lang="ts">
+  const { data } = await useAsyncData('home', () => {
+    return queryCollection('content').path('/').first()
+  })
+
+  useSeoMeta({
+    title: data.value?.title,
+    description: data.value?.description
+  })
+  </script>
+
+  <template>
+    <ContentRenderer :value="data" />
+  </template>
+  ```
+  ::
 ::
 
 ::u-page-section
@@ -145,7 +179,7 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
   #description{unwrap="p"}
   Nuxt Content 兼容所有托管服务，支持静态、服务端、无服务器和边缘部署。
   :::
-::
+  :: 
 
 ::u-page-section
 #title
@@ -174,7 +208,7 @@ orientation: horizontal
     ::::tabs-item
     ---
     icon: i-lucide-eye
-    label: Preview
+    label: 预览
     ---
       :::::browser-frame
         :::::example-landing-hero
@@ -323,14 +357,15 @@ orientation: horizontal
     label: content.config.ts
     ---
     ```ts [content.config.ts]
-    import { defineContentConfig, defineCollection, z } from '@nuxt/content'
+    import { defineContentConfig, defineCollection } from '@nuxt/content'
+    import { z } from 'zod'
 
     export default defineContentConfig({
       collections: {
         blog: defineCollection({
           source: 'blog/*.md',
           type: 'page',
-          // Define custom schema for docs collection
+          // 定义文档集合的自定义 schema
           schema: z.object({
             tags: z.array(z.string()),
             image: z.string(),
@@ -392,8 +427,6 @@ reverse: true
 orientation: horizontal
 ---
 :video{autoplay controls loop src="https://res.cloudinary.com/nuxt/video/upload/v1733494722/contentv3final_rc8bvu.mp4"}
-
- 
 
 #title{unwrap="p"}
 让 [任何人编辑]{.text-(--ui-primary)} 您的网站
@@ -459,7 +492,7 @@ orientation: horizontal
   trailingIcon: i-lucide-arrow-right
   ---
   :::
-
+  
   :::u-button
   ---
   color: neutral

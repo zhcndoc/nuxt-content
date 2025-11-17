@@ -8,10 +8,10 @@ category: docs
 createdAt: 2023-11-15T17:41:03.087Z
 demo: https://docus.dev
 description: 使用 Markdown 和 Nuxt I18n 编写漂亮的国际化文档 uesssh
-licenseType: nuxt-ui-pro
+licenseType: nuxt-ui
 mainScreen: /templates/docus.webp
 name: docus
-owner: nuxtlabs
+owner: nuxt-content
 image1: /blog/docus.webp
 image2: ""
 image3: ""
@@ -108,7 +108,7 @@ i18n 入门模板生成带语言前缀的 URL：
 - [Nuxt 4](https://nuxt.com) - Web 框架
 - [Nuxt Content](https://content.nuxt.com/) - 基于文件的 CMS
 - [Nuxt i18n](https://i18n.nuxt.com/) - 国际化支持
-- [Nuxt UI Pro](https://ui.nuxt.com/pro) - 高级 UI 组件
+- [Nuxt UI](https://ui.nuxt.com) - 高级 UI 组件
 - [Nuxt Image](https://image.nuxt.com/) - 优化图片组件
 - [Tailwind CSS 4](https://tailwindcss.com/) - 实用优先 CSS 框架
 - [Docus Layer](https://www.npmjs.com/package/docus) - 文档主题
@@ -139,7 +139,7 @@ npm run build
       content: Web 框架
     - label: Nuxt I18n
       content: 国际化支持
-    - label: Nuxt UI Pro
+    - label: Nuxt UI
       content: 提供大量可完全定制的组件
     - label: TypeScript
       content: 完整的类型开发体验

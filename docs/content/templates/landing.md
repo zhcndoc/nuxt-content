@@ -7,25 +7,23 @@ branch: main
 category: minimal
 demo: https://landing-template.nuxt.dev/
 description: 一个简单的模板，可用作您下一个创意的起点。
-licenseType: nuxt-ui-pro
-mainScreen: /templates/landing.jpg
+licenseType: nuxt-ui
+mainScreen: /templates/landing-dark.png
 name: 登陆页
-owner: nuxt-ui-pro
+owner: nuxt-ui-templates
 draft: false
+image1: /templates/landing-light.png
+image2: /templates/landing-dark.png
 ---
 
-::div{.flex.justify-center}
-:video{.rounded-lg autoplay controls loop :width='1000' src="https://res.cloudinary.com/nuxt/video/upload/v1745425967/studio/landing_q03gdo.mp4"}
-::
-
 ::template-core
-[Nuxt UI Pro](https://ui.nuxt.com/pro) 是一套高级组件集合，是 [Nuxt UI](https://ui.nuxt.com) 的扩展，旨在帮助您在几分钟内创建吸引人且响应迅速的 Nuxt 应用程序。
+[Nuxt UI](https://ui.nuxt.com) 是一套高级组件集合，旨在帮助您在几分钟内创建吸引人且响应迅速的 Nuxt 应用程序。
 
-Nuxt UI 团队致力于提供最佳集成和定制体验，而 Studio 团队则提供与 Nuxt Studio 的完全兼容性。
+Nuxt UI 团队致力于提供最佳集成和定制体验，而 Studio 团队则提供与 Nuxt Studio 模块的完全兼容性。
 
 - **完全可定制**：您可以通过应用配置更改 UI 样式，或通过 `index.yml` 文件编辑您的登陆页内容。
 - **美观的排版样式**：预配置了 Tailwind CSS 排版插件，并且样式与 Nuxt UI 组件和配色相匹配。
-- **响应式设计**：Nuxt UI Pro 组件旨在构建您的内容，它们具有响应式设计，能够适应任何屏幕尺寸。
+- **响应式设计**：Nuxt UI 组件旨在构建您的内容，它们具有响应式设计，能够适应任何屏幕尺寸。
 
 #right
   :::template-features

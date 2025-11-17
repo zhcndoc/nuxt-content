@@ -96,6 +96,10 @@ export const collections = {
 
 ### 针对 Nuxt Studio 精心打造
 
+::warning  
+本文发布于 v3.7 之前，了解如何迁移请参考[此指南](https://github.com/nuxt/content/blob/main/CHANGELOG.md#370-2025-09-12)。  
+::
+
 Nuxt Studio 最初与 Nuxt Content v2 同步开发，但在 v3 中，我们以 Nuxt Studio 体验为目标重构模块。我们的宗旨是打造最佳内容编辑 CMS 平台，同时提供极佳的开发者体验。
 
 例如，collection schema 将助力我们进一步增强 Studio 中的表单生成。您甚至可以直接在 schema 中设置字段的编辑器类型。

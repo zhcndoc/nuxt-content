@@ -37,4 +37,4 @@ image1: /templates/starter-1.webp
       content: 一键从 Studio 部署，或零配置部署到 Vercel 或 Netlify。可选择静态生成、按需渲染（Node）或 CloudFlare Worker 的边缘渲染。
   ---
   :::
-::
+::>

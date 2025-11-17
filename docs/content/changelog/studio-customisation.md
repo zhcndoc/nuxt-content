@@ -15,6 +15,10 @@ category: content
 draft: false
 ---
 
+::warning
+本文发布于 v3.7 之前，请参考[本指南](https://github.com/nuxt/content/blob/main/CHANGELOG.md#370-2025-09-12)进行迁移。
+::
+
 [Studio](https://nuxt.studio) 表单是基于您内容配置文件中定义的集合模式动态生成的。无论您是在编辑 `Markdown` 文件的 [frontmatter](/docs/files/markdown#frontmatter)，还是 `JSON` / `YAML` 文件，这种行为都是适用的。
 
 :video{autoplay controls poster="https://res.cloudinary.com/nuxt/video/upload/v1739982761/frontmatterform_yjafgt.png" src="https://res.cloudinary.com/nuxt/video/upload/v1739982761/frontmatterform_yjafgt.mp4"}

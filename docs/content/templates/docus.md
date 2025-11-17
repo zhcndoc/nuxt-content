@@ -8,10 +8,10 @@ category: docs
 createdAt: 2023-11-15T17:41:03.087Z
 demo: https://docus.dev
 description: 用 Markdown 编写美观的文档
-licenseType: nuxt-ui-pro
+licenseType: nuxt-ui
 mainScreen: /templates/docus.webp
 name: docus
-owner: nuxtlabs
+owner: nuxt-content
 image1: /blog/docus.webp
 image2: ""
 image3: ""
@@ -63,7 +63,7 @@ my-docs/
 
 - [Nuxt 4](https://nuxt.com) - Web 框架
 - [Nuxt Content](https://content.nuxt.com/) - 基于文件的 CMS
-- [Nuxt UI Pro](https://ui.nuxt.com/pro) - 高级 UI 组件
+- [Nuxt UI](https://ui.nuxt.com) - 高级 UI 组件
 - [Nuxt Image](https://image.nuxt.com/) - 优化图片加载
 - [Tailwind CSS 4](https://tailwindcss.com/) - 原子化 CSS 框架
 - [Docus Layer](https://www.npmjs.com/package/docus) - 文档主题

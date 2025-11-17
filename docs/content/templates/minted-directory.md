@@ -12,7 +12,7 @@ mainScreen: /templates/minted-directory-thumbnail.png
 name: minted-directory
 owner: masterkram
 image1: /templates/minted-directory-1.png
-image2: /templates/minted-directory-2.png
+image2: /templates/mintedirectory-2.png
 image3: /templates/minted-directory-3.png
 draft: true
 ---
