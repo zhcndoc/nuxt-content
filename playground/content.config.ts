@@ -40,7 +40,7 @@ const content = defineCollection({
 })
 
 const data = defineCollection({
-  type: 'page',
+  type: 'data',
   source: 'data/**',
   schema: z.object({
     path: z.string(),
@@ -67,6 +67,21 @@ const pages = defineCollection({
 })
 
 const collections = {
+  people: defineCollection({
+    type: 'data',
+    source: 'org/people.csv',
+    schema: z.object({
+      name: z.string(),
+      email: z.string().email(),
+    }),
+  }),
+  org: defineCollection({
+    type: 'data',
+    source: 'org/**.csv',
+    schema: z.object({
+      body: z.array(z.any()),
+    }),
+  }),
   hackernews,
   content,
   data,
@@ -90,7 +105,7 @@ const collections = {
   nuxt: defineCollection({
     type: 'page',
     source: {
-      repository: 'https://github.com/nuxt/nuxt',
+      repository: 'https://github.com/nuxt/nuxt/tree/main',
       include: 'docs/**',
       prefix: '/nuxt',
       exclude: [

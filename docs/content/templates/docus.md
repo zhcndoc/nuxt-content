@@ -47,7 +47,7 @@ npm run dev
 
 ## 📁 项目结构
 
-```
+```text
 my-docs/
 ├── content/              # 你的 Markdown 内容
 │   ├── index.md          # 主页
@@ -84,7 +84,7 @@ npm run build
 
 ## 📄 许可证
 
-[MIT 许可证](https://opensource.org/licenses/MIT) 
+[MIT License](https://opensource.org/licenses/MIT)
 
 #right
   :::template-features

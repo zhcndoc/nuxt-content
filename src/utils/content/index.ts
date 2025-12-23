@@ -14,6 +14,7 @@ import type { FileAfterParseHook, FileBeforeParseHook, ModuleOptions, ContentFil
 import { logger } from '../dev'
 import { getOrderedSchemaKeys } from '../../runtime/internal/schema'
 import { transformContent } from './transformers'
+import pathMetaTransformer from './transformers/path-meta'
 
 let parserOptions = {
   mdcConfigs: [] as MdcConfig[],
@@ -111,7 +112,7 @@ async function _getHighlightPlugin(key: string, options: HighlighterOptions) {
 export async function createParser(collection: ResolvedCollection, nuxt?: Nuxt) {
   const nuxtOptions = nuxt?.options as unknown as { content: ModuleOptions, mdc: MDCModuleOptions }
   const mdcOptions = nuxtOptions?.mdc || {}
-  const { pathMeta = {}, markdown = {}, transformers = [] } = nuxtOptions?.content?.build || {}
+  const { pathMeta = {}, markdown = {}, transformers = [], csv = {}, yaml = {} } = nuxtOptions?.content?.build || {}
 
   const rehypeHighlightPlugin = markdown.highlight !== false
     ? await getHighlightPluginInstance(defu(markdown.highlight as HighlighterOptions, mdcOptions.highlight, { compress: true }))
@@ -149,6 +150,8 @@ export async function createParser(collection: ResolvedCollection, nuxt?: Nuxt) 
       },
       highlight: undefined,
     },
+    csv: csv,
+    yaml: yaml,
   }
 
   return async function parse(file: ContentFile) {
@@ -168,12 +171,18 @@ export async function createParser(collection: ResolvedCollection, nuxt?: Nuxt) 
     const parsedContent = await transformContent(hookedFile, {
       ...beforeParseCtx.parserOptions,
       transformers: extraTransformers,
+      markdown: {
+        ...beforeParseCtx.parserOptions?.markdown,
+        contentHeading: !file?.collectionType || file?.collectionType === 'page',
+      },
     })
+
+    const collectionKeys = getOrderedSchemaKeys(collection.extendedSchema)
+
     const { id: id, __metadata, ...parsedContentFields } = parsedContent
     const result = { id } as ParsedContentFile
     const meta = {} as Record<string, unknown>
 
-    const collectionKeys = getOrderedSchemaKeys(collection.extendedSchema)
     for (const key of Object.keys(parsedContentFields)) {
       if (collectionKeys.includes(key)) {
         result[key] = parsedContent[key]
@@ -196,6 +205,14 @@ export async function createParser(collection: ResolvedCollection, nuxt?: Nuxt) 
       const seo = result.seo = (result.seo || {}) as Record<string, unknown>
       seo.title = seo.title || result.title
       seo.description = seo.description || result.description
+    }
+
+    const pathMetaFields = await pathMetaTransformer.transform!(parsedContent, {})
+    const metaFields = ['path', 'title', 'stem', 'extension']
+    for (const key of metaFields) {
+      if (collectionKeys.includes(key) && result[key] === undefined) {
+        result[key] = pathMetaFields[key]
+      }
     }
 
     const afterParseCtx: FileAfterParseHook = { file: hookedFile, content: result as ParsedContentFile, collection }

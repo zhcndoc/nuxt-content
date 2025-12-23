@@ -14,7 +14,7 @@ orientation: horizontal
   :::u-button
   ---
   size: sm
-  to: /blog/studio-module-alpha
+  to: https://github.com/nuxt-content/studio/releases/tag/v1.0.0-beta.0
   variant: outline
   trailing-icon: i-lucide-arrow-right
   class: mb-3 rounded-full
@@ -41,6 +41,7 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
 
 #default
   ::code-group
+
   ```mdc [content/index.md]
   ---
   color: neutral
@@ -60,6 +61,7 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
 
   这是一个包含 **加粗** 和 _斜体_ 文本的段落。
   ```
+
   ```vue [pages/index.vue]
   <script setup lang="ts">
   const { data } = await useAsyncData('home', () => {
@@ -79,107 +81,107 @@ Nuxt Content 是 Nuxt 的一个模块，提供了一种简单的方式管理您�
   ::
 ::
 
-::u-page-section
-#features
-  :::u-page-feature
-  ---
-  icon: i-lucide-files
-  ---
-  #title{unwrap="p"}
-  基于文件的 CMS
-  
-  #description{unwrap="p"}
-  以 Markdown、YAML、CSV 或 JSON 格式编写内容，并在组件中查询。
-  :::
+::u-container{class="pb-12 xl:pb-24"}
+  :::u-page-grid
+    :::u-page-feature
+    ---
+    icon: i-lucide-files
+    ---
+    #title{unwrap="p"}
+    基于文件的 CMS
 
-  :::u-page-feature
-  ---
-  icon: i-lucide-filter
-  ---
-  #title{unwrap="p"}
-  查询构建器
-  
-  #description{unwrap="p"}
-  使用类 MongoDB 的 API 查询内容，按需获取正确的数据。
-  :::
+    #description{unwrap="p"}
+    以 Markdown、YAML、CSV 或 JSON 格式编写内容，并在组件中查询。
+    :::
 
-  :::u-page-feature
-  ---
-  icon: i-lucide-database
-  ---
-  #title{unwrap="p"}
-  SQLite 驱动
-  
-  #description{unwrap="p"}
-  向内容中添加自定义字段，适用于各种类型的项目。
-  :::
+    :::u-page-feature
+    ---
+    icon: i-lucide-filter
+    ---
+    #title{unwrap="p"}
+    查询构建器
 
-  :::u-page-feature
-  ---
-  icon: i-simple-icons-markdown
-  ---
-  #title{unwrap="p"}
-  Markdown 与 Vue
-  
-  #description{unwrap="p"}
-  在 Markdown 文件中使用 Vue 组件，支持 props、插槽和嵌套组件。
-  :::
+    #description{unwrap="p"}
+    使用类 MongoDB 的 API 查询内容，按需获取正确的数据。
+    :::
 
-  :::u-page-feature
-  ---
-  icon: i-lucide-list-minus
-  ---
-  #title{unwrap="p"}
-  代码高亮
-  
-  #description{unwrap="p"}
-  结合 Shiki 集成支持 VS Code 主题，在网站上显示漂亮的代码块。
-  :::
+    :::u-page-feature
+    ---
+    icon: i-lucide-database
+    ---
+    #title{unwrap="p"}
+    SQLite 驱动
 
-  :::u-page-feature
-  ---
-  icon: i-lucide-mouse-pointer-click
-  ---
-  #title{unwrap="p"}
-  可视化编辑器
-  
-  #description{unwrap="p"}
-  通过我们的可视化编辑器 Nuxt Studio，让团队成员轻松编辑 Nuxt Content 项目。
-  :::
+    #description{unwrap="p"}
+    向内容中添加自定义字段，适用于各种类型的项目。
+    :::
 
-  :::u-page-feature
-  ---
-  icon: i-lucide-panel-left
-  ---
-  #title{unwrap="p"}
-  导航生成
-  
-  #description{unwrap="p"}
-  从内容文件生成结构化对象，几分钟内展示导航菜单。
-  :::
+    :::u-page-feature
+    ---
+    icon: i-simple-icons-markdown
+    ---
+    #title{unwrap="p"}
+    Markdown 与 Vue
 
-  :::u-page-feature
-  ---
-  icon: i-lucide-heading-1
-  ---
-  #title{unwrap="p"}
-  文章组件
-  
-  #description{unwrap="p"}
-  使用 Vue 组件自定义 HTML 排版标签，让内容风格统一。
-  :::
+    #description{unwrap="p"}
+    在 Markdown 文件中使用 Vue 组件，支持 props、插槽和嵌套组件。
+    :::
 
-  :::u-page-feature
-  ---
-  icon: i-lucide-globe
-  ---
-  #title{unwrap="p"}
-  部署无处不在
-  
-  #description{unwrap="p"}
-  Nuxt Content 兼容所有托管服务，支持静态、服务端、无服务器和边缘部署。
+    :::u-page-feature
+    ---
+    icon: i-lucide-list-minus
+    ---
+    #title{unwrap="p"}
+    代码高亮
+
+    #description{unwrap="p"}
+    结合 Shiki 集成支持 VS Code 主题，在网站上显示漂亮的代码块。
+    :::
+
+    :::u-page-feature
+    ---
+    icon: i-lucide-mouse-pointer-click
+    ---
+    #title{unwrap="p"}
+    可视化编辑器
+
+    #description{unwrap="p"}
+    通过我们的可视化编辑器 Nuxt Studio，让团队成员轻松编辑 Nuxt Content 项目。
+    :::
+
+    :::u-page-feature
+    ---
+    icon: i-lucide-panel-left
+    ---
+    #title{unwrap="p"}
+    导航生成
+
+    #description{unwrap="p"}
+    从内容文件生成结构化对象，几分钟内展示导航菜单。
+    :::
+
+    :::u-page-feature
+    ---
+    icon: i-lucide-heading-1
+    ---
+    #title{unwrap="p"}
+    文章组件
+
+    #description{unwrap="p"}
+    使用 Vue 组件自定义 HTML 排版标签，让内容风格统一。
+    :::
+
+    :::u-page-feature
+    ---
+    icon: i-lucide-globe
+    ---
+    #title{unwrap="p"}
+    部署无处不在
+
+    #description{unwrap="p"}
+    Nuxt Content 兼容所有托管服务，支持静态、服务端、无服务器和边缘部署。
+    :::
   :::
-  :: 
 
 ::u-page-section
 #title
@@ -217,7 +219,7 @@ orientation: horizontal
         ---
         #title
         珠穆朗玛峰
-        
+
         #description
         珠穆朗玛峰是世界上最高的山，海拔 8,848 米。
         :::::
@@ -229,6 +231,7 @@ orientation: horizontal
     icon: i-simple-icons-markdown
     label: content/index.md
     ---
+
       ```mdc [content/index.md]
       ---
       title: 山脉网站
@@ -247,6 +250,7 @@ orientation: horizontal
       ::
 
       ```
+
     ::::
 
     ::::tabs-item
@@ -254,6 +258,7 @@ orientation: horizontal
     icon: i-simple-icons-vuedotjs
     label: components/LandingHero.vue
     ---
+
       ```vue [components/LandingHero.vue]
         <script setup lang="ts">
         defineProps<{
@@ -275,6 +280,7 @@ orientation: horizontal
           </section>
         </template>
       ```
+
     ::::
   :::
 
@@ -331,6 +337,7 @@ orientation: horizontal
     icon: i-simple-icons-vuedotjs
     label: pages/blog.vue
     ---
+
     ```vue [pages/blog.vue]
     <script setup lang="ts">
     const { data: posts } = await useAsyncData('blog', () => {
@@ -349,6 +356,7 @@ orientation: horizontal
       </div>
     </template>
     ```
+
     ::::
 
     ::::tabs-item
@@ -356,6 +364,7 @@ orientation: horizontal
     icon: i-simple-icons-typescript
     label: content.config.ts
     ---
+
     ```ts [content.config.ts]
     import { defineContentConfig, defineCollection } from '@nuxt/content'
     import { z } from 'zod'
@@ -375,6 +384,7 @@ orientation: horizontal
       }
     })
     ```
+
     ::::
   :::
 

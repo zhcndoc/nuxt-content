@@ -42,7 +42,7 @@ Nuxt Studio 中的 Markdown 编辑器允许你完全控制内容，可以直接�
 
 ![在 Nuxt Studio 中使用可视化编辑器编辑你的内容](/blog/visual-editor.webp)
 
-可视化编辑器是一种基于 [TipTap](https://tiptap.dev/) 和 [ProseMirror](https://prosemirror.net/) 构建的所见即所得（WYSIWYG）工具，旨在屏蔽 Markdown 语法的复杂性，提供更直观的视觉编辑体验。对于不想直接处理原始 Markdown 代码的用户，这款编辑器尤其友好。
+可视化编辑器是一种基于 [TipTap](https://tiptap.zhcndoc.com/) 和 [ProseMirror](https://prosemirror.net/) 构建的所见即所得（WYSIWYG）工具，旨在屏蔽 Markdown 语法的复杂性，提供更直观的视觉编辑体验。对于不想直接处理原始 Markdown 代码的用户，这款编辑器尤其友好。
 
 ### **可视化编辑器如何处理文件**
 
