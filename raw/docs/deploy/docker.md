@@ -1,0 +1,78 @@
+# Docker
+
+> 使用 Docker 部署您的内容应用
+
+Docker 是一个流行的容器化平台，它允许您将应用程序及其所有依赖项打包到一个单独的容器中。这样可以轻松地在任何支持 Docker 的平台上部署您的内容应用。
+
+## 使用 Node.js 镜像
+
+使用 Docker 的 Node.js 镜像，您可以部署您的内容应用。您只需要创建一个 Dockerfile 并构建镜像。以下是一个示例 Dockerfile：
+
+```docker [Dockerfile]
+# 构建阶段 1
+
+FROM node:22-alpine AS build
+WORKDIR /app
+
+RUN corepack enable
+
+# 复制 package.json 和您的锁文件，这里添加 pnpm-lock.yaml 作为示例
+COPY package.json pnpm-lock.yaml .npmrc ./
+
+# 安装依赖
+RUN pnpm i
+
+# 复制整个项目
+COPY . ./
+
+# 构建项目
+RUN pnpm run build
+
+# 构建阶段 2
+
+FROM node:22-alpine
+WORKDIR /app
+
+# 只需要从构建阶段复制 `.output` 文件夹
+COPY --from=build /app/.output/ ./
+
+# 修改端口和主机
+ENV PORT=80
+ENV HOST=0.0.0.0
+
+EXPOSE 80
+
+CMD ["node", "/app/server/index.mjs"]
+```
+
+## 使用 Bun 镜像
+
+如果您喜欢使用 Bun，可以使用官方的 Bun 镜像。以下是一个示例 Dockerfile：
+
+```docker [Dockerfile]
+# 使用官方 Bun 镜像
+# 所有版本见 https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1 AS build
+WORKDIR /app
+
+COPY package.json bun.lock* ./
+
+# 使用 ignore-scripts 以避免构建像 better-sqlite3 这样的 node 模块
+RUN bun install --frozen-lockfile --ignore-scripts
+
+# 复制整个项目
+COPY . .
+
+RUN bun --bun run build
+
+# 将生产依赖和源码复制到最终镜像
+FROM oven/bun:1 AS production
+WORKDIR /app
+
+# 只需要从构建阶段复制 `.output` 文件夹
+COPY --from=build /app/.output /app
+
+# 运行应用
+EXPOSE 3000/tcp
+ENTRYPOINT [ "bun", "--bun", "run", "/app/server/index.mjs" ]
+```

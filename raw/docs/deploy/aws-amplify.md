@@ -1,0 +1,55 @@
+# AWS Amplify
+
+> 将您的 Content 应用部署到 AWS Amplify
+
+<card>
+
+快速设置
+
+- 准备 Sqlite 连接器
+
+  - 选项 A（推荐用于 Node.js 22+）：使用原生的 `node:sqlite`
+  - 选项 B（传统方式）：在项目中安装 `sqlite3` 包。
+- 访问 AWS Amplify 控制台，使用 Git 仓库创建一个新项目并部署应用。
+
+</card>
+
+---
+
+Nuxt Content 项目可以零配置部署到 AWS Amplify。<br />
+
+
+该模块会自动检测 AWS Amplify 环境，并准备好部署所需的配置。
+
+## 选项 A：使用原生 `node:sqlite`
+
+为了使用原生的 `node:sqlite` 包，您需要将 Node 版本切换到 22 及以上。这可以通过 Amplify 控制台的 `Build Settings` > `Live Package Updates` > `Package (Node.js version) = 22` 来轻松实现。
+
+也可以通过在 `amplify.yml` 的 `preBuild` 阶段进行配置：
+
+```yml
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 22
+        - nvm use 22
+        - node -v
+        - npm ci
+```
+
+## 选项 B：使用 `sqlite3`
+
+您只需在项目中安装 `sqlite3` 包，然后访问 AWS Amplify 控制台，使用 Git 仓库创建一个新项目即可。
+
+就是这么简单 🎉
+
+<note>
+
+默认情况下，模块会使用位于 `/tmp` 目录下的 SQLite 数据库。您也可以通过提供自定义数据库配置来覆盖默认配置。
+
+</note>
+
+参考链接：
+
+- [Nuxt 部署文档](https://nuxt.com/deploy/aws-amplify)

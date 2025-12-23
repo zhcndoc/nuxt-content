@@ -1,0 +1,196 @@
+# 集合来源
+
+> 了解如何在 Nuxt Content 集合中导入您的文件。
+
+Nuxt Content 提供了多种方式将内容文件导入到您的集合中。您可以在 `defineCollection` 中通过 `source` 属性配置源：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      source: '**',
+      type: 'page'
+    })
+  }
+})
+```
+
+## `source`
+
+`source` 属性可以定义为字符串（遵循 glob 模式）或对象，便于更详细地配置目标目录以及内容文件夹内的文件。
+
+**示例：**
+
+- `source: '**'` 包括内容目录及其子目录中的所有文件。
+- `source: '**/*.md'` 包括内容目录及其子目录中的所有 `Markdown` 文件。
+- `source: 'docs/**/*.yml'` 包括 `content/docs` 目录及其子目录中的所有 `YML` 文件。
+- `source: '**/*.{json,yml}'` 包括内容目录及所有子目录中的 `JSON` 或 `YML` 文件。
+- `source: '*.json'` 仅包括内容目录中直接包含的 `JSON` 文件，不包括子目录。
+
+### `include`（必填）
+
+目标仓库及内容文件夹中文件的 glob 模式。
+
+### `exclude`
+
+用于排除导入内容的 glob 模式。
+
+### `prefix`
+
+此配置仅针对 **page** 类型，且内容文件与页面为一对一关系时生效。
+
+它表示网站中对应页面的路径前缀（基础 URL）。
+
+<prose-warning>
+
+`prefix` 必须以 `/` 开头。
+
+</prose-warning>
+
+默认情况下，模块会提取 `source`（或 `source.include`）的静态前缀，并将其用作内容路径的前缀。例如，如果你定义了 `/en/**` 作为源，模块会自动将 `prefix` 填充为 `/en`。你也可以手动提供一个前缀来覆盖此行为。通过将集合源中的 `prefix` 设置为 `'/'` 可以移除前缀。
+
+```ts
+defineCollection({
+  type: "page",
+  source: {
+    include: "en/**",
+    exclude: ["en/index.md"],
+    prefix: '/'
+  }
+})
+```
+
+### `cwd`
+
+匹配内容的根目录。
+
+**示例：**
+
+如果想要包含内容目录以外文件夹中的文件，可将该文件夹的绝对路径赋值给 `cwd` 属性。
+
+```ts
+source: {
+  cwd: path.resolve('packages/my-pkg/docs'),
+  include: '**/*.md',
+}
+```
+
+### `repository`
+
+定义外部源时必须同时定义 `include` 选项。`include` 模式对于模块识别集合需要使用的文件至关重要。
+
+```js
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      type: 'page',
+      source: {
+        repository: 'https://github.com/nuxt/content',
+        include: 'docs/content/**',
+      },
+    })
+  }
+})
+```
+
+#### `branch` / `tag`
+
+此选项允许通过 Git 仓库的标签或分支克隆仓库。
+
+**示例：**
+
+如果你想要通过标签克隆，将 `repository` 属性设置为一个对象，包含仓库的 `url` 和 `tag` 属性。
+
+```js
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      type: 'page',
+      source: {
+        repository: {
+          url: 'https://github.com/nuxt/content',
+          tag: 'v1'
+        },
+        include: 'docs/content/**',
+      },
+    })
+  }
+})
+```
+
+**示例：**
+
+如果你想要通过远程分支克隆，将 `repository` 属性设置为一个对象，包含仓库的 `url` 和 `branch` 属性。
+
+```js
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      type: 'page',
+      source: {
+        repository: {
+          url: 'https://github.com/nuxt/content',
+          branch: 'dev'
+        },
+        include: 'docs/content/**',
+      },
+    })
+  }
+})
+```
+
+#### `auth`
+
+此选项允许对 Git 仓库进行基础认证和基于令牌的认证。
+
+<warning icon="i-lucide-shield-alert">
+
+切勿将认证令牌或凭据直接提交到代码库。请使用环境变量或其他安全方式在运行时提供这些值。
+
+</warning>
+
+**示例：**
+
+如果你想使用基础认证（例如，用于 Bitbucket 仓库），可以这样配置：
+
+```ts
+defineCollection({
+  type: 'page',
+  source: {
+    repository: {
+      url: 'https://bitbucket.org/username/repo',
+      auth: {
+        username: 'username',
+        password: 'password',
+      },
+    },
+  },
+})
+```
+
+**示例：**
+
+如果你需要使用认证令牌（例如，用于 Github、Gitlab 或某些 Forgejo 提供商），可以这样配置：
+
+```ts
+defineCollection({
+  type: 'page',
+  source: {
+    repository: {
+      url: 'https://github.com/username/repo',
+      auth: {
+        username: 'username',
+        token: 'password',
+      },
+    },
+  },
+})
+```

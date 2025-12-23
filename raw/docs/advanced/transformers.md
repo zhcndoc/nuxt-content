@@ -1,0 +1,135 @@
+# 转换器
+
+> Nuxt Content 中的 Transformers 允许你在内容文件处理过程中以编程方式解析、修改或分析你的内容文件。
+
+Nuxt Content 中的 Transformers 允许你在内容文件处理过程中以编程方式解析、修改或分析你的内容文件。它们特别适用于：
+
+- 添加或修改字段（例如，给标题追加内容、生成 slug）
+- 提取元数据（例如，列出使用的组件）
+- 用计算数据丰富内容
+- 支持新的内容类型
+
+## 定义 Transformer
+
+你可以使用来自 `@nuxt/content` 的 `defineTransformer` 辅助函数定义一个 transformer：
+
+```ts [~~/transformers/title-suffix.ts]
+import { defineTransformer } from '@nuxt/content'
+
+export default defineTransformer({
+  name: 'title-suffix',
+  extensions: ['.md'], // 要应用此 transformer 的文件扩展名
+  transform(file) {
+    // 根据需要修改文件对象
+    return {
+      ...file,
+      title: file.title + ' (suffix)',
+    }
+  },
+})
+```
+
+### Transformer 选项
+
+- `name`（字符串）：你的 transformer 的唯一名称。
+- `extensions`（字符串数组）：此 transformer 应应用的文件扩展名（例如 `['.md']`）。
+- `transform`（函数）：接收文件对象并返回修改后文件的函数。
+
+## 注册 Transformers
+
+在你的 `nuxt.config.ts` 中注册 transformers：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  content: {
+    build: {
+      transformers: [
+        '~~/transformers/title-suffix',
+        '~~/transformers/my-custom-transformer',
+      ],
+    },
+  },
+})
+```
+
+## 示例：添加元数据
+
+Transformers 可以向文件添加一个 `__metadata` 字段。该字段不会存储到数据库中，但可用于运行时逻辑。
+
+```ts [~~/transformers/component-metadata.ts]
+import { defineTransformer } from '@nuxt/content'
+
+export default defineTransformer({
+  name: 'component-metadata',
+  extensions: ['.md'],
+  transform(file) {
+    // 示例：检测是否使用了自定义组件
+    const usesMyComponent = file.body?.includes('<MyCustomComponent>')
+    return {
+      ...file,
+      __metadata: {
+        components: usesMyComponent ? ['MyCustomComponent'] : [],
+      },
+    }
+  },
+})
+```
+
+**注意：** `__metadata` 字段仅在运行时可用，不会持久化到内容数据库中。
+
+## API 参考
+
+```ts
+interface Transformer {
+  name: string
+  extensions: string[]
+  transform: (file: ContentFile) => ContentFile
+}
+```
+
+- `ContentFile` 是表示已解析内容文件的对象，包括 frontmatter、主体及其他字段。
+
+## 使用 Transformers 支持新的文件格式
+
+Transformers 不仅限于修改现有内容——它们还可以用于为 Nuxt Content 添加对新文件格式的支持。通过定义带有自定义 `parse` 方法的 transformer，你可以指示 Nuxt Content 如何读取和处理带有新扩展名的文件，如 YAML。
+
+### 示例：YAML 文件支持
+
+假设你想在内容目录中支持 `.yml` 和 `.yaml` 文件。你可以创建一个 transformer，解析 YAML frontmatter 和正文，并为这些扩展名注册它：
+
+```ts [~~/transformers/yaml.ts]
+import { defineTransformer } from '@nuxt/content'
+
+export default defineTransformer({
+  name: 'Yaml',
+  extensions: ['.yml', '.yaml'],
+  parse: (file) => {
+    const { id, body } = file
+    
+    // 使用你喜欢的 YAML 解析器解析正文
+    const parsed = parseYaml(body)
+
+    return {
+      ...parsed,
+      id,
+    }
+  },
+})
+```
+
+像注册其他 transformer 一样在 Nuxt 配置中注册你的 YAML transformer：
+
+```ts
+export default defineNuxtConfig({
+  content: {
+    build: {
+      transformers: [
+        '~~/transformers/yaml',
+        // ...其他 transformers
+      ],
+    },
+  },
+})
+```
+
+此方法允许你扩展 Nuxt Content，以处理你需要的任意自定义文件格式。

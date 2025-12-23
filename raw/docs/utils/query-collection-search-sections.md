@@ -1,0 +1,108 @@
+# queryCollectionSearchSections
+
+> queryCollectionSearchSections 可组合函数用于从集合中生成可搜索的区块，以增强内容发现体验。
+
+## 类型
+
+```ts
+function queryCollectionSearchSections(collection: keyof Collections, opts?: { ignoredTags: string[] }): ChainablePromise<T, Section[]>
+
+interface ChainablePromise<T extends keyof PageCollections, R> extends Promise<R> {
+  where(field: keyof PageCollections[T] | string, operator: SQLOperator, value?: unknown): ChainablePromise<T, R>
+  andWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  orWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  order(field: keyof PageCollections[T], direction: 'ASC' | 'DESC'): ChainablePromise<T, R>
+}
+```
+
+## 使用方法
+
+使用自动导入的 `queryCollectionSearchSections` 函数从指定集合生成可搜索的区块。这对于在应用中创建高级搜索功能或内容发现功能非常有用。
+
+```vue [app.vue]
+<script>
+const { data: sections } = await useAsyncData('search-sections', () => {
+  return queryCollectionSearchSections('docs')
+})
+</script>
+```
+
+<tip>
+
+`queryCollectionSearchSections` 工具同时支持 Vue 和 Nitro。更多关于如何在服务器端使用的详细信息，请查看 [Server Usage](#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E4%BD%BF%E7%94%A8)。
+
+</tip>
+
+## Type
+
+```ts
+function queryCollectionSearchSections(collection: keyof Collections, opts?: { ignoredTags?: string[], minHeading?: string, maxHeading?: string }): ChainablePromise<T, Section[]>
+
+interface ChainablePromise<T extends keyof PageCollections, R> extends Promise<R> {
+  where(field: keyof PageCollections[T] | string, operator: SQLOperator, value?: unknown): ChainablePromise<T, R>
+  andWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  orWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  order(field: keyof PageCollections[T], direction: 'ASC' | 'DESC'): ChainablePromise<T, R>
+}
+```
+
+## API
+
+### `queryCollectionSearchSections(collection: CollectionName, options?: SearchSectionsOptions)`
+
+从指定集合生成可搜索的区块。
+
+- 参数：
+
+  - `collection`：在 `content.config.ts` 中定义的集合键名。
+  - `options`：（可选）一个包含以下属性的对象：
+  
+    - `ignoredTags`：一个要在生成区块时忽略的标签名称数组。默认是空数组。
+    - `minHeading`：分割区块的最小标题级别（例如：`'h2'`），默认是 `'h1'`。
+    - `maxHeading`：分割区块的最大标题级别（例如：`'h3'`），默认是 `'h6'`。
+- 返回值：返回一个 Promise，解析为包含可搜索区块的数组。每个区块是一个对象，包含以下属性：
+
+  - `id`：区块的唯一标识符。
+  - `title`：区块标题（通常是标题文本）。
+  - `titles`：父级区块标题组成的数组，表示层级结构。
+  - `content`：区块的文本内容。
+  - `level`：区块的标题层级（1-6），1 表示最高层级。
+
+## 示例
+
+下面示例演示如何使用 `queryCollectionSearchSections` 从 'docs' 集合创建可搜索的区块：
+
+```vue [pages/[...slug].vue]
+<script>
+const { data: surround } = await useAsyncData('foo-surround', () => {
+  return queryCollectionSearchSections('docs', {
+    ignoredTags: ['code'],
+    minHeading: 'h2',
+    maxHeading: 'h3',
+  })
+})
+</script>
+```
+
+## 服务器端使用
+
+Nuxt Content 提供了类似的工具来在服务器端查询集合。唯一的区别是你需要将 `event` 作为 `queryCollectionSearchSections` 函数的第一个参数传入。
+
+```ts [server/api/search-sections.ts]
+export default eventHandler(async (event) => {
+  const sections = await queryCollectionSearchSections(event, 'docs')
+  return sections
+})
+```
+
+<note>
+
+请确保创建 `server/tsconfig.json` 文件，并填写以下内容以避免类型错误。
+
+```json
+{
+  "extends": "../.nuxt/tsconfig.server.json"
+}
+```
+
+</note>

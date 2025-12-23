@@ -1,0 +1,241 @@
+# 定义内容集合
+
+> 了解如何在 Nuxt 应用中定义和配置内容集合。
+
+Nuxt Content 模块会自动解析位于 Nuxt 应用根目录下 `content/` 文件夹中的所有内容文件。此设置允许你自由地组织文件夹结构，以满足项目需求。
+
+为了更好地组织内容，你可以使用内容集合 (Content Collections)，它们帮助你更有效地分类和管理内容。这些集合在 `content.config.ts` 文件中定义。
+
+<warning>
+
+如果没有 `content.config.ts` 文件，内容文件夹中的所有文件都会被默认解析和导入。但一旦添加了配置文件，只有符合集合中指定路径模式的文件才会被导入。
+
+</warning>
+
+## 什么是内容集合？
+
+内容集合是 Nuxt Content 项目中组织相关内容的方式。它们提供了一种结构化方法来管理内容，使查询、展示和维护网站数据更加便捷。
+
+关键特性包括：
+
+- **逻辑分组**：将相似内容归为一类，如博客文章、产品页面或文档
+- **共享配置**：对集合内所有条目应用通用设置和验证
+- **优化查询**：高效获取和筛选相关内容项
+- **自动类型推断**：在开发环境中获得类型安全和自动补全
+- **灵活结构**：按内容类型、类别或任何适合你的逻辑分组组织集合
+
+## 定义集合
+
+在项目根目录创建一个 `content.config.ts` 文件。这个特殊文件用于配置你的集合数据库、工具类型和内容处理。
+
+以下是一个基础示例：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+
+export default defineContentConfig({
+  collections: {
+    docs: defineCollection({
+      // 指定此集合内内容的类型
+      type: 'page',
+      // 加载 `content` 目录下的所有文件
+      source: '**',
+    })
+  }
+})
+```
+
+<warning>
+
+目前，一个文档设计为仅归属一个集合。如果同一文件被多个集合引用，实时重新加载功能将无法正常工作。为避免此问题，建议使用 `exclude` 属性，通过合适的正则表达式显式排除文档在其他集合中出现。
+
+该话题仍在此 issue 中讨论中：[nuxt/content#2966](https://github.com/nuxt/content/issues/2966)。
+
+</warning>
+
+### 集合模式 (Schema)
+
+模式用于强制集合内数据的一致性，并作为 TypeScript 类型的唯一来源。
+
+除内置字段外，你还可以通过为集合添加 `schema` 属性，利用 [`zod`](https://zod.dev) 模式定义自定义模式：
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+import { z } from 'zod'
+
+export default defineContentConfig({
+  collections: {
+    blog: defineCollection({
+      type: 'page',
+      source: 'blog/*.md',
+      // 为 docs 集合定义自定义模式
+      schema: z.object({
+        tags: z.array(z.string()),
+        image: z.string(),
+        date: z.date()
+      })
+    })
+  }
+})
+```
+
+<note>
+
+`@nuxt/content` 暴露了一个 `z` 对象，包含一组用于常见数据类型的 Zod 模式。完整文档请查看 [Zod 的 README](https://github.com/colinhacks/zod)，了解它的工作原理及可用特性。
+
+</note>
+
+<tip>
+
+你可以定义任意数量的集合，以组织不同类型的内容。
+
+</tip>
+
+### 数据库索引
+
+通过在集合字段上定义索引来优化查询性能。索引对于用于过滤、排序或查找的字段尤其有用。
+
+```ts [content.config.ts]
+import { defineCollection, defineContentConfig } from '@nuxt/content'
+import { z } from 'zod'
+
+export default defineContentConfig({
+  collections: {
+    products: defineCollection({
+      type: 'data',
+      source: 'products/*.json',
+      schema: z.object({
+        sku: z.string(),
+        price: z.number(),
+        category: z.string(),
+        inStock: z.boolean(),
+      }),
+      indexes: [
+        // 单字段索引
+        { columns: ['category'] },
+        { columns: ['price'] },
+
+        // 复合索引用于 category + price 筛选
+        { columns: ['category', 'price'] },
+
+        // 唯一索引用于确保 SKU 唯一性
+        { columns: ['sku'], unique: true },
+
+        // 自定义索引名称（可选）
+        { columns: ['inStock', 'category'], name: 'idx_stock_category' },
+      ],
+    }),
+  },
+})
+```
+
+<note>
+
+索引会在数据库模式生成时自动创建。它们适用于所有支持的数据库：SQLite、Cloudflare D1、PostgreSQL、LibSQL 和 PGlite。
+
+</note>
+
+<tip icon="i-ph-lightbulb">
+
+**Cloudflare D1 成本优化**：使用索引时，对索引列上的 `WHERE` 子句，当只有单条匹配记录时，仅计为读取 1 行。没有索引时，D1 会计数表中扫描的所有行，显著增加读取成本。索引能大幅降低你的 D1 计费。
+
+</tip>
+
+**索引配置选项：**
+
+- **columns**（必填）：索引包含的列名数组
+- **unique**（可选）：是否为唯一索引，默认为 `false`
+- **name**（可选）：自定义索引名称，省略时自动生成，如 `idx_{collection}_{column1}_{column2}`
+
+**性能建议：**
+
+- 对使用在 `where()` 查询中的列建立索引以加快过滤速度
+- 对排序用的列建立索引以优化排序性能
+- 对多列组合进行复合索引，适用于多条件筛选或排序
+- 唯一索引自动执行数据唯一性约束
+
+## 查询集合
+
+使用 [`queryCollection`](/docs/utils/query-collection) 工具从集合中获取一个或所有内容项：
+
+```vue [pages/blog.vue]
+<script setup lang="ts">
+const { data: posts } = await useAsyncData('blog', () => queryCollection('blog').all())
+</script>
+
+<template>
+  <div>
+    <h1>博客</h1>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <NuxtLink :to="post.path">{{ post.title }}</NuxtLink>
+      </li>
+    </ul>
+  </div>
+</template>
+```
+
+<note to="/docs/utils/query-collection">
+
+了解更多关于可用查询选项的信息，请查阅我们的 `queryCollections` API 文档。
+
+</note>
+
+## defineCollection()
+
+`defineCollection` 函数用于在内容配置中定义一个集合。它的 TypeScript 签名如下：
+
+```ts
+function defineCollection(collection: Collection): DefinedCollection
+
+type Collection = {
+  // 决定内容如何处理
+  type: 'page' | 'data'
+  // 指定内容位置
+  source?: string | CollectionSource
+  // 用于内容验证和类型定义的 Zod 模式
+  schema?: ZodObject<T>
+  // 数据库索引，用于查询优化
+  indexes?: CollectionIndex[]
+}
+
+type CollectionIndex = {
+  // 需要包含在索引中的列名
+  columns: string[]
+  // 自定义索引名称（可选）
+  name?: string
+  // 是否为唯一索引（默认: false）
+  unique?: boolean
+}
+```
+
+<note to="/docs/collections/types">
+
+了解更多关于集合类型的内容。
+
+</note>
+
+```ts
+type CollectionSource = {
+  // 匹配内容的 glob 模式
+  include: string
+  // 路径前缀（仅适用于 'page' 类型）
+  prefix?: string
+  // 排除内容的 glob 模式数组
+  exclude?: string[]
+  // 匹配内容的根目录
+  cwd?: string
+  // 远程 git 仓库地址（例如：https://github.com/nuxt/content）
+  repository?: string
+  // 私有仓库的认证令牌（例如 GitHub 个人访问令牌）
+  authToken?: string
+}
+```
+
+<note to="/docs/collections/sources">
+
+了解更多关于集合资源的信息。
+
+</note>
+
+该函数返回已定义的集合对象。

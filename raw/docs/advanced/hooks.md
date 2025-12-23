@@ -1,0 +1,79 @@
+# Hooks
+
+> 使用 Nuxt 构建时钩子修改内容
+
+## `content:file:beforeParse`
+
+此钩子在内容解析之前调用。
+
+它可用于修改来自 `file` 的原始内容，或修改转换选项。
+
+```ts
+export default defineNuxtConfig({
+  hooks: {
+    'content:file:beforeParse'(ctx) {
+      // ...
+    }
+  }
+})
+```
+
+## `content:file:afterParse`
+
+此钩子在内容解析之后且保存到数据库之前调用。
+
+```ts
+export default defineNuxtConfig({
+  hooks: {
+    'content:file:afterParse'(ctx) {
+      // ...
+    }
+  }
+})
+```
+
+## 示例用法
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  // ...
+  hooks: {
+    'content:file:beforeParse'(ctx) {
+      const { file } = ctx;
+
+      if (file.id.endsWith(".md")) {
+        file.body = file.body.replace(/react/gi, "Vue");
+      }
+    },
+    'content:file:afterParse'(ctx) {
+      const { file, content } = ctx;
+
+      const wordsPerMinute = 180;
+      const text = typeof file.body === 'string' ? file.body : '';
+      const wordCount = text.split(/\s+/).length;
+
+      content.readingTime = Math.ceil(wordCount / wordsPerMinute);
+    }
+  }
+})
+```
+
+<note icon="i-lucide-info">
+
+在 `content:file:afterParse` 钩子中，我们向内容对象添加了一个自定义属性。为了能在页面中通过 [`queryCollection()`](/docs/utils/query-collection) 访问该属性，我们首先需要在内容模式中定义它。
+
+```ts [content.config.ts]
+export default defineContentConfig({
+  collections: {
+    content: defineCollection({
+      type: 'page',
+      source: '**/*.md',
+      schema: z.object({
+        readingTime: z.number().optional()
+      })
+    })
+  }
+});
+```
+
+</note>

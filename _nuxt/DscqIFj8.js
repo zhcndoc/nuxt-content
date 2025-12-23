@@ -1,0 +1,1 @@
+import{aY as r,K as a,I as s,Z as o}from"./BaQj2OHo.js";const t={},c={class:"p-2 border bg-white dark:bg-black dark:border-gray-700 rounded"};function d(e,n){return s(),a("div",c,[o(e.$slots,"default")])}const _=Object.assign(r(t,[["render",d]]),{__name:"ExampleCard"});export{_ as default};

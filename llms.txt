@@ -1,0 +1,92 @@
+# Nuxt Content 中文文档
+
+> Nuxt Content 是一个基于 Git 的无头内容管理系统，专为 Nuxt 设计
+
+## Documentation Sets
+
+- [Complete Documentation](https://nuxt-content.zhcndoc.com/llms-full.txt): The complete documentation including all content
+
+## Landing
+
+- [基于 Git 的 Nuxt 项目内容管理系统](https://nuxt-content.zhcndoc.com): Nuxt Content 是一个用于 Nuxt 的模块，提供了一种简单的方法来管理您应用程序的内容。它允许开发者以 Markdown、YAML 或 JSON 文件的形式编写内容，然后在他们的应用程序中查询和显示这些内容。
+- [认识 Studio，为所有人打造的内容编辑](https://nuxt-content.zhcndoc.com/studio): Nuxt Studio 为您的 Nuxt Content 项目带来可视化编辑。 任何人都可以借助我们多功能的编辑器贡献网站内容，该编辑器 兼容 markdown、YAML 或 JSON——无需技术专长。为开发者打造， 适用于所有人。
+
+## Docs
+
+- [Nuxt Content v3](https://nuxt-content.zhcndoc.com/docs/getting-started): 专为 Nuxt 开发者设计的强大基于 Git 的 CMS。
+- [安装](https://nuxt-content.zhcndoc.com/docs/getting-started/installation): 在你的 Nuxt 应用中开始使用 Nuxt Content v3。
+- [配置](https://nuxt-content.zhcndoc.com/docs/getting-started/configuration): Nuxt Content 采用合理的默认配置。
+- [迁移](https://nuxt-content.zhcndoc.com/docs/getting-started/migration): 如何从 v2 迁移到 v3
+- [定义内容集合](https://nuxt-content.zhcndoc.com/docs/collections/define): 了解如何在 Nuxt 应用中定义和配置内容集合。
+- [集合类型](https://nuxt-content.zhcndoc.com/docs/collections/types): 了解你可以在 Nuxt Content 中定义的两种集合类型。
+- [集合来源](https://nuxt-content.zhcndoc.com/docs/collections/sources): 了解如何在 Nuxt Content 集合中导入您的文件。
+- [模式验证器](https://nuxt-content.zhcndoc.com/docs/collections/validators): 使用你喜欢的验证器定义集合模式，并实现完整类型安全。
+- [从 Vue 组件继承 Schema](https://nuxt-content.zhcndoc.com/docs/collections/inherit-schema-from-component): 使用 property().inherit() 将 Vue 组件的 props 复用为集合 Schema 的一部分。
+- [Markdown](https://nuxt-content.zhcndoc.com/docs/files/markdown): 在你的 Nuxt 应用中创建和查询 Markdown 文件，并使用 MDC 语法集成 Vue 组件。
+- [YAML](https://nuxt-content.zhcndoc.com/docs/files/yaml): 如何定义、编写和查询 YAML 数据。
+- [JSON](https://nuxt-content.zhcndoc.com/docs/files/json): 如何定义、编写和查询 JSON 数据。
+- [CSV](https://nuxt-content.zhcndoc.com/docs/files/csv): 如何定义、编写和查询 CSV 数据。
+- [queryCollection](https://nuxt-content.zhcndoc.com/docs/utils/query-collection): queryCollection 组合函数提供用于查询和获取集合内容的方法。
+- [queryCollectionNavigation](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-navigation): queryCollectionNavigation 组合函数生成给定集合的导航树。
+- [queryCollectionItemSurroundings](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-item-surroundings): queryCollectionItemSurroundings 组合函数用于查找特定路径的兄弟内容项。
+- [queryCollectionSearchSections](https://nuxt-content.zhcndoc.com/docs/utils/query-collection-search-sections): queryCollectionSearchSections 可组合函数用于从集合中生成可搜索的区块，以增强内容发现体验。
+- [内容渲染器](https://nuxt-content.zhcndoc.com/docs/components/content-renderer): 将您的组件从 AST 转换为美妙的模板。
+- [插槽](https://nuxt-content.zhcndoc.com/docs/components/slot): 将 Markdown 注入 Vue 组件的最快方法。
+- [文章组件](https://nuxt-content.zhcndoc.com/docs/components/prose): 一份文章组件列表。
+- [服务器托管](https://nuxt-content.zhcndoc.com/docs/deploy/server): Node 预设是 Nuxt 和 Nuxt Content 的默认预设。它用于在 Node.js 上构建和运行 Nuxt 应用程序。
+- [静态托管](https://nuxt-content.zhcndoc.com/docs/deploy/static): 如何使用静态站点生成将 Nuxt Content 部署到静态托管。
+- [无服务器托管](https://nuxt-content.zhcndoc.com/docs/deploy/serverless): 如何在各种无服务器平台上部署 Nuxt Content。
+- [NuxtHub](https://nuxt-content.zhcndoc.com/docs/deploy/nuxthub): 将您的内容应用部署到 NuxtHub
+- [Cloudflare Pages](https://nuxt-content.zhcndoc.com/docs/deploy/cloudflare-pages): 将您的内容应用部署到 Cloudflare Pages
+- [Cloudflare Workers](https://nuxt-content.zhcndoc.com/docs/deploy/cloudflare-workers): 将您的内容应用部署到 Cloudflare Workers
+- [Vercel](https://nuxt-content.zhcndoc.com/docs/deploy/vercel): 将您的内容应用部署到 Vercel
+- [Netlify](https://nuxt-content.zhcndoc.com/docs/deploy/netlify): 将您的内容应用部署到 Netlify
+- [AWS Amplify](https://nuxt-content.zhcndoc.com/docs/deploy/aws-amplify): 将您的 Content 应用部署到 AWS Amplify
+- [Docker](https://nuxt-content.zhcndoc.com/docs/deploy/docker): 使用 Docker 部署您的内容应用
+- [I18n module](https://nuxt-content.zhcndoc.com/docs/integrations/i18n): Learn how to create multi-language websites using Nuxt Content with the @nuxtjs/i18n module.
+- [LLMs 模块](https://nuxt-content.zhcndoc.com/docs/integrations/llms): 学习如何使用 Nuxt Content 和 Nuxt LLMs 模块生成适用于人工智能的内容文件。
+- [全文搜索](https://nuxt-content.zhcndoc.com/docs/advanced/fulltext-search): 使用 Nuxt Content 实现网站全文搜索
+- [原始内容](https://nuxt-content.zhcndoc.com/docs/advanced/raw-content): 访问应用中的内容原始数据
+- [数据库](https://nuxt-content.zhcndoc.com/docs/advanced/database): Nuxt Content 如何存储和检索内容
+- [工具](https://nuxt-content.zhcndoc.com/docs/advanced/tools): 调试工具
+- [Hooks](https://nuxt-content.zhcndoc.com/docs/advanced/hooks): 使用 Nuxt 构建时钩子修改内容
+- [自定义来源](https://nuxt-content.zhcndoc.com/docs/advanced/custom-source): 定义一个自定义来源以获取数据。
+- [转换器](https://nuxt-content.zhcndoc.com/docs/advanced/transformers): Nuxt Content 中的 Transformers 允许你在内容文件处理过程中以编程方式解析、修改或分析你的内容文件。
+- [介绍](https://nuxt-content.zhcndoc.com/docs/studio/introduction): 了解新的 Nuxt Studio 模块是什么，以及它与之前的托管平台有何不同。
+- [设置 Nuxt Studio](https://nuxt-content.zhcndoc.com/docs/studio/setup): 了解如何安装和配置 Nuxt Studio，通过 GitHub 认证在生产环境中编辑您的内容。
+- [Git 提供商](https://nuxt-content.zhcndoc.com/docs/studio/git-providers): 配置 Git 提供商以同步生产网站与 Git 仓库之间的内容。
+- [认证提供者](https://nuxt-content.zhcndoc.com/docs/studio/auth-providers): 配置认证提供者以控制对 Nuxt Studio 的访问。
+- [编辑您的内容](https://nuxt-content.zhcndoc.com/docs/studio/content): 在可视化编辑器或代码编辑器之间，发现并选择您喜欢的内容管理方式。
+- [在 Nuxt Content Studio CMS 中管理和整合媒体](https://nuxt-content.zhcndoc.com/docs/studio/medias): 探索如何浏览和管理媒体文件，并利用 Nuxt Content Studio CMS 的功能将它们整合到您的项目中。
+- [路线图](https://nuxt-content.zhcndoc.com/docs/studio/roadmap): 跟踪 Nuxt Studio 的开发进度，发现未来版本计划推出的功能。
+- [同步](https://nuxt-content.zhcndoc.com/docs/studio/advanced): 了解 Nuxt Studio 如何在您的生产网站和 GitHub 仓库之间同步内容。
+
+## Templates
+
+- [画布](https://nuxt-content.zhcndoc.com/templates/canvas): 这是一个支持国际化的完全可定制的作品集模板。
+- [Content Wind](https://nuxt-content.zhcndoc.com/templates/content-wind): 一个轻量级的 Nuxt 主题，帮助你在几分钟内搭建作品集。
+- [文档](https://nuxt-content.zhcndoc.com/templates/docs): 使用此模板，几秒钟内即可创建您的文档。
+- [Docus](https://nuxt-content.zhcndoc.com/templates/docus): 用 Markdown 编写美观的文档
+- [Docus I18n](https://nuxt-content.zhcndoc.com/templates/docus-i18n): 使用 Markdown 和 Nuxt I18n 编写漂亮的国际化文档 uesssh
+- [登陆页](https://nuxt-content.zhcndoc.com/templates/landing): 一个简单的模板，可用作您下一个创意的起点。
+- [极简入门](https://nuxt-content.zhcndoc.com/templates/minimal-starter): 极简起步，无限可能：打造你的理想！
+- [Minted 目录](https://nuxt-content.zhcndoc.com/templates/minted-directory): 一个无需数据库的 SEO 优化目录入门套件。
+- [作品集](https://nuxt-content.zhcndoc.com/templates/portfolio): 一个时尚现代的作品集模板，用于展示你的作品、技能、博客文章、演讲活动，并提供联系信息。
+- [Saas](https://nuxt-content.zhcndoc.com/templates/saas): 一个完全构建好的 SaaS 应用，用于启动您的下一个项目。
+
+## Posts
+
+- [Docus，卷土重来](https://nuxt-content.zhcndoc.com/blog/docus-v3): Nuxt 文档主题和 CLI 回归，版本 3 完全重写。
+- [Nuxt Studio Alpha 版本发布](https://nuxt-content.zhcndoc.com/blog/studio-module-alpha): 推出 Nuxt Studio 的第一个 alpha 版本，作为一个免费开源的 Nuxt 模块。通过 GitHub 集成和实时预览，在生产环境中编辑你的内容。
+- [介绍 Nuxt Studio v2](https://nuxt-content.zhcndoc.com/blog/studio-v2): 我们很高兴地宣布 Nuxt Studio v2 的发布，这是为您的 Nuxt Content 网站带来全新编辑体验的大版本更新
+- [迁移 Nuxt UI Pro 文档入门模板](https://nuxt-content.zhcndoc.com/blog/ui-pro-docs-migration): 如何升级您的 Nuxt UI Pro 文档到 Content 和 UI v3
+- [Nuxt Content v3](https://nuxt-content.zhcndoc.com/blog/v3): 内容版本3发布——引入基于SQL的存储、集合、预览API以提升Studio集成体验，以及大量性能改进。
+- [Nuxt Studio 可视化编辑器幕后揭秘](https://nuxt-content.zhcndoc.com/blog/visual-editor): 探索 Nuxt Studio 可视化编辑器的内部工作原理，以及它如何解析 Markdown 语法并重新生成内容。
+- [可视化 Front-matter 编辑](https://nuxt-content.zhcndoc.com/changelog/frontmatter-form): 现在可以通过可视化界面编辑页面元数据，而不必使用 YAML。
+- [Studio 表单自定义](https://nuxt-content.zhcndoc.com/changelog/studio-customisation): Studio 表单是基于您内容配置文件中定义的集合模式动态生成的。
+- [视觉化 YAML 和 JSON 文件编辑](https://nuxt-content.zhcndoc.com/changelog/yaml-json-form): 通过自动生成的表单编辑 YAML 和 JSON 文件。
+
+## Notes
+
+- The documentation only includes Nuxt Content v3 docs.
+- The content is automatically generated from the same source as the official documentation.

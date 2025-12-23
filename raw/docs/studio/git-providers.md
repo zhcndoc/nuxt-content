@@ -1,0 +1,214 @@
+# Git 提供商
+
+> 配置 Git 提供商以同步生产网站与 Git 仓库之间的内容。
+
+Git 提供商负责 Studio 与您的仓库之间的同步。当您从 Studio 发布时，它们负责**将内容更改（提交）推送**到您的 Git 仓库。
+
+<prose-note to="/docs/studio/auth-providers">
+
+Git 提供商不同于**认证提供商**。Git 提供商决定您的仓库托管位置并允许您发布内容更改，而认证提供商控制用户如何认证并访问 Studio。
+
+</prose-note>
+
+## 支持的提供商
+
+Studio 支持两个用于仓库操作的 Git 提供商：GitHub 和 GitLab。
+
+### GitHub
+
+若要使用 GitHub 作为您的 Git 提供商，请在 `nuxt.config.ts` 中配置您的仓库设置：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  studio: {
+    repository: {
+      provider: 'github',
+      owner: 'your-username',
+      repo: 'your-repo',
+      branch: 'main' // 可选，默认值为 'main'
+    }
+  }
+})
+```
+
+#### 创建 GitHub 个人访问令牌
+
+<warning>
+
+如果您使用的[认证提供商](/docs/studio/auth-providers)不提供 Git 访问权限（如 Google OAuth 或自定义认证），则需要创建个人访问令牌来发布您的更改。
+
+</warning>
+
+<prose-steps level="4">
+
+#### 进入 GitHub 令牌设置页面
+
+访问 [GitHub 设置 → 个人访问令牌](https://github.com/settings/personal-access-tokens/new)，并创建新的**细粒度个人访问令牌**。
+
+#### 配置 GitHub 令牌
+
+填写以下必填项：
+
+- **令牌名称**：您的应用名称
+- **资源拥有者**：仓库所属的 GitHub 组织（或用户）
+- **仓库访问**：选择**仅选择特定仓库**，然后选择您的仓库
+- **权限**：点击**添加权限**，选择**内容（Contents）**，将访问权限更新为**读写**
+
+#### 设置 GitHub 环境变量
+
+将令牌添加到您的部署平台的环境变量中：
+
+```bash [.env]
+STUDIO_GITHUB_TOKEN=<your_github_personal_access_token>
+```
+
+</prose-steps>
+
+### GitLab
+
+若要使用 GitLab 作为您的 Git 提供商，请在 `nuxt.config.ts` 中配置您的仓库设置：
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  studio: {
+    repository: {
+      owner: 'your-username', // 或者群组名称
+      repo: 'your-repo',
+      branch: 'main' // 可选，默认值为 'main'
+    }
+  }
+})
+```
+
+#### 创建 GitLab 个人访问令牌
+
+<warning>
+
+如果您使用的[认证提供商](/docs/studio/auth-providers)不提供 Git 访问权限（如 Google OAuth 或自定义认证），则需要创建个人访问令牌来发布您的更改。
+
+</warning>
+
+<prose-steps level="4">
+
+#### 进入 GitLab 令牌设置页面
+
+访问 GitLab 的**用户设置 → 个人访问令牌**（或者您的群组/组织设置页面，如果适用）。
+
+#### 配置 GitLab 令牌
+
+填写以下必填项：
+
+- **名称**：您的应用名称
+- **过期日期**：根据您的安全策略设置（GitLab 默认 365 天，大多数实例不允许无过期令牌）。请参阅 [GitLab 关于过期限制的说明](https://docs.gitlab.com/user/profile/personal_access_tokens/)。
+- **权限范围（Scopes）**：选择 `api`（用于读写仓库内容） <warning>
+
+请立即复制生成的令牌，生成后无法再次查看。
+
+</warning>
+
+#### 设置 GitLab 环境变量
+
+将令牌添加到您的部署平台的环境变量中：
+
+```bash [.env]
+STUDIO_GITLAB_TOKEN=<your_gitlab_personal_access_token>
+```
+
+</prose-steps>
+
+## 发布要求
+
+要将内容更改发布到您的仓库，Studio 需要一个具有写权限的有效访问令牌。该令牌来源有两种情况：
+
+### 基于 OAuth 的访问（自动）
+
+当您使用 **GitHub OAuth** 或 **GitLab OAuth** 作为[认证提供商](/docs/studio/auth-providers)时，认证过程中获取的 OAuth 令牌会被自动用于 Git 操作，无需额外配置。
+
+```bash [.env]
+# GitHub OAuth - 令牌在登录时自动获取
+STUDIO_GITHUB_CLIENT_ID=<your_github_client_id>
+STUDIO_GITHUB_CLIENT_SECRET=<your_github_client_secret>
+
+# 或 GitLab OAuth - 令牌在登录时自动获取
+STUDIO_GITLAB_APPLICATION_ID=<your_gitlab_application_id>
+STUDIO_GITLAB_CLIENT_SECRET=<your_gitlab_secret>
+```
+
+### 个人访问令牌（手动）
+
+当您使用 **Google OAuth** 或 **自定义认证** 作为认证提供商时，必须提供带有仓库写权限的个人访问令牌（PAT）：
+
+```bash [.env]
+# 针对 GitHub 仓库
+STUDIO_GITHUB_TOKEN=<your_github_personal_access_token>
+
+# 针对 GitLab 仓库
+STUDIO_GITLAB_TOKEN=<your_gitlab_personal_access_token>
+```
+
+<warning>
+
+个人访问令牌必须具有仓库的写权限。否则，通过 Google OAuth 或自定义认证登录的用户将无法发布更改。
+
+</warning>
+
+## 分支管理
+
+默认情况下，Studio 会将更改提交到您配置文件中指定的分支（通常是 `main`）。但您也可以配置 Studio 使用预发布或预览分支。
+
+这在您希望先在预览环境中审核更改，然后再合并到生产环境时非常有用。
+
+<prose-steps>
+
+### 配置您的分支
+
+更新 `nuxt.config.ts`，将分支指向您的预发布分支。
+
+<tip>
+
+您可以使用环境变量来管理不同环境的多个分支。
+
+</tip>
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  studio: {
+    repository: {
+      owner: 'your-username',
+      repo: 'your-repo',
+      branch: process.env.STUDIO_BRANCH_NAME || 'main'
+    }
+  }
+})
+```
+
+### 部署您的预发布环境
+
+配置您的托管平台，将预发布分支部署到预览 URL（例如 `staging.yourdomain.com`）。
+
+### 配置预发布的认证提供商
+
+专门为预发布环境创建一个 OAuth 应用，使用您的预发布 URL 作为回调地址。设置说明请参见[认证提供商](/docs/studio/auth-providers)。
+
+### 设置环境变量
+
+根据您使用的 Git 和认证提供商，配置预发布环境的环境变量。
+
+### 访问预发布环境中的 Studio
+
+访问 `https://staging.yourdomain.com/_studio` 编辑内容。所有提交都会推送到您配置的预发布分支。
+
+### 合并到生产环境
+
+当您满意预发布分支上的更改后，创建从预发布分支到主分支的拉取请求（Pull Request），以部署到生产环境。
+
+<note>
+
+**拉取请求自动化功能即将上线**
+
+<br />
+
+未来版本计划支持从 Studio 自动创建拉取请求。目前需要手动创建 PR 来将预发布更改合并到主分支。
+
+</note>
+</prose-steps>

@@ -1,0 +1,640 @@
+# 认证提供者
+
+> 配置认证提供者以控制对 Nuxt Studio 的访问。
+
+认证提供者负责 **用户身份验证** 和 Studio 的访问控制。它们决定谁可以登录和编辑内容。
+
+<prose-note>
+
+认证提供者不同于 [Git 提供者](/docs/studio/git-providers)。认证提供者处理用户身份验证，而 Git 提供者处理仓库操作。
+
+</prose-note>
+
+## 提供者对比
+
+<table>
+<thead>
+  <tr>
+    <th>
+      功能
+    </th>
+    
+    <th>
+      GitHub OAuth
+    </th>
+    
+    <th>
+      GitLab OAuth
+    </th>
+    
+    <th>
+      Google OAuth
+    </th>
+    
+    <th>
+      自定义认证
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <strong>
+        身份验证
+      </strong>
+    </td>
+    
+    <td>
+      ✅
+    </td>
+    
+    <td>
+      ✅
+    </td>
+    
+    <td>
+      ✅
+    </td>
+    
+    <td>
+      ✅
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <strong>
+        Git 操作
+      </strong>
+    </td>
+    
+    <td>
+      ✅ 自动（OAuth 令牌）
+    </td>
+    
+    <td>
+      ✅ 自动（OAuth 令牌）
+    </td>
+    
+    <td>
+      ⚠️ 需要个人访问令牌（PAT）
+    </td>
+    
+    <td>
+      ⚠️ 需要个人访问令牌（PAT）
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <strong>
+        访问控制
+      </strong>
+    </td>
+    
+    <td>
+      ✅ OAuth 作用域
+    </td>
+    
+    <td>
+      ✅ OAuth 作用域
+    </td>
+    
+    <td>
+      ⚠️ 管理员白名单
+    </td>
+    
+    <td>
+      ⚠️ 自定义逻辑
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <strong>
+        安全认证流程
+      </strong>
+    </td>
+    
+    <td>
+      ✅ 提供者管理
+    </td>
+    
+    <td>
+      ✅ 提供者管理
+    </td>
+    
+    <td>
+      ✅ 提供者管理
+    </td>
+    
+    <td>
+      ⚠️ 自行管理
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<note>
+
+您可以同时使用多个提供者。例如，开发人员使用 GitHub OAuth，非技术内容编辑使用 Google OAuth。
+
+</note>
+
+## 内置提供者
+
+### GitHub
+
+GitHub OAuth 提供身份验证并自动实现 Git 访问。通过 GitHub 认证的用户可以立即推送更改到仓库。
+
+<prose-steps level="4">
+
+#### 进入 GitHub 开发者设置
+
+访问 [GitHub 开发者设置](https://github.com/settings/developers)，点击 **New OAuth App**
+
+#### 配置 GitHub OAuth 应用
+
+填写必填字段：
+
+- **应用名称**：您的应用名称
+- **主页 URL**：`https://yourdomain.com`
+- **授权回调 URL**：`https://yourdomain.com/__nuxt_studio/auth/github`
+
+<note>
+
+本地开发时添加：`http://localhost:3000/__nuxt_studio/auth/github`
+
+</note>
+
+#### 复制 GitHub 凭据
+
+创建 OAuth 应用后，您将获得：
+
+- **客户端 ID**（立即可见）
+- **客户端密钥**（点击 **Generate a new client secret** 获取）
+
+#### 配置 GitHub 环境变量
+
+将 GitHub OAuth 凭据添加到您的部署平台环境变量或 `.env` 文件：
+
+```bash [.env]
+STUDIO_GITHUB_CLIENT_ID=<your_github_client_id>
+STUDIO_GITHUB_CLIENT_SECRET=<your_github_client_secret>
+# 可选：限制特定用户访问
+# STUDIO_GITHUB_MODERATORS=admin@example.com,editor@example.com
+```
+
+</prose-steps>
+
+### GitLab
+
+GitLab OAuth 提供身份验证并自动实现 Git 访问。通过 GitLab 认证的用户可以立即推送更改到仓库。
+
+<prose-steps level="4">
+
+#### 进入 GitLab 应用页面
+
+访问 GitLab 的 [用户设置 → 应用](https://gitlab.com/-/user_settings/applications)（或您的群组/组织设置），创建一个 **新建应用程序**。
+
+#### 配置 GitLab OAuth 应用
+
+填写必填字段：
+
+- **应用名称**：您的应用名称
+- **重定向 URI**：`https://yourdomain.com/__nuxt_studio/auth/gitlab`
+- **作用域**：选择 `api`（发布必需）
+
+<note>
+
+本地开发时添加：`http://localhost:3000/__nuxt_studio/auth/gitlab`
+
+</note>
+
+#### 复制 GitLab 凭据
+
+创建 OAuth 应用后，您将获得：
+
+- **应用 ID**（立即可见）
+- **密钥**（立即可见）
+
+#### 配置 GitLab 环境变量
+
+将 GitLab OAuth 凭据添加到您的部署平台环境变量或 `.env` 文件：
+
+```bash [.env]
+STUDIO_GITLAB_APPLICATION_ID=<your_gitlab_application_id>
+STUDIO_GITLAB_CLIENT_SECRET=<your_gitlab_secret>
+# 可选：限制特定用户访问
+# STUDIO_GITLAB_MODERATORS=admin@example.com,editor@example.com
+```
+
+</prose-steps>
+
+### Google
+
+Google OAuth 适合没有 GitHub 或 GitLab 账号的非技术用户。
+
+<prose-steps level="4">
+
+#### 进入 Google Cloud 控制台
+
+访问 [Google Cloud 控制台](https://console.cloud.google.com/)，选择或创建一个项目，导航至 **API 与服务 → 凭据**。
+
+#### 创建 OAuth 应用
+
+点击 **创建凭据**，选择 **OAuth 客户端 ID**，应用类型选择 **Web 应用**。
+
+填写必填字段：
+
+- **名称**：您的应用名称
+- **授权重定向 URI**：`https://yourdomain.com/__nuxt_studio/auth/google`
+
+<note>
+
+本地开发时添加：`http://localhost:3000/__nuxt_studio/auth/google`
+
+</note>
+
+创建 OAuth 客户端后，您将获得：
+
+- **客户端 ID**
+- **客户端密钥**
+
+<warning>
+
+请立即保存这些凭据，可能无法再次查看。
+
+</warning>
+
+#### 创建个人访问令牌
+
+由于 Google 不支持 Git 访问，您还必须配置一个 [个人访问令牌](/docs/studio/git-providers#creating-a-personal-access-token) 用于仓库操作。
+
+#### 配置环境变量
+
+添加 Google OAuth 凭据、个人访问令牌及管理员列表：
+
+<tabs>
+<tabs-item icon="i-lucide-github" label="使用 GitHub 仓库">
+
+```bash [.env]
+STUDIO_GOOGLE_CLIENT_ID=<your_google_client_id>
+STUDIO_GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+STUDIO_GITHUB_TOKEN=<your_github_personal_access_token>
+STUDIO_GOOGLE_MODERATORS=admin@example.com,editor@example.com
+```
+
+</tabs-item>
+
+<tabs-item icon="i-lucide-gitlab" label="使用 GitLab 仓库">
+
+```bash [.env]
+STUDIO_GOOGLE_CLIENT_ID=<your_google_client_id>
+STUDIO_GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+STUDIO_GITLAB_TOKEN=<your_gitlab_personal_access_token>
+STUDIO_GOOGLE_MODERATORS=admin@example.com,editor@example.com
+```
+
+</tabs-item>
+</tabs>
+
+<warning>
+
+`STUDIO_GOOGLE_MODERATORS` 环境变量对 Google OAuth **必填**。只有列表中的邮箱用户能访问 Studio。
+
+</warning>
+</prose-steps>
+
+## 自定义认证
+
+若需完全掌控身份认证，可使用 Studio 会话工具实现自己的认证逻辑（密码表单、SSO、LDAP 等）。
+
+<warning title="安全责任">
+
+使用自定义认证时，**您需自行负责保护认证流程的安全**。Studio 仅管理用户通过认证后的会话。
+
+</warning>
+
+### 需要个人访问令牌
+
+您必须基于所用 Git 提供者配置个人访问令牌以支持仓库操作。
+
+```bash [.env]
+# 针对 GitHub 仓库
+STUDIO_GITHUB_TOKEN=<your_github_personal_access_token>
+
+# 针对 GitLab 仓库
+STUDIO_GITLAB_TOKEN=<your_gitlab_personal_access_token>
+```
+
+详细创建说明见 [Git 提供者](/docs/studio/git-providers#creating-a-personal-access-token)。
+
+### 实现流程
+
+1. 在登录处理器中**验证用户**，可使用密码、SSO 等任意方法
+2. 调用 `setStudioUserSession(event, user)`，传入 `StudioUserSession` 对象以**创建会话**
+3. 调用 `clearStudioUserSession(event)` 处理登出，清除会话
+
+### 必填会话字段
+
+调用 `setStudioUserSession` 时，必须提供：
+
+<table>
+<thead>
+  <tr>
+    <th>
+      字段
+    </th>
+    
+    <th>
+      类型
+    </th>
+    
+    <th>
+      必填
+    </th>
+    
+    <th>
+      描述
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      ✅
+    </td>
+    
+    <td>
+      用户显示名称
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        email
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      ✅
+    </td>
+    
+    <td>
+      用户邮箱
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        providerId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      ❌
+    </td>
+    
+    <td>
+      用户的唯一标识符
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        avatar
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      ❌
+    </td>
+    
+    <td>
+      用户头像图片的 URL
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### 示例：基于密码的登录
+
+```ts [server/api/studio/login.ts]
+import { eventHandler, readBody, createError } from 'h3'
+import { setStudioUserSession } from '#imports'
+
+export default eventHandler(async (event) => {
+  const { email, password } = await readBody<{ email?: string, password?: string }>(event)
+
+  // ⚠️ 在此实现您自己的安全验证逻辑
+  // 本示例简单示范，请使用安全的密码哈希和验证
+  const user = await validateCredentials(email, password)
+
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      message: '无效的凭据'
+    })
+  }
+
+  await setStudioUserSession(event, {
+    providerId: user.id,
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar || ''
+  })
+
+  return { ok: true }
+})
+```
+
+### 示例：登出处理
+
+```ts [server/api/studio/logout.ts]
+import { eventHandler } from 'h3'
+import { clearStudioUserSession } from '#imports'
+
+export default eventHandler(async (event) => {
+  await clearStudioUserSession(event)
+  return { ok: true }
+})
+```
+
+### 登录后重定向
+
+成功设置会话后，将用户重定向至应用根路径（`/`）。Studio 会自动检测会话并为该用户激活。
+
+```ts [server/api/studio/login.ts]
+// 调用 setStudioUserSession 后...
+return sendRedirect(event, '/')
+```
+
+## 高级选项
+
+### 通过管理员列表控制访问
+
+您可以通过 `STUDIO_{PROVIDER}_MODERATORS` 环境变量定义授权用户白名单，限制 Studio 访问。
+
+```bash [.env]
+# GitHub OAuth 管理员
+STUDIO_GITHUB_MODERATORS=admin@example.com,editor@example.com
+
+# GitLab OAuth 管理员
+STUDIO_GITLAB_MODERATORS=admin@example.com,editor@example.com
+
+# Google OAuth 管理员（必填）
+STUDIO_GOOGLE_MODERATORS=admin@example.com,editor@example.com
+```
+
+管理员列表为逗号分隔的邮箱地址。只有列表中的邮箱用户被允许访问。
+
+#### 不同提供者行为
+
+<table>
+<thead>
+  <tr>
+    <th>
+      提供者
+    </th>
+    
+    <th>
+      管理员列表
+    </th>
+    
+    <th>
+      行为说明
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      GitHub OAuth
+    </td>
+    
+    <td>
+      可选
+    </td>
+    
+    <td>
+      为空时，所有通过 OAuth 认证用户均可访问
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      GitLab OAuth
+    </td>
+    
+    <td>
+      可选
+    </td>
+    
+    <td>
+      为空时，所有通过 OAuth 认证用户均可访问
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Google OAuth
+    </td>
+    
+    <td>
+      <strong>
+        必填
+      </strong>
+    </td>
+    
+    <td>
+      无管理员列表时，无人可访问 Studio
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      自定义认证
+    </td>
+    
+    <td>
+      不适用
+    </td>
+    
+    <td>
+      自行实现访问控制逻辑
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<note>
+
+GitHub 和 GitLab OAuth 中，仓库写权限依然受 OAuth 作用域控制，即使用户可访问 Studio，也无法未经授权推送更改。
+
+</note>
+
+### 自定义重定向 URL
+
+默认情况下，Studio 使用您的部署 URL 作为 OAuth 回调地址。如需自定义：
+
+```bash [.env]
+# GitHub OAuth
+STUDIO_GITHUB_REDIRECT_URL=https://custom-domain.com/__nuxt_studio/auth/github
+
+# GitLab OAuth
+STUDIO_GITLAB_REDIRECT_URL=https://custom-domain.com/__nuxt_studio/auth/gitlab
+
+# Google OAuth
+STUDIO_GOOGLE_REDIRECT_URL=https://custom-domain.com/__nuxt_studio/auth/google
+```
+
+<note>
+
+当您需要通过特定端点处理 OAuth 回调（如反向代理或自定义域名路由）时，此配置非常有用。
+
+</note>
+
+---
+
+<tip>
+
+完成凭据配置并部署后，Studio 将可通过您的生产实例访问。访问 `/_studio`（或您配置的路由）即可开始编辑和发布内容。
+
+</tip>

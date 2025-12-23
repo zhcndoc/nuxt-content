@@ -1,0 +1,240 @@
+# queryCollectionNavigation
+
+> queryCollectionNavigation 组合函数生成给定集合的导航树。
+
+## 类型
+
+```ts
+function queryCollectionNavigation<T extends keyof PageCollections>(
+  collection: T,
+  fields?: Array<keyof PageCollections[T]>
+): ChainablePromise<T, ContentNavigationItem[]>
+
+interface ChainablePromise<T extends keyof PageCollections, R> extends Promise<R> {
+  where(field: keyof PageCollections[T] | string, operator: SQLOperator, value?: unknown): ChainablePromise<T, R>
+  andWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  orWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  order(field: keyof PageCollections[T], direction: 'ASC' | 'DESC'): ChainablePromise<T, R>
+}
+```
+
+## 用法
+
+使用自动导入的 `queryCollectionNavigation` 为特定集合生成导航树。这对于基于你的内容结构创建动态导航菜单或侧边栏非常有用。
+
+该函数返回一个可链式调用的 Promise，允许你添加额外的查询条件：
+
+```vue [pages/[...slug].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('navigation', () => {
+  return queryCollectionNavigation('docs')
+    .where('published', '=', true)
+    .order('date', 'DESC')
+})
+</script>
+```
+
+<tip>
+
+`queryCollectionNavigation` 工具同时适用于 Vue 和 Nitro。详细了解在服务器端如何使用，请参阅 [服务器端使用](#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E4%BD%BF%E7%94%A8)。
+
+</tip>
+
+### 使用 `.navigation.yml` 添加导航元数据
+
+你可以通过 `.navigation.yml` 文件为目录添加元数据。
+
+```yml [.navigation.yml]
+title: 入门指南
+icon: i-lucide-square-play
+```
+
+## Type
+
+```ts
+function queryCollectionNavigation<T extends keyof PageCollections>(
+  collection: T,
+  fields?: Array<keyof PageCollections[T]>
+): ChainablePromise<T, ContentNavigationItem[]>
+
+interface ChainablePromise<T extends keyof PageCollections, R> extends Promise<R> {
+  where(field: keyof PageCollections[T] | string, operator: SQLOperator, value?: unknown): ChainablePromise<T, R>
+  andWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  orWhere(groupFactory: QueryGroupFunction<PageCollections[T]>): ChainablePromise<T, R>
+  order(field: keyof PageCollections[T], direction: 'ASC' | 'DESC'): ChainablePromise<T, R>
+}
+```
+
+## API
+
+### `queryCollectionNavigation(collection: CollectionName, extraField: keyof Collection)`
+
+为指定集合生成导航树。
+
+- 参数：
+
+  - `collection`：在 `content.config.ts` 中定义集合的键名。
+  - `extraFields`：（可选）一个数组，包含要在导航项中额外包含的字段。（默认导航项中包含 `title` 和 `path`。）
+- 返回值：一个可链式调用的 Promise，解析为导航树结构。该 Promise 支持添加查询条件的方法：
+
+  - `where(field, operator, value)`：添加 WHERE 条件
+  - `andWhere(groupFactory)`：添加分组的 AND 条件
+  - `orWhere(groupFactory)`：添加分组的 OR 条件
+  - `order(field, direction)`：添加 ORDER BY 子句
+
+导航树基于目录结构生成，排序基于文件的[排序规则](/docs/collections/types#ordering-files)
+
+## 示例
+
+基础用法，无需额外查询条件：
+
+```vue [pages/[...slug].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('navigation', () => {
+  return queryCollectionNavigation('docs')
+})
+</script>
+
+<template>
+  <nav>
+    <ul v-if="data">
+      <li v-for="item in data" :key="item.path">
+        <NuxtLink :to="item.path">{{ item.title }}</NuxtLink>
+      </li>
+    </ul>
+  </nav>
+</template>
+```
+
+带额外查询条件和额外字段的示例：
+
+```vue [pages/[...slug].vue]
+<script setup lang="ts">
+const { data } = await useAsyncData('navigation', () => {
+  return queryCollectionNavigation('docs', ['description', 'badge'])
+    .where('draft', '=', false)
+    .where('partial', '=', false)
+    .order('title', 'ASC')
+})
+</script>
+
+<template>
+  <nav>
+    <ul v-if="data">
+      <li v-for="item in data" :key="item.path">
+        <NuxtLink :to="item.path">
+          {{ item.title }}
+          <span v-if="item.badge" class="badge">{{ item.badge }}</span>
+        </NuxtLink>
+        <p v-if="item.description">{{ item.description }}</p>
+      </li>
+    </ul>
+  </nav>
+</template>
+```
+
+## 服务器端使用
+
+Nuxt Content 在服务器端提供了类似的查询集合工具。唯一不同的是你需要把 `event` 作为第一个参数传递给 `queryCollectionNavigation` 函数。
+
+```ts [server/api/navigation.ts]
+export default eventHandler(async (event) => {
+  const navigation = await queryCollectionNavigation(event, 'docs')
+  return navigation
+})
+```
+
+<note>
+
+请确保创建 `server/tsconfig.json` 文件，内容如下，以避免类型错误。
+
+```json
+{
+  "extends": "../.nuxt/tsconfig.server.json"
+}
+```
+
+</note>
+
+---
+
+## 与导航相关的额外工具
+
+Content 模块提供了一些额外的工具，以简化构建面包屑导航等常见用例。
+
+### `findPageHeadline(navigation, path, options?)`
+
+返回导航树中给定路径的标题（父文件夹的名称）。对于显示章节标题或上下文导航标题非常有用。
+
+- `navigation`: 导航树（ContentNavigationItem 数组）。
+- `path`: 当前页面路径。
+- `options`（可选）：
+
+  - `indexAsChild`: 是否把索引页视为子节点。
+
+**示例：**
+
+```ts
+import { findPageHeadline } from '@nuxt/content/utils'
+
+const headline = findPageHeadline(navigation, '/docs/guide/getting-started')
+// 标题是一个包含父文件夹名称的字符串。
+```
+
+### `findPageBreadcrumb(navigation, path, options?)`
+
+返回给定路径在导航树中的面包屑路径（导航项数组）。适合用于构建面包屑导航组件。
+
+- `navigation`：导航树（ContentNavigationItem 数组）。
+- `path`：当前页面路径。
+- `options`（可选）：
+
+  - `current`：是否包含当前页面。
+  - `indexAsChild`：是否把索引页视为子节点。
+
+**示例：**
+
+```ts
+import { findPageBreadcrumb } from '@nuxt/content/utils'
+
+const breadcrumb = findPageBreadcrumb(navigation, '/docs/guide/getting-started')
+// breadcrumb 是通向当前页面的导航项数组
+```
+
+### `findPageChildren(navigation, path, options?)`
+
+查找并返回导航树中给定路径的直接子项。
+
+- `navigation`：导航树（ContentNavigationItem 数组）。
+- `path`：要查找子项的父路径。
+- `options`（可选）：
+
+  - `indexAsChild`：是否把索引页视为子节点。
+
+**示例：**
+
+```ts
+import { findPageChildren } from '@nuxt/content/utils'
+
+const children = findPageChildren(navigation, '/docs/guide')
+// children 是 '/docs/guide' 下的导航项数组
+```
+
+### `findPageSiblings(navigation, path, options?)`
+
+返回给定路径的兄弟导航项（即具有相同父级的其他项）。
+
+- `navigation`：导航树（ContentNavigationItem 数组）。
+- `path`：当前页面路径。
+- `options`（可选）：
+
+  - `indexAsChild`：是否把索引页视为子节点。
+
+**示例：**
+
+```ts
+import { findPageSiblings } from '@nuxt/content/utils'
+
+const siblings = findPageSiblings(navigation, '/docs/guide/getting-started')
+// siblings 是与当前页面具有相同父级的导航项数组
+```

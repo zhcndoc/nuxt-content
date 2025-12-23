@@ -1,0 +1,277 @@
+# 编辑您的内容
+
+> 在可视化编辑器或代码编辑器之间，发现并选择您喜欢的内容管理方式。
+
+<note>
+
+**测试版发布 - 所有编辑器现已可用！**
+
+<br />
+
+测试版现在包含 **TipTap 可视化编辑器**（默认）、**Monaco 代码编辑器** 以及针对 YAML/JSON 文件和 frontmatter 的新 **基于表单的编辑器**。您可以随时通过工具栏中的编辑器模式切换在它们之间切换。
+
+</note>
+
+Nuxt Studio 为开发者和内容编辑者提供一个多功能的工作空间，赋予他们在不同编辑器间选择的自由：
+
+- 针对 `Markdown` 文件的 [类似 Notion 的编辑器](#notion-like-editor-markdown-files)
+- 针对 `YAML` 和 `JSON` 文件的 [表单编辑器](#form-editor)
+- 针对所有类型文件的 [代码编辑器](#code-editor)（仅限技术用户）
+
+每种编辑器都有其用途。一些用户偏好可视化编辑，而另一些则偏好直接操作代码。最终，**Markdown 和 MDC 语法是两种编辑器的最终输出**，并支持可视化与代码模式之间的无缝转换。
+
+## 编辑器模式切换
+
+您可以随时点击文件标题栏（面包屑右侧）的 **操作下拉菜单**，在可视化编辑器和代码编辑器之间切换：
+
+- **可视化模式** - 针对 Markdown 的类似 Notion 编辑体验，以及针对 YAML/JSON 文件的表单编辑器。
+- **代码模式**（Monaco） - 直接编辑 Markdown/MDC 语法
+
+您的偏好将被保存，且适用于所有文件。
+
+## TipTap 可视化编辑器（`Markdown` 文件）
+
+TipTap 可视化编辑器为 Markdown 内容提供了现代化的类似 Notion 的编辑体验，基于流行的 [TipTap](https://tiptap.zhcndoc.com/) 编辑器，并由 [Nuxt UI Editor](https://ui.nuxt.com/pro/components/editor) 集成。
+
+### 主要特性
+
+- **富文本编辑** - 支持标题、加粗、斜体、删除线、代码、链接等格式
+- **MDC 组件支持** - 可在可视化编辑器中直接插入和编辑自定义 Vue 组件
+- **媒体集成** - 通过媒体选择器浏览并插入库中的图片
+- **表情集成** - 输入 `:` 后接表情名称插入表情，或使用斜杠命令 `/emoji`
+- **斜杠命令** - 输入 `/` 可访问格式和组件菜单
+- **拖拽功能** - 拖动内容块进行重排
+- **链接编辑器** - 浮动弹出层支持外部链接编辑
+- **工具栏** - 文本选中时显示气泡工具栏，快速访问格式选项
+- **实时转换** - 实现可视化内容与 MDC/Markdown 语法之间的无缝转换
+
+### 使用 Vue 组件
+
+TipTap 可视化编辑器的突出功能之一，是其可以直接在编辑器界面中集成和编辑自定义 Vue 组件。
+
+#### 创建并集成自定义组件
+
+开发者可以创建视觉复杂的组件，编辑者无需技术知识即可使用它们。可视化编辑器能无缝处理组件集成。
+
+<steps level="4">
+
+#### 创建您的组件
+
+Vue 组件需放置在 `/components/content` 文件夹内，才可在 Studio 中使用：
+
+```vue [components/content/HomeFeature.vue]
+<template>
+  <div class="flex items-start gap-3">
+    <div class="flex items-center justify-center border rounded-lg p-1.5">
+      <UIcon :name="icon" />
+    </div>
+    <div class="flex flex-col">
+      <h3 class="font-semibold">
+        <slot name="title" />
+      </h3>
+      <span>
+        <slot name="description" />
+      </span>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+defineProps({
+  icon: {
+    type: String,
+    default: 'i-lucide-cursor-click',
+  },
+})
+</script>
+```
+
+#### 在 Markdown 中使用 MDC 语法集成组件
+
+组件可通过 [MDC 语法](/docs/files/markdown#mdc-syntax) 集成：
+
+```mdc [content/index.md]
+::home-feature
+  ---
+  icon: i-mdi-vuejs
+  ---
+  #title
+  嵌入的 Vue 组件
+  #description
+  在可视化编辑器中编辑插槽和属性。
+::
+```
+
+#### 在可视化编辑器中编辑
+
+`/components/content` 文件夹中的所有组件会自动生效：
+
+1. 在编辑时任何位置输入 `/`
+2. 在列表中搜索您的组件
+3. 直接在编辑器中插入并编辑组件插槽
+4. 属性编辑的可视化界面将在测试版中推出
+
+</steps>
+
+#### 集成外部库组件
+
+默认情况下，来自外部库（如 Nuxt UI）的组件不会显示在 Studio 组件列表中。要让它们可用，请在 Nuxt 配置中设置为全局组件：
+
+```ts
+export default defineNuxtConfig({
+  hooks: {
+    'components:extend': (components) => {
+      const globals = components.filter(c => ['UButton', 'UIcon'].includes(c.pascalName))
+
+      globals.forEach(c => c.global = true)
+    }
+  },
+})
+```
+
+### 调试模式
+
+可从底部菜单开启 **调试模式**，查看以下格式的实时转换：
+
+- TipTap JSON 格式
+- MDC AST
+- 最终 Markdown 输出
+
+这对于理解内容如何转换及共享故障排查信息非常有用。
+
+## 表单编辑器
+
+表单编辑器适用于编辑：
+
+- `Markdown` 文件中的 **Frontmatter**
+- **YAML** 文件
+- **JSON** 文件
+
+无需直接操作复杂的文件语法，而是根据您的 [集合 schema](/docs/collections/define) 定义自动生成表单。
+
+### **使用** `zod` **Schema 定义您的表单**
+
+<prose-note to="/docs/collections/define">
+
+在专门章节中了解更多关于 schema 集合定义。
+
+</prose-note>
+
+一旦在您的集合中定义了 `schema` 属性，Studio 界面将自动生成对应表单。
+
+<prose-code-group>
+
+```ts [content.config.ts]
+export default defineContentConfig({
+  collections: {
+    posts: defineCollection({
+      type: 'page',
+      source: 'blog/*.md',
+      schema: z.object({
+        draft: z.boolean().default(false),
+        category: z.enum(['Alps', 'Himalaya', 'Pyrenees']).optional(),
+        date: z.date(),
+        image: z.object({
+          src: property(z.string()).editor({ input: 'media' }),
+          alt: z.string(),
+        }),
+        slug: property(z.string()).editor({ hidden: true }),
+        icon: property(z.string().optional()).editor({ input: 'icon' }),
+        authors: z.array(z.object({
+          slug: z.string(),
+          username: z.string(),
+          name: z.string(),
+          to: z.string(),
+          avatar: z.object({
+            src: z.string(),
+            alt: z.string(),
+          }),
+        })),
+      }),
+    }),
+  },
+})
+```
+
+<code-preview icon="i-lucide-eye" label="生成的表单">
+
+![表单预览](/docs/studio/preview-schema.png)
+
+</code-preview>
+</prose-code-group>
+
+### **原生输入映射**
+
+基础的 Zod 类型会自动映射为合适的表单输入：
+
+- **String（字符串）** → 文本输入框
+- **Date（日期）** → 日期选择器 <badge>
+
+敬请期待
+
+</badge>
+- **Number（数字）** → 数字输入框 <badge>
+
+敬请期待
+
+</badge>
+- **Boolean（布尔）** → 开关控件 <badge>
+
+敬请期待
+
+</badge>
+- **Enum（枚举）** → 下拉选择框 <badge>
+
+敬请期待
+
+</badge>
+- **字符串数组** → 徽章输入列表
+- **对象数组** → 带嵌入表单的小折叠面板列表
+
+<video :autoplay="true" :controls="true" :loop="true" poster="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.jpg" src="https://res.cloudinary.com/nuxt/video/upload/v1740679550/arrayobjectandstring_r1jpvz.mp4">
+
+
+
+</video>
+
+### 自定义输入映射 <badge>敬请期待</badge>
+
+Studio 超越了基础类型，您可使用 `editor` 方法自定义表单字段，该方法为 Zod 类型扩展了元数据，增强编辑器界面功能。
+
+这允许您定义自定义输入控件或隐藏字段。
+
+#### 用法
+
+```ts [content.config.ts]
+// 图标
+icon: property(z.string()).editor({ input: 'icon', iconLibraries: ['lucide', 'simple-icons'] })
+
+// 媒体
+image: property(z.string()).editor({ input: 'media' })
+```
+
+#### 选项
+
+##### `input: 'media' | 'icon'`
+
+设置编辑器输入类型。目前支持 `icon` 和 `media`。
+
+##### `iconLibraries: Array<string>`
+
+指定显示哪些 [Iconify](https://icones.js.org/) 库。使用此选项可筛选并限制可用图标集。
+
+`hidden: Boolean`
+
+此选项可用于在 Studio 编辑器中隐藏某字段的显示。
+
+<prose-tip>
+
+Studio 输入控件完全可扩展。我们可以根据用户需求创建任意多的输入控件。
+
+</prose-tip>
+
+## 代码编辑器
+
+Monaco 代码编辑器让您全面掌控内容，允许您直接编写原始内容：
+
+针对 `Markdown` 文件使用 MDC 语法；针对其他文件使用 `JSON` 或 `YAML` 语法。
