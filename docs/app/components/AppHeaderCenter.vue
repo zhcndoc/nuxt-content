@@ -9,13 +9,9 @@ const links = computed(() => [
     active: route.path.startsWith('/docs') && !route.path.startsWith('/docs/studio'),
   }, {
     label: 'Nuxt Studio',
-    badge: {
-      label: 'beta',
-      color: 'primary',
-    },
     icon: 'i-lucide-file-pen-line',
-    to: '/docs/studio/setup',
-    active: route.path.startsWith('/docs/studio'),
+    to: 'https://nuxt.studio',
+    target: '_blank',
   }, {
     label: '模板',
     icon: 'i-lucide-layout-template',

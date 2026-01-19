@@ -7,9 +7,9 @@ branch: main
 category: docs
 createdAt: 2023-11-15T17:41:03.087Z
 demo: https://v3.docs-template-3erl.pages.dev/
-description: 使用此模板，几秒钟内即可创建您的文档。
-licenseType: nuxt-ui-pro
-mainScreen: /templates/docs.jpg
+description: 使用此模板，几秒钟即可创建您的文档。
+licenseType: nuxt-ui
+mainScreen: /templates/docs-dark.png
 name: docs
 owner: nuxt-ui-templates
 image1: /templates/docs-light.png
@@ -17,33 +17,33 @@ image2: /templates/docs-dark.png
 ---
 
 ::template-core
-[Nuxt UI Pro](https://ui.nuxt.com/pro) 是一组高级组件，作为 [Nuxt UI](https://ui.nuxt.com) 的扩展，旨在帮助您在几分钟内创建漂亮且响应式的 Nuxt 应用。
+[Nuxt UI](https://ui.nuxt.com) 是一套高级组件集合，旨在帮助您在几分钟内创建美观且响应迅速的 Nuxt 应用。
 
-Nuxt UI 团队致力于提供最佳的集成和定制体验，同时 Studio 团队提供与 Nuxt Studio 的完全兼容性。
+Nuxt UI 团队致力于提供最佳的集成和自定义体验，而 Studio 团队则提供与 Nuxt Studio 的完全兼容性。
 
-- **完全可定制**：可通过您的应用配置更改任意组件的样式，或通过 ui 属性进行专门定制。
-- **轻松编写 Markdown**：Nuxt UI Pro 重写了 Nuxt Content 的 prose 组件，使其更出色，还新增了 Callout、CodeGroup、Field 等组件。
-- **精美的排版样式**：预配置了 Tailwind CSS 排版插件，样式与 Nuxt UI 组件和颜色匹配。
-- **开箱即用的全文搜索**：Nuxt UI Pro 配备了现成的命令面板组件，无需再配置 Algolia DocSearch。
-- **全面插槽支持**：每个组件都利用 Vue 的插槽功能，给予您构建任意内容的灵活性。
-- **响应式设计**：Nuxt UI Pro 组件旨在构建您的内容结构，天生响应式，适应各种屏幕尺寸。
+- **完全可自定义**：您可以通过 App Config 更改任何组件的样式，或者通过 ui 属性进行特定定制。
+- **轻松编写 Markdown**：Nuxt UI 覆盖了 Nuxt Content 的 prose 组件，使其更强大，同时新增了 Callout、CodeGroup、Field 等组件。
+- **优美的排版样式**：Tailwind CSS 排版插件预先配置，并按照 Nuxt UI 组件与配色进行了样式匹配。
+- **开箱即用的全文搜索**：Nuxt UI 内置了一个即用型的命令面板组件，无需再配置 Algolia DocSearch。
+- **全面支持插槽**：每个组件均利用 Vue 的插槽功能，赋予您构建任何内容的灵活性。
+- **响应式设计**：Nuxt UI 组件旨在结构化您的内容，自适应设计将适应任何屏幕尺寸。
 
 #right
   :::template-features
   ---
   features:
     - label: Nuxt 3
-      content: 由 Nuxt 3 驱动，带来最佳性能和 SEO。
+      content: 由 Nuxt 3 驱动，确保最佳性能与SEO。
     - label: Markdown
-      content: 借助 Nuxt Content 使用 MDC 编写页面。
+      content: 感谢 Nuxt Content，使用 MDC 编写您的页面。
     - label: Nuxt UI
       content: 提供大量完全可定制的组件。
     - label: TypeScript
-      content: 享受完备的类型化开发体验。
+      content: 完整的类型化开发体验。
     - label: Nuxt Studio
-      content: 支持 Nuxt Studio，实现快速更新和预览。
-    - label: 搜索
-      content: 由 Fuse.js 驱动的全文搜索模态框。
+      content: 使用 Nuxt Studio 模块，实现快速更新与预览。
+    - label: Search
+      content: 由 Fuse.js 强力支持的全文搜索模态框。
   ---
   :::
 ::

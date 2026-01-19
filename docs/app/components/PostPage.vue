@@ -114,7 +114,10 @@ function copyLink() {
           v-if="post.body"
           :value="post"
         />
-
+        <div
+          class="wwads-cn wwads-horizontal w-full my-4"
+          data-id="354"
+        />
         <div class="flex items-center justify-between mt-12">
           <UButton
             :to="`/${type}`"
@@ -154,8 +157,15 @@ function copyLink() {
       <template #right>
         <UContentToc
           v-if="post.body && post.body.toc"
+          title="目录"
           :links="post.body.toc.links"
         >
+          <template #top>
+            <div
+              class="wwads-cn wwads-vertical w-full my-4"
+              data-id="354"
+            />
+          </template>
           <template #bottom>
             <div class="hidden md:block">
               <UPageLinks

@@ -5,6 +5,13 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   extends: ['docus'],
   modules: ['@nuxtjs/plausible', '@vueuse/nuxt', '@nuxthub/core', 'nuxt-studio'],
+  app: {
+    head: {
+      script: [
+        { async: true, src: 'https://www.zhcndoc.com/js/common.js' },
+      ],
+    },
+  },
   css: ['~/assets/css/main.css'],
   site: {
     name: 'Nuxt Content 中文文档',
@@ -21,9 +28,6 @@ export default defineNuxtConfig({
         },
       },
     },
-  },
-  ui: {
-    fonts: false,
   },
   routeRules: {
     ...(readFileSync(resolve(__dirname, '_redirects'), 'utf-8'))
@@ -44,34 +48,6 @@ export default defineNuxtConfig({
     db: 'sqlite',
     cache: true,
   },
-  icon: {
-    clientBundle: {
-      scan: true,
-      icons: [
-        'lucide:arrow-left',
-        'lucide:arrow-up-right',
-        'lucide:book-open',
-        'lucide:cloud-upload',
-        'lucide:file-pen-line',
-        'lucide:file',
-        'lucide:history',
-        'lucide:monitor',
-        'lucide:moon',
-        'lucide:square-code',
-        'lucide:square-function',
-        'lucide:sun',
-        'lucide:terminal',
-        'lucide:x',
-        'vscode-icons:file-type-bun',
-        'vscode-icons:file-type-npm',
-        'vscode-icons:file-type-nuxt',
-        'vscode-icons:file-type-pnpm',
-        'vscode-icons:file-type-yaml',
-        'vscode-icons:file-type-yarn',
-      ],
-    },
-    serverBundle: 'local',
-  },
   llms: {
     domain: 'https://nuxt-content.zhcndoc.com',
     title: 'Nuxt Content 中文文档',
@@ -83,6 +59,9 @@ export default defineNuxtConfig({
     full: {
       title: 'Complete Documentation',
       description: 'The complete documentation including all content',
+    },
+    contentRawMarkdown: {
+      excludeCollections: ['landing'],
     },
   },
   studio: {

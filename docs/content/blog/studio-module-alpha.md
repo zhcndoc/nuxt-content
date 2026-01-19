@@ -27,7 +27,7 @@ image:
 
 当 NuxtLabs 加入 Vercel 时，我们承诺将 [nuxt.studio](https://nuxt.studio) 从一个托管平台转变为一个免费开源的模块。今天，我们很高兴宣布 Nuxt Studio 模块的**第一个 alpha 版本**发布。
 
-::u-button{to="https://github.com/nuxt-content/studio" icon="i-simple-icons-github" target="_blank" color="neutral" variant="subtle"}
+::u-button{to="https://github.com/nuxt-content/nuxt-studio" icon="i-simple-icons-github" target="_blank" color="neutral" variant="subtle"}
 在 GitHub 上发现 Nuxt Studio 模块。
 ::
 
@@ -194,4 +194,4 @@ npx nuxi module add nuxt-studio@alpha
 
 ---
 
-我们期待看到您使用 Nuxt Studio 构建的作品。加入 [GitHub Discussions](https://github.com/nuxt-content/studio/discussions) 讨论或 [加入我们的 Discord](https://discord.gg/sBXDm6e8SP)，共同塑造模块的未来。
+我们期待看到您使用 Nuxt Studio 构建的作品。加入 [GitHub Discussions](https://github.com/nuxt-content/nuxt-studio/discussions) 讨论或 [加入我们的 Discord](https://discord.gg/sBXDm6e8SP)，共同塑造模块的未来。
