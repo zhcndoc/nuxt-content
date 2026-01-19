@@ -3,7 +3,7 @@ prose: true
 seo:
   title: 基于 Git 的 Nuxt 项目内容管理系统
   description: Nuxt Content 是一个用于 Nuxt 的模块，提供了一种简单的方法来管理您应用程序的内容。它允许开发者以 Markdown、YAML 或 JSON 文件的形式编写内容，然后在他们的应用程序中查询和显示这些内容。
-  ogImage: https://content.nuxt.com/social.png
+  ogImage: https://nuxt-content.zhcndoc.com/social.png
 ---
 
 ::u-page-hero

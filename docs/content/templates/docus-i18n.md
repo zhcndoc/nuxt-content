@@ -106,12 +106,12 @@ i18n 启动模板生成带语言前缀的 URL：
 
 此启动模板预配置了：
 
-- [Nuxt 4](https://nuxt.com) - Web 框架
-- [Nuxt Content](https://content.nuxt.com/) - 基于文件的 CMS
+- [Nuxt 4](https://nuxt.zhcndoc.com) - Web 框架
+- [Nuxt Content](https://nuxt-content.zhcndoc.com/) - 基于文件的 CMS
 - [Nuxt i18n](https://i18n.nuxt.com/) - 国际化支持
 - [Nuxt UI](https://ui.nuxt.com) - 高级 UI 组件库
 - [Nuxt Image](https://image.nuxt.com/) - 图片优化组件
-- [Tailwind CSS 4](https://tailwindcss.com/) - 原子化 CSS 框架
+- [Tailwind CSS 4](https://tailwindcss.zhcndoc.com/) - 原子化 CSS 框架
 - [Docus Layer](https://www.npmjs.com/package/docus) - 文档主题
 
 ## 📖 文档

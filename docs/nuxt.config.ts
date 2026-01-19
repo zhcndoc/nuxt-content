@@ -4,7 +4,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   extends: ['docus'],
-  modules: ['@nuxtjs/plausible', '@vueuse/nuxt', '@nuxthub/core', 'nuxt-studio'],
+  modules: ['@vueuse/nuxt', '@nuxthub/core', 'nuxt-studio'],
   app: {
     head: {
       script: [
@@ -66,11 +66,11 @@ export default defineNuxtConfig({
   },
   studio: {
     route: '/admin',
-    repository: {
-      owner: 'nuxt',
-      repo: 'content',
-      branch: 'main',
-      rootDir: 'docs',
-    },
+    // repository: {
+    //   owner: 'nuxt',
+    //   repo: 'content',
+    //   branch: 'main',
+    //   rootDir: 'docs',
+    // },
   },
 })

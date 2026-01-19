@@ -33,14 +33,14 @@ category: studio
 
 ## 迈向 Nuxt Content v3
 
-我们很高兴地宣布，Nuxt Content v3 的第四个 alpha 版本已发布，且 [**草稿文档**](https://content.nuxt.com/) 已开放。
+我们很高兴地宣布，Nuxt Content v3 的第四个 alpha 版本已发布，且 [**草稿文档**](https://nuxt-content.zhcndoc.com/) 已开放。
 
 ### 下一步？
 
 未来几个月，我们将专注于测试和优化 Nuxt Content v3，确保其稳健且适合生产环境发布。以下是与 Nuxt Studio 相关的主要改进：
 
 - **合并 Studio 模块**：不久后，Studio 模块将直接集成进 Nuxt Content。Nuxt Content v3 发布后，只需在 `nuxt.config.ts` 文件中设置 `content.editor: true` 即可启用 Studio。该简化意味着无需额外模块，安装更快捷。
-- **统一文档**：模块合并后，我们将把 [Content](https://content.nuxt.com) 和 [Studio](https://nuxt.studio) 的文档及网站合并为一个综合资源。Studio 平台本身（用户登录后可用）将作为独立站点保留。
+- **统一文档**：模块合并后，我们将把 [Content](https://nuxt-content.zhcndoc.com/) 和 [Studio](https://nuxt.studio) 的文档及网站合并为一个综合资源。Studio 平台本身（用户登录后可用）将作为独立站点保留。
 - **充分利用 Studio 中的数据结构和集合**：借助 Nuxt Content v3，Studio 平台将支持并适配 [集合](/docs/collections/define) 和用户定义的 schema，实现针对 YAML、JSON 文件及 Markdown 的 front-matter 的基于 schema 的表单生成。
 
 这些更新体现了我们为您的 Nuxt 网站提供最佳内容编辑平台的承诺。敬请期待！

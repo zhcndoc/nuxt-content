@@ -61,11 +61,11 @@ my-docs/
 
 该启动模板预配置了：
 
-- [Nuxt 4](https://nuxt.com) - Web 框架
-- [Nuxt Content](https://content.nuxt.com/) - 基于文件的 CMS
+- [Nuxt 4](https://nuxt.zhcndoc.com) - Web 框架
+- [Nuxt Content](https://nuxt-content.zhcndoc.com/) - 基于文件的 CMS
 - [Nuxt UI](https://ui.nuxt.com) - 高级 UI 组件
 - [Nuxt Image](https://image.nuxt.com/) - 图像优化
-- [Tailwind CSS 4](https://tailwindcss.com/) - 实用工具优先 CSS
+- [Tailwind CSS 4](https://tailwindcss.zhcndoc.com/) - 实用工具优先 CSS
 - [Docus Layer](https://www.npmjs.com/package/docus) - 文档主题
 
 ## 📖 文档

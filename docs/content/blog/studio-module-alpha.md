@@ -54,7 +54,7 @@ Studio 最初作为托管平台提供，位于 [nuxt.studio](https://nuxt.studio
 - **免费开源** — 在 MIT 许可证下发布
 - **直接集成** — 只需一个简单的 GitHub OAuth 应用即可开始使用
 
-唯一的权衡是 Studio 现在需要一个服务器端路由来做身份验证。尽管 [Nuxt 混合渲染](https://nuxt.com/docs/4.x/guide/concepts/rendering#hybrid-rendering) 仍支持静态生成，但您的站点必须部署在支持 SSR 的平台。
+唯一的权衡是 Studio 现在需要一个服务器端路由来做身份验证。尽管 [Nuxt 混合渲染](https://nuxt.zhcndoc.com/docs/4.x/guide/concepts/rendering#hybrid-rendering) 仍支持静态生成，但您的站点必须部署在支持 SSR 的平台。
 
 ## 📦 Alpha 版本内容
 
