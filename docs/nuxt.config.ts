@@ -29,6 +29,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  ui: {
+    fonts: false,
+  },
   routeRules: {
     ...(readFileSync(resolve(__dirname, '_redirects'), 'utf-8'))
       .split('\n')

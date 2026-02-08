@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.11.2](https://github.com/nuxt/content/compare/v3.11.1...v3.11.2) (2026-02-05)
+
+### Bug Fixes
+
+* **studio:** fallback to env variable to detect ai feature ([#3713](https://github.com/nuxt/content/issues/3713)) ([3fc8b7b](https://github.com/nuxt/content/commit/3fc8b7b06fa45136d48258e64d49cca1961c313d))
+
+## [3.11.1](https://github.com/nuxt/content/compare/v3.11.0...v3.11.1) (2026-02-05)
+
+### Features
+
+* **collections:** create studio collections for AI if detected ([#3709](https://github.com/nuxt/content/issues/3709)) ([7744645](https://github.com/nuxt/content/commit/7744645db07c5d8ecce810e8871cd42239637b7b))
+
+### Bug Fixes
+
+* issue with disabling `contentRawMarkdown` ([5be6b0c](https://github.com/nuxt/content/commit/5be6b0cdf5d50440010a988dfd472e69d989f3ef))
+
 ## [3.11.0](https://github.com/nuxt/content/compare/v3.10.0...v3.11.0) (2026-01-16)
 
 ### Features
