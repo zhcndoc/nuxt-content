@@ -36,6 +36,11 @@ const content = defineCollection({
     date: z.date(),
     rawbody: z.string(),
     testd: property(z.object({})).inherit('components/TestD.vue'),
+    links: z.array(z.object({
+      label: z.string(),
+      icon: z.string(),
+      to: z.string(),
+    })),
   }),
 })
 
@@ -73,6 +78,8 @@ const collections = {
     schema: z.object({
       name: z.string(),
       email: z.string().email(),
+      birthday: z.string().date(),
+      lastloginat: z.string().datetime(),
     }),
   }),
   org: defineCollection({
