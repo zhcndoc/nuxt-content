@@ -29,9 +29,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  ui: {
-    fonts: false,
-  },
   routeRules: {
     ...(readFileSync(resolve(__dirname, '_redirects'), 'utf-8'))
       .split('\n')
@@ -69,11 +66,11 @@ export default defineNuxtConfig({
   },
   studio: {
     route: '/admin',
-    // repository: {
-    //   owner: 'nuxt',
-    //   repo: 'content',
-    //   branch: 'main',
-    //   rootDir: 'docs',
-    // },
+    repository: {
+      owner: 'zhcndoc',
+      repo: 'nuxt-content',
+      branch: 'main',
+      rootDir: 'docs',
+    },
   },
 })
