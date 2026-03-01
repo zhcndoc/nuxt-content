@@ -1,0 +1,1 @@
+import{b4 as r,L as a,J as s,a0 as o}from"./DIxv82y2.js";const t={},c={class:"p-2 border bg-white dark:bg-black dark:border-gray-700 rounded"};function d(e,n){return s(),a("div",c,[o(e.$slots,"default")])}const _=Object.assign(r(t,[["render",d]]),{__name:"ExampleCard"});export{_ as default};

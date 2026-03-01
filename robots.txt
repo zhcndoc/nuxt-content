@@ -1,0 +1,9 @@
+# START nuxt-robots (indexable)
+User-agent: *
+Allow: /
+
+User-agent: *
+Disallow: /dev/*
+
+Sitemap: https://nuxt-content.zhcndoc.com/sitemap.xml
+# END nuxt-robots

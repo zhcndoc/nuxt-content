@@ -1,0 +1,1 @@
+import{b4 as a,L as t,J as c,aG as e,a0 as o}from"./DIxv82y2.js";const r={},d={class:"grid grid-cols-1 gap-6 md:grid-cols-3"},n={class:"md:col-span-2"},l={class:"md:col-span-1"};function i(s,_){return c(),t("div",d,[e("div",n,[o(s.$slots,"default")]),e("div",l,[o(s.$slots,"right")])])}const p=Object.assign(a(r,[["render",i]]),{__name:"TemplateCore"});export{p as default};
