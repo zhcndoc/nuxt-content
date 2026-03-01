@@ -44,8 +44,8 @@ useSeoMeta({
           >
             <template #date>
               <UBadge
-                :label="TEMPLATE_BADGES[template.licenseType]?.label"
-                :color="TEMPLATE_BADGES[template.licenseType]?.color"
+                :label="TEMPLATE_BADGES[template.licenseType].label"
+                :color="TEMPLATE_BADGES[template.licenseType].color"
                 variant="outline"
               />
             </template>

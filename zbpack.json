@@ -1,5 +1,5 @@
 {
   "app_dir": "/",
-  "build_command": "pnpm run dev:prepare && pnpm run docs:build",
-  "output_dir": "docs/.output/public"
+  "build_command": "pnpm run dev:prepare && NITRO_PRESET=node_server pnpm run docs:build",
+  "start_command": "node docs/.output/server/index.mjs"
 }

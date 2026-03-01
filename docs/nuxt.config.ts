@@ -70,6 +70,7 @@ export default defineNuxtConfig({
       owner: 'zhcndoc',
       repo: 'nuxt-content',
       branch: 'main',
+      provider: 'github',
       rootDir: 'docs',
     },
   },
