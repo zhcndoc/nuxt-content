@@ -68,7 +68,7 @@ variant: outline
 
 ### TipTap 可视化编辑器
 
-基于 [TipTap](https://tiptap.dev/) 并通过 [Nuxt UI Editor](https://ui.nuxt.com/pro/components/editor) 组件集成，带来更现代的类 Notion Markdown 内容编辑体验：
+Markdown 内容的现代 Notion 风格编辑体验现已回归，并带来改进版本，由 [TipTap](https://tiptap.dev/) 提供支持，并通过 [Nuxt UI Editor](https://ui.nuxt.com/components/editor) 组件集成：
 
 - 富文本编辑，支持标题、格式、链接等
 - 支持 MDC 组件以插入 Vue 组件

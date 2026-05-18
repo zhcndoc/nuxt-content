@@ -103,10 +103,22 @@ mainScreen: z.string().editor({ input: 'media' })
 
 您可以设置编辑器输入类型。目前支持 icon 和 media，因为它们已在 Studio 编辑器中被处理。
 
+::prose-tip
+Studio 输入完全可扩展。我们可以根据用户需求创建任意多的输入。
+::
+
 ##### `hidden: Boolean`
 
 此选项可用于避免字段在 Studio 编辑器中显示。
 
-::prose-tip
-Studio 输入完全可扩展。我们可以根据用户需求创建任意数量的输入控件。
-::
+##### `label: String`
+
+您可以设置 Studio 编辑器中输入项的名称。
+
+##### `description: String`
+
+您可以在 Studio 编辑器中的字段名称下方设置额外文本。
+
+##### `tooltip: String`
+
+在 Studio 编辑器中的字段名称旁显示信息气泡。
