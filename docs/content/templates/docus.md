@@ -70,7 +70,7 @@ my-docs/
 
 ## 📖 文档
 
-有关如何自定义你的 Docus 项目的详细文档，请访问 [Docus Documentation](https://docus.dev)
+有关如何自定义你的 Docus 项目的详细文档，请访问 [Docus 文档](https://docus.dev)
 
 ## 🚀 部署
 
@@ -90,8 +90,8 @@ npm run build
   :::template-features
   ---
   features:
-    - label: Nuxt 3
-      content: 由 Nuxt 3 提供支持，优化性能与 SEO。
+    - label: Nuxt 4
+      content: 由 Nuxt 4 提供支持，带来最佳性能和 SEO。
     - label: Markdown
       content: 通过 Nuxt Content 使用 MDC 编写页面。
     - label: Nuxt UI
