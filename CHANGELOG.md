@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.15.1](https://github.com/nuxt/content/compare/v3.15.0...v3.15.1) (2026-07-21)
+
+### Bug Fixes
+
+* **dev:** preserve SQL hashes in HMR dumps ([#3816](https://github.com/nuxt/content/issues/3816)) ([b6796e9](https://github.com/nuxt/content/commit/b6796e98581ae4234922672c833f452165a4cf66))
+
 ## [3.15.0](https://github.com/nuxt/content/compare/v3.14.0...v3.15.0) (2026-07-02)
 
 ### Features
