@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.15.2](https://github.com/nuxt/content/compare/v3.15.1...v3.15.2) (2026-07-23)
+
+### Bug Fixes
+
+* **dev:** ignore temporary files in content source paths ([#3784](https://github.com/nuxt/content/issues/3784)) ([a019e70](https://github.com/nuxt/content/commit/a019e702688cf468c6cc1d1592ca19313ff76276))
+* **security:** reject SQL function calls in query WHERE clauses ([#3819](https://github.com/nuxt/content/issues/3819)) ([847d523](https://github.com/nuxt/content/commit/847d523a48e76d861175b325abf0de40dc5864ed))
+
 ## [3.15.1](https://github.com/nuxt/content/compare/v3.15.0...v3.15.1) (2026-07-21)
 
 ### Bug Fixes
