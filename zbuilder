@@ -1,0 +1,24 @@
+FROM node:24-bookworm AS build
+
+WORKDIR /app
+
+RUN npm install --global pnpm@11.24.0
+
+COPY . .
+
+RUN pnpm install --frozen-lockfile --filter @nuxt/content --filter content-docs
+RUN NITRO_PRESET=node_server pnpm run docs:build
+
+FROM node:24-bookworm-slim AS runtime
+
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    NITRO_HOST=0.0.0.0 \
+    PORT=3000
+
+COPY --from=build /app/docs/.output ./docs/.output
+
+EXPOSE 3000
+
+CMD ["node", "docs/.output/server/index.mjs"]
