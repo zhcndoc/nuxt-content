@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'pathe'
 import type { Nuxt } from '@nuxt/schema'
 import { isIgnored, updateTemplates, useLogger } from '@nuxt/kit'
-import type { ConsolaInstance } from 'consola'
+import type { NuxtLogger } from '@nuxt/kit'
 import chokidar from 'chokidar'
 import micromatch from 'micromatch'
 import { withTrailingSlash } from 'ufo'
@@ -18,7 +18,7 @@ import { moduleTemplates } from './templates'
 import { getExcludedSourcePaths, parseSourceBase } from './source'
 import { createHooks } from 'hookable'
 
-export const logger: ConsolaInstance = useLogger('@nuxt/content')
+export const logger: NuxtLogger = useLogger('@nuxt/content')
 
 export const contentHooks = createHooks<{
   'hmr:content:update': (data: { key: string, collection: string, queries: string[] }) => void
@@ -117,7 +117,7 @@ export function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest: Mani
     const absolutePath = resolve(pathOrError as string)
     const matches = sourceMap.filter(({ source, cwd }) => {
       if (cwd && absolutePath.startsWith(cwd)) {
-        return micromatch.isMatch(absolutePath.substring(cwd.length), source!.include, { ignore: source!.exclude || [], dot: true })
+        return micromatch.isMatch(absolutePath.substring(cwd.length), source!.include, { ignore: getExcludedSourcePaths(source), dot: true })
       }
 
       return false
@@ -164,11 +164,11 @@ export function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest: Mani
             collectionType: collection.type,
           }).then(result => JSON.stringify(result))
 
-          db.insertDevelopmentCache(keyInCollection, checksum, parsedContent)
+          await db.insertDevelopmentCache(keyInCollection, parsedContent, checksum)
         }
 
-        const { queries: insertQuery } = generateCollectionInsert(collection, JSON.parse(parsedContent))
-        await broadcast(collection, keyInCollection, insertQuery)
+        const insert = generateCollectionInsert(collection, JSON.parse(parsedContent))
+        await broadcast(collection, keyInCollection, insert)
       }
     }
   }
@@ -181,7 +181,7 @@ export function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest: Mani
     const absolutePath = resolve(pathOrError as string)
     const matches = sourceMap.filter(({ source, cwd }) => {
       if (cwd && absolutePath.startsWith(cwd)) {
-        return micromatch.isMatch(absolutePath.substring(cwd.length), source!.include, { ignore: source!.exclude || [], dot: true })
+        return micromatch.isMatch(absolutePath.substring(cwd.length), source!.include, { ignore: getExcludedSourcePaths(source), dot: true })
       }
 
       return false
@@ -204,12 +204,12 @@ export function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest: Mani
     }
   }
 
-  async function broadcast(collection: ResolvedCollection, key: string, insertQuery?: string[]) {
+  async function broadcast(collection: ResolvedCollection, key: string, insert?: ReturnType<typeof generateCollectionInsert>) {
     const db = await getDb()
     const removeQuery = `DELETE FROM ${collection.tableName} WHERE id = '${key.replace(/'/g, '\'\'')}';`
     await db.exec(removeQuery)
-    if (insertQuery) {
-      await Promise.all(insertQuery.map(query => db.exec(query)))
+    if (insert) {
+      await Promise.all(insert.queries.map(query => db.exec(query)))
     }
 
     const collectionDump = manifest.dump[collection.name]!
@@ -217,8 +217,9 @@ export function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest: Mani
     const indexToUpdate = keyIndex !== -1 ? keyIndex : collectionDump.length
     const itemsToRemove = keyIndex === -1 ? 0 : 1
 
-    if (insertQuery) {
-      collectionDump.splice(indexToUpdate, itemsToRemove, ...insertQuery)
+    if (insert) {
+      const dumpQueries = insert.queries.map(query => `${query} -- ${insert.hash}`)
+      collectionDump.splice(indexToUpdate, itemsToRemove, ...dumpQueries)
     }
     else {
       collectionDump.splice(indexToUpdate, itemsToRemove)
@@ -235,7 +236,7 @@ export function watchContents(nuxt: Nuxt, options: ModuleOptions, manifest: Mani
     contentHooks.callHook('hmr:content:update', {
       key,
       collection: collection.name,
-      queries: insertQuery ? [removeQuery, ...insertQuery] : [removeQuery],
+      queries: insert ? [removeQuery, ...insert.queries] : [removeQuery],
     })
   }
 
